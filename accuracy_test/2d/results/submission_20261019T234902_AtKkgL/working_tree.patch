@@ -1,0 +1,2304 @@
+diff --git a/.gitignore b/.gitignore
+index cea9cf6..fa796dc 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -3,3 +3,14 @@
+ /output/
+ *.exe
+ *.o
++/build-intel/
++/accuracy_test/1d/results/
++/speed_test/1d/results/
++/code_test/1d/results/
++__pycache__/
++/build-2d-intel/
++/build-2d-native/
++/build-1d-regression/
++/accuracy_test/2d/results/
++/speed_test/2d/results/
++/code_test/2d/results/
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index bdbd6a7..3685174 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -11,3 +11,8 @@ option(DGH_BUILD_1D "Build the 1D solver" ON)
+ if(DGH_BUILD_1D)
+     add_subdirectory(dg_hdg_1d)
+ endif()
++
++option(DGH_BUILD_2D "Build the 2D tensor-product solver" ON)
++if(DGH_BUILD_2D)
++    add_subdirectory(dg_hdg_2d)
++endif()
+diff --git a/DESIGN.md b/DESIGN.md
+index 0148b2d..c2d8e85 100644
+--- a/DESIGN.md
++++ b/DESIGN.md
+@@ -1,191 +1,76 @@
+-# 1D 实现设计
+-
+-## 张量与块
+-
+-目标全局 DOF 张量采用 Eigen 列主序 `[kx+1,ky+1,NVAR,Nx,Ny]`，第一维连续。
+-1D 固定 `Ny=1, ky=0`，因此逻辑形状为 `[k+1,1,NVAR,Nx,1]`。
+-`Layout::tensor` 提供真实的 Eigen TensorMap，`index/local/cell` 提供同一内存上的访问接口。
+-`cell` 是零拷贝的 Eigen `[nodes,NVAR]` 列主序矩阵视图。
+-变量数仅由 `inline constexpr int NVAR` 决定，分量使用 `Density/Momentum/Energy`。
+-物理公式里的系数 3、左右两个面等数学常数不属于变量个数。
+-
+-DG 单块宽度 `m=NVAR*(k+1)`；单块矩阵的行列逻辑维度为
+-`[k+1,1,NVAR,k+1,1,NVAR]`。外层稀疏连接图坐标为
+-`[Nx_row,Ny_row,Nx_col,Ny_col]`，1D 为 `[Nx,1,Nx,1]`。
+-周期左右邻居构成块 CSR 图，保留整块结构零；不会把变量或节点独立交给 COLAMD。
+-
+-BCSR 的 `row_ptr` 与 `col_idx` 只索引单元块；数值统一放在一个 Eigen 对齐的连续数值池。
+-`block(slot)` 映射池内一个列主序 `[m,m]` 矩阵，
+-`tensor_block(ix_row,iy_row,ix_col,iy_col)` 映射同一内存上的六维列主序张量。
+-块内偏移为 `i + n*v + m*(j+n*w)`，再加 `slot*m*m` 得到池内偏移。
+-不使用 `vector<MatrixXd>` 为各非零块分散分配内存；稀疏结构一经构造不可修改。
+-
+-HDG 的 A 为 `[m,m]`，B 为 `[m,NFACES*NVAR]`，C 为 `[NFACES*NVAR,m]`；
+-局部面按左、右排序，面内按变量排序。全局 trace 列主序张量为 `[NVAR,Nx]`，
+-Schur 块宽度为 NVAR，仍按界面块图处理。
+-
+-## 数学路径
+-
+-空间离散沿用原项目：FastGL 生成 Gauss 节点/权重、Lagrange 基、对角质量、弱通量积分、
+-周期 Einfeldt/HLL 面通量。参考单元一次构造，默认体积分点数为 k+1，
+-可用 `--quad` 过积分；初始化使用高阶 L2 投影和守恒的凸正性缩放。
+-
+-每步在 Uⁿ 冻结面波速，`rate=max_cell(alpha/h)`，alpha 同时覆盖体积分点声速与面波速。
+-`dt=CFL/rate`，不额外插入次数因子。终止时间模式截断最后一步；步数模式不截断。
+-自动选择的 dt 是算法必需的内部量，用户不能指定固定 dt。
+-
+-DG 的 Newton 算子由 `DGOperator` 表示；它缓存体积分点和面的解析通量导数，
+-不存储全局 Jacobian。预条件器和直接参考通过 `DGOperator::block(row,col,out)`
+-获取需要的局部块，GMRES 通过 `DGOperator::apply(direction,result)` 计算 Jv。
+-
+-HDG 保持独立 augmented trace，不在 Newton 更新后重投影：
+-
+-```text
+-[ A  B ] [du] = -[r]
+-[ C  D ] [dl]   [g]
+-X = solve(A,B),  y = solve(A,r)
+-S dl = -g + C y,  S = D - C X
+-du = -y - X dl
+-```
+-
+-A 按单元做选主元 LU。保存 `X=A⁻¹B` 的作用结果与 LU，不保存 A⁻¹。
+-Schur 的 `apply` 按单元 gather → X → C → scatter；预条件和直接路径可查询 Schur 的单块。
+-DG 用质量对偶 L2 RMS 残差；HDG 线搜索同时约束体积和 skeleton 残差。
+-两者都检查节点、体积分点和边界的密度及压力正性。
+-
+-## 线性化模块与调用顺序
+-
+-`discretization.hpp/.cpp` 中的 `Problem` 负责状态、残差、积分、正性等；
+-线性化单独放在以下模块，计算库不依赖 check 目录：
+-
+-| 模块 | 职责 |
+-| --- | --- |
+-| `volume_jacobian.hpp/.cpp` | 体积分和时间项的系数缓存、matrix-free 作用、单元对角块 |
+-| `dg_operator.hpp/.cpp` | 复用体积分缓存，加上冻结 HLL 波速下的面导数；提供完整 DG 的 apply/block |
+-| `hybrid.hpp/.cpp` | 共用 VolumeJacobian 装填局部 A，再加 HDG 面项并进行静态凝聚 |
+-
+-两个线性化对象的构造函数完成全部 Eigen 空间分配，必须在时间循环前构造。
+-`refresh(state)` 在已有工作区内更新缓存，不分配空间。对象不保存 state 的引用，
+-即使原 state 向量被原地修改或 swap，已有缓存仍表示上一次 refresh 的状态。
+-网格、基函数和质量矩阵在对象生命周期内必须保持不变。
+-
+-DG 调用示例：
+-
+-```cpp
+-DGOperator jacobian(problem);          // 时间循环前：分配全部缓存和工作区
+-// 每个时间步：problem.freeze(old_state)，然后设置 problem.step_size。
+-// 每次需要 Newton 修正、且残差尚未收敛时：
+-jacobian.refresh(newton_state);        // 同时快照当前 dt、体积分导数和面导数
+-preconditioner.refresh([&](int row, int col, BlockRef block) {
+-    jacobian.block(row, col, block);
+-});
+-// GMRES 内可重复调用，期间绝不 refresh：
+-jacobian.apply(direction, result);     // result 必须已分配，且不能与 direction 别名
+-```
+-
+-`state`、`step_size` 或冻结波速发生变化后，下一次线性求解前必须重新 refresh。
+-`apply` 和 `block` 不会隐式刷新，也不比较向量指针或内容来猜测缓存是否有效；
+-首次 refresh 之前调用会报错。Newton 线搜索只计算候选状态的残差，不能在其中刷新
+-正在使用的线性化；接受候选状态后，在下一次 Newton 线性求解前刷新即可。
+-`TimeIntegrator` 已按这个顺序调用。直接参考和预条件器共用相同的缓存。
+-`HybridOperator::refresh` 内部调用自己的 `VolumeJacobian::refresh`，外部无需另行调用。
+-
+-### 系数布局与 matrix-free 作用
+-
+-令 `n=k+1`、`Q=basis.points`、`C=layout.cells`、`J_q=F'(U_q)`。
+-体积分只保存 `Q*NVAR*NVAR*C` 个 double，列主序逻辑张量为
+-`[Q,NVAR_flux,NVAR_state,C]`。同一个物理 Jacobian 分量在 q 方向连续，
+-从而用 Eigen array 运算计算 `z_q=J_q*x_q`。不展开成每单元 `n*n*NVAR*NVAR` 的矩阵。
+-
+-`VolumeJacobian::apply` 先写入 `M*x/dt`，再逐单元计算
+-`x_q=V*x_nodal`、`z_q=J_q*x_q`、`result -= (D^w)^T*z`。
+-`(D^w)^T` 在构造时保存为连续列主序矩阵，避免反复访问原矩阵的跨步长行。
+-积分点状态、方向和 flux 工作区仅为一个单元的 `[Q,NVAR]`，反复复用。
+-
+-DG 面导数分左右各存一个 `[NVAR_flux,NVAR_state,C]` 张量。
+-每次 refresh 每个面只计算一次 `G_left` 与 `G_right`；apply 使用
+-`G_left*x_left + G_right*x_right`，block 查询也直接复用它们。
+-面导数缓存约 `2*C*NVAR*NVAR` 个 double，与单元多项式阶数无关。
+-
+-### 配点和超积分的两条路径
+-
+-当前参考单元在 `Q==n` 时设置 `V=I`。此条件是此处配点特化的依据，
+-未来如果改变节点或积分规则，必须同时维护这一约束，不能只比较两个维数。
+-
+-默认配点路径：
+-
+-```text
+-U_q = U_nodal                         // 零拷贝读取，无插值
+-x_q = x_nodal                         // apply 中同样不插值
+-A[(v,i),(w,j)] = -D^w[j,i] * J_j[v,w]
+-A.diagonal += M/dt
+-```
+-
+-因此体积分块装填从通用的 O(Q*n²*NVAR²) 简化为 O(n²*NVAR²)。
+-矩阵按 `w -> j -> v -> i` 的逻辑顺序写入，i 连续；所有体积分元素直接覆盖，
+-不先清零后反复累加。只有 n 个物理 Jacobian，完整块中的 n² 个节点耦合是
+-这些物理 Jacobian 与参考微分矩阵系数的组合。
+-
+-超积分 `Q>n` 路径保留一般离散式。对每个 (v,w,j)，在已分配的 q 工作区中计算
+-`weights[q]=J_q[v,w]*V[q,j]`，再做连续输出列的矩阵向量积
+-`A[v_nodes,(w,j)]=-(D^w)^T*weights`。没有构造 Q×Q 对角矩阵或完整的三阶参考张量。
+-`Problem::quadrature_state` 的配点读取也已特化，残差、CFL 与正性检查共同受益。
+-
+-本次优化保持现有逐非零块查询接口；没有把它描述成跨单元 SIMD 装填。
+-块内连续数组运算和 GEMV 可使用 Eigen 支持的向量化，物理 Jacobian 刷新仍逐积分点计算。
+-若后续实现跨单元 SIMD 或按单元批量填充块，需另外测量打包和重排序写入的代价。
+-工作区由对象复用，所以同一对象的 apply/block 不可被多个线程同时调用。
+-
+-### 独立检查和小网格计时
+-
+-原来的一般积分点求和实现保留在 `check/dg_reference.hpp/.cpp`，仅用于独立检查和
+-小网格基准，不链接进计算库。`check/linearization.cpp` 检查首次 refresh/apply/block
+-即禁止 Eigen 分配、同一 state 内存原地更新后快照不变，以及显式 refresh 后 dt、状态、
+-波速全部更新。原有有限差分、DG/HDG 凝聚一致性和时间推进检查继续执行。
+-
+-`benchmark_dg` 比较无缓存的一般积分点参考实现与新实现，包括单次 Jv、所有体积分块、
+-refresh 及一次 refresh 加 20 次 Jv 的组合。网格仅 32 单元，k=0/1/3/6，
+-同时测试配点与超积分。它不是完整求解器的端到端加速测量；完整 Newton/GMRES 的
+-收益还取决于迭代次数、预条件器分解、缓存容量和硬件，不能直接套用单核函数倍数。
+-
+-## Block ILU(0) 与 COLAMD
+-
+-只对单元/界面连接图执行一次 COLAMD，得到块顺序；使用同一个顺序做对称行列置换，
+-不把 COLAMD 的列置换直接当作完整数值分解。数值更新保留置换后原块图的结构：
+-
+-```text
+-Lij = right_solve(Ujj, Aij)  // Lij Ujj = Aij
+-Aik -= Lij Ujk              // 仅当 (i,k) 原本存在
+-```
+-
+-对角块位置与每个下三角块所需的乘积更新位置在初始化时预计算；数值分解不查找稀疏图。
+-每个对角块在所有前序更新后做块内选主元 LU。右除通过 Uᵀ、Lᵀ、P 回代；
+-应用预条件器时做块级前代/后代和块内 LU 回代。没有显式逆、标量 ILU 或填充块。
+-block-Jacobi 只保存与分解对角块，使用同样的局部 LU 接口。
+-
+-“matrix-free ILU”在此指预条件器直接向算子查询块，不要求组装标量全局稀疏矩阵；
+-不完全分解本身必然要保存块因子。空间复杂度为原图块数乘以块大小平方。
+-
+-## GMRES、直接参考与空间分配
+-
+-GMRES 是基于 Eigen 工作区实现的 restarted right-preconditioned GMRES。
+-两遍 modified Gram-Schmidt、Givens 旋转、真残差复核均使用预分配空间；
+-DG 使用 inverse-mass 加权内积，HDG trace 使用欧氏内积。
+-迭代解存储预条件后的 Krylov 向量，不将左预条件残差当作原方程残差。
+-
+-直接路径从相同块接口装入预分配的全局稠密矩阵，允许跨单元行选主元。
+-它是小规模精度参照，避免将“不分配内存”的承诺建立在 Eigen SparseLU 的动态填充上。
+-不会在 GMRES 模式下分配此全局矩阵。
+-
+-Problem 与 TimeIntegrator 构造完成所有 Eigen 空间分配，包括 Krylov 基、块因子、
+-LU 置换和回代空间、HDG 消元结果、Newton trial、残差和方向。
+-只构造所选求解器及方法的主要工作区。时间循环中不调用 resize、容器插入、
+-返回动态矩阵或动态向量的算子，也不写文件。
+-DenseLU 在预分配 Eigen 矩阵上做选主元、逐列秩一更新和显式回代，
+-避免通用 LU 的 GEMM packing 分配及 solve 表达式的隐含临时量。
+-所有检查程序和检查专用辅助函数均在 `dg_hdg_1d/check/`；运行时输入合法性和正性判定属于算法本身。
+-
+-## 后续 2D 扩展边界
+-
+-本次没有 2D 文件或求解实现。后续需要扩展几何 Layout、张量积体积算子、
+-四面 trace 及二维邻接图；不能只把 NVAR 从三改成四。
++# 1D / 2D 架构与性能设计
++
++## 模块与边界
++
++继续使用现有目录，不引入 MFEM 或外部 Krylov 求解器。
++`dg_hdg_1d/src/physics.cpp` 实现 Euler/HLL；`discretization.cpp` 管残差、CFL、
++投影及积分；`volume_jacobian.cpp` 缓存通量导数；`dg_operator.cpp` 提供 Jv 与单块；
++`hybrid.cpp` 负责静态凝聚；`time_integrator.cpp` 实现 BE 与四阶段 DIRK3；
++`main.cpp` 处理输入和时间循环之外的输出。
++`common/src/linalg/` 是 Eigen 工作区上的右预条件 GMRES、块图和预条件器。
++`dg_hdg_2d/` 采用相同职责划分，二维张量结构和存储策略见末节。
++
++## 1D 布局和算子
++
++状态 Eigen 列主序 `[k+1,1,NVAR,Nx,1]`，节点连续、其次变量、最后单元；
++`Layout::cell` 为零拷贝 `[k+1,NVAR]` 视图。
++质量只存对角向量。体积系数 `[Q,NVAR_flux,NVAR_state,Nx]` 的 Q 维连续，
++Jv 通过点上物理 Jacobian 和一维微分收缩，避免每单元完整 Jacobian 乘法。
++配点 Q=k+1 时跳过恒等插值。Eigen 连续 array 和 GEMV 使用 CPU 向量化；
++未声称实现跨单元 SIMD。超积分保留一般插值路径。
++
++DG 全局迭代不组装标量稀疏矩阵，只为 block-Jacobi 查询单元对角块。
++HDG 局部选主元 LU 获得 X=A^-1 B、y=A^-1 r，缓存 -CX 的面耦合块；
++Schur 作用只做 gather、块乘、scatter，不在每次 Krylov 乘法重复 C(Xv)。
++1D 的 6×6 Schur 作用和 3×3 trace 三角回代使用固定大小 Eigen Map，
++让小块运算内联，避免逐单元动态 BLAS 调用。
++每次 Newton 重新投影 trace；DG 残差用于共同线搜索与停止判据。
++独立的增广 trace 接口仍可用于凝聚等价性诊断。
++
++GMRES 用加权两遍重正交与真残差复核，固定右预条件器允许将 Arnoldi 向量组合后
++只作一次回代更新解，不必存储全部预条件 Krylov 向量。
++block-Jacobi 为每个单元/面独立 LU，不需要 COLAMD；
++block ILU(0) 保留块图和可选 COLAMD，没有标量填充。
++
++## 缓存与分配
++
++构造函数分配状态、阶段斜率、Krylov 基、块因子及线搜索空间。
++refresh 在每次 Newton 线性化时更新快照；apply/block 复用该快照，
++改变状态、步长或冻结波速后必须显式 refresh。同一算子的可变工作区不可并发使用。
++时间推进从第一次调用开始禁止 Eigen 堆分配，Release 仍启用相应断言。
++此保证只覆盖 Eigen 管理的分配，不宣称拦截标准库或系统全部分配。
++
++## 计时
++
++主指标是接受的 Newton 更新耗时，包括共同 DG 残差、线性化、预条件器建立、
++凝聚、Krylov、真残差验收、恢复和线搜索。每次更新时间保存在预留容量的记录容器中（超出估算时仅标准库容器可扩容），
++全部 CSV 在时间循环结束后写出，不把文件写出算进求解耗时。
++速度运行 512 单元、BE 单步四次更新；第一次预热，后三次平均。
++DG 和 HDG 各自预热，独立进程顺序运行，单线程；同时报告完整四次 time_loop_s。
++固定更新次数不表示非线性收敛。收敛实验与性能实验严格分开。
++
++## 构建与实验隔离
++
++Intel/MKL LP64 sequential，-march=native，SIMD 编译选项，Release IPO，
++不使用 fast-math。保留无 BLAS/LAPACK 的 Eigen 原生构建以作可移植验证。
++Slurm 提交时复制源码到本次独立快照，计算节点单独构建，原目录后续编辑不改变在途作业。
++不重编译或修改参考项目的在途作业依赖。
++
++## 2D：从 1D 经验扩展
++
++2D 已有独立 CMake 入口、main、时间推进、HDG 和正确性测试，1D 文件结构保持不变。
++Eigen 列主序状态为 `[nx_node,ny_node,NVAR,Nx,Ny]`，x 节点连续。
++Gauss 配点使用固定 n=1..9 的参考收缩与面限制/提升内核；超积分保留两方向一般收缩。
++全局缓存体积 u/v/H 三场，面缓存两侧 u/v/H 与冻结 HLL 系数，Jv 不读取完整单元矩阵。
++
++精确 DG 块 Jacobi 使用单个对角装填工作区和持久 LU 池，避免第二份全局对角矩阵。
++HDG 不保留逐单元 A、B、C 或 LU：一个单元 m×m A、一个 LU 和 m×(t+1) 右端工作区复用。
++X、y 和局部 Schur 为连续大数值池；面限制先对多个右端形成 fw×(t+1) 小工作区，
++再沿连续的 Gauss 点轴施加 4×4 物理导数，避免稠密 C 的大量结构零乘法。
++
++块 Jacobi 的 LU 系数和置换均连续保存，使用一套 LU 工作区逐块刷新。
++DG 单元块和 HDG 面块均保留完整耦合并作精确 LU 求解，分别在 CSV 中标记为 dense、face-dense。
++张量积优化保持代数等价，不使用方向乘积分裂、低秩截断或局部迭代替代完整块求解。
++
++2D Slurm 使用独立源码快照、一个 CPU；Q2 精度扫描 16 GiB，速度扫描 100 GiB。速度 256²、k=8→0，四次更新首个预热，
++不与 1D 的 512 单元结果混用，也不将降低局部求解精度包装为同一预条件器。
+diff --git a/README.md b/README.md
+index ed280f0..56d113d 100644
+--- a/README.md
++++ b/README.md
+@@ -1,98 +1,89 @@
+-# 1D Euler：分块 DG / HDG 重构
+-
+-本目录是独立实现；`../DG_HDG_Euler_Cpp` 仅作为数学参照，不依赖或修改原目录。
+-本阶段只实现 1D 周期 Euler、隐式 Euler 时间离散、冻结 Einfeldt/HLL 波速，以及
+-代数等价的 DG 与 augmented-trace HDG。没有开始 2D 实现。
+-
+-## 文件框架
+-
+-```text
+-CMakeLists.txt                 继承原项目顶层结构，仅启用 1D
+-cmake/                        继承原项目编译选项、BLAS/LAPACK 配置
+-vendor/fastgl/                原项目 FastGL，始终参与构建与链接
+-dg_hdg_1d/CMakeLists.txt       1D 独立构建入口
+-dg_hdg_1d/include/euler/
+-  types.hpp                    constexpr NVAR、物理分量名称、张量 Layout
+-  config.hpp                   运行选项
+-  physics.hpp                  Gas、Euler 通量/解析导数、Einfeldt 波速
+-  simple_wave.hpp              算例持有 gamma，解析解与光滑时间范围
+-  nodal_basis.hpp              仅初始化时计算的参考单元，无 basis.cpp 包装层
+-  discretization.hpp           质量张量、DG 残差、状态插值与积分
+-  volume_jacobian.hpp          积分点 Jacobian 缓存、配点特化、体积分块与 Jv
+-  dg_operator.hpp              Newton 状态快照、缓存面导数、完整 DG 的 block/apply
+-  hybrid.hpp                   HDG 局部块、静态凝聚、Schur 算子及恢复
+-  time_integrator.hpp          预分配工作区、CFL、Newton、正性线搜索
+-  linalg/
+-    block_graph.hpp            单元/界面级 CSR 图、块矩阵、块图 COLAMD
+-    dense_lu.hpp               块内选主元 LU、左/右回代，均不求逆
+-    block_ilu.hpp              分块 ILU(0) / block-Jacobi
+-    gmres.hpp                  Eigen 工作区上的 matrix-free GMRES
+-    direct.hpp                 全局选主元 LU，供小规模准确参考
+-dg_hdg_1d/src/                对应模块的 .cpp；main.cpp 只处理运行与输出
+-  linalg/                     分块线性代数实现
+-dg_hdg_1d/check/
+-  main.cpp                     独立检查程序入口
+-  check_1d.hpp/.cpp             检查代码完全独立于计算库
+-  linearization.cpp            缓存生命周期、首次调用无 Eigen 分配检查
+-  dg_reference.hpp/.cpp        独立的一般积分点参考实现
+-  benchmark_dg.cpp             小网格的系数刷新、块装填与 Jv 计时
+-scripts/
+-  build.ps1                    没有 CMake 时使用 MinGW 的本地构建入口
+-DESIGN.md                      张量次序、方程、预条件及内存约束
++# Eigen Euler：1D / 2D DG 与凝聚 HDG
++
++保留 `common/`、`dg_hdg_1d/`、`dg_hdg_2d/`、`cmake/`、`vendor/fastgl/` 架构，
++以现有 1D 算法为核心，使用 Eigen 和 FastGL，不依赖 MFEM。
++1D 与 2D 分别构建独立可执行文件和测试；公共线性代数复用 Eigen。
++数值协议参照 [mfem_euler2d_cpp](https://github.com/YueWu2002/mfem_euler2d_cpp)，
++将旋转二维简单波限制到一维周期区间 [-1,1]，gamma=3。
++
++- [数学定义](MATHEMATICS.md)：简单波、Gauss DG、DIRK3、凝聚及残差标准。
++- [架构与性能边界](DESIGN.md)：Eigen 布局、matrix-free、局部块与预分配。
++- [验证协议](VALIDATION.md)、[1D 实验](RESULTS.md)、[2D 实验](RESULTS_2D.md)、[内存估算](MEMORY_ESTIMATE.md)。
++- `accuracy_test/1d/`：独立 1D 收敛测试；`speed_test/1d/`：独立 1D Slurm 速度测试。
++
++## 构建
++
++C++17、CMake >=3.22、Eigen >=3.4。构建和配置不会运行测试。
++
++```sh
++cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDGH_NATIVE_ARCH=ON
++cmake --build build -j 4
++ctest --test-dir build --output-on-failure
++python3 code_test/1d/test_solver.py --exe build/dg_hdg_1d/dg_hdg \
++  --output code_test/1d/results/local_unique
+ ```
+ 
+-## 构建与运行
++OSCAR 使用 `bash intel-build.sh`（默认构建 1D），加载 Intel 编译器、MKL、Eigen 和 CMake，
++单线程、Release、native、SIMD、IPO；实际编译信息写入构建日志。
++速度作业在分配到的 Intel 计算节点编译并运行，避免跨 CPU 的 native 指令差异。
+ 
+-依赖为 C++17、Eigen >= 3.4，以及随项目保留的 FastGL。
+-COLAMD 使用 Eigen 自带实现，不需要外部稀疏求解库。
+-原项目的 `DGH_BLAS_BACKEND`、`DGH_LAPACK_BACKEND` 和 `DGH_NATIVE_ARCH` 选项继续保留。
+-Eigen 可通过安装包提供 `Eigen3Config.cmake`，或把 Eigen 3.4.0 解压到
+-`.deps/eigen-3.4.0/`（此目录不纳入源代码）。
++## 1D 运行
+ 
+ ```sh
+-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+-cmake --build build --config Release
+-ctest --test-dir build -C Release --output-on-failure
++build/dg_hdg_1d/dg_hdg --cells 32 --k 2 --integrator ssp-dirk3 \
++  --cfl 2 --T 0.2 --method both --precond block-jacobi \
++  --ntol 1e-12 --ltol 1e-12 --prefix output/dirk3
++
++# 受控速度工作负载；仅最后三次 Newton 更新进入均值
++build/dg_hdg_1d/dg_hdg --cells 512 --k 8 --integrator be \
++  --steps 1 --newton-steps 4 --warmup-updates 1 --cfl 5 \
++  --precond block-jacobi --timing-only --method both --prefix output/speed
+ ```
+ 
+-Windows 当前环境也可使用：
++默认 DIRK3、block-Jacobi、自然块顺序；`--integrator be` 保留后向 Euler。
++`--linear direct` 为小规模稠密参考，主路径始终 matrix-free；
++block ILU(0) 继续可用。输出 summary、逐 Newton 更新计时和可选节点解。
++`--timing-only` 跳过误差积分与解文件，仍保留残差验收及正性检查。
+ 
+-```powershell
+-./scripts/build.ps1
+-./build/check_1d.exe
+-./build/benchmark_dg.exe
+-./build/dg_hdg.exe --cells 32 --k 3 --cfl 0.2 --T 0.1 --method both
+-./build/dg_hdg.exe --cells 8 --k 2 --cfl 0.2 --T 0.03 --linear direct --prefix output/reference
+-./build/dg_hdg.exe --cells 32 --k 3 --steps 10 --precond block-jacobi --ordering natural
++## 1D 实验顺序
++
++```sh
++bash accuracy_test/1d/submit.sh
++# 收敛作业成功后，依赖关系确保先精度后速度
++bash speed_test/1d/submit.sh --dependency afterok:ACCURACY_JOB_ID
+ ```
+ 
+-`--linear gmres`（默认）和 `--linear direct` 均支持 DG / HDG。
+-CMake 构建的程序位于 `build/dg_hdg_1d/`（多配置生成器可能另有 Release 子目录）。
+-直接路径使用全局稠密选主元 LU，**内存 O(n²)、分解 O(n³)，仅用于小规模参考**；
+-HDG 的 n 是界面 DOF 数。此选择保证直接路径也能在时间循环内禁止 Eigen 堆分配。
+-GMRES 路径没有全局标量稀疏矩阵或全局稠密矩阵。
+-DG 每次 Newton 线性求解前刷新一次积分点与面导数，所有 GMRES 作用及块查询复用该快照。
+-默认配点时不做恒等插值，体积分块直接按微分矩阵系数装填；`--quad` 超积分仍受支持。
+-模块调用顺序、缓存失效条件及辅助张量布局见 `DESIGN.md`。
++收敛网格 32/64/128/256/512，k=2、DIRK3、CFL=2、T=0.2。
++速度网格 512，BE、CFL=5、每次运行四次 Newton 更新，首个预热，后三个均值。
++脚本保留命令、源码快照、编译日志、CPU/编译器信息和可执行文件哈希，
++每次作业独立输出，不覆盖旧实验。8 倍目标不能替代测量结果。
+ 
+-时间步只由 `--cfl` 决定，可用 `--T` 或 `--steps` 停止，两者不能同时指定。
+-`--dt`、`--increment-state`、普通 `ilu`、外部稀疏求解后端均不存在。
+-`gamma` 只在 `SimpleWave` 中设置一次，不是状态、命令行或 CSV 字段。
++## 2D 张量积实现
+ 
+-输出为 `<prefix>_summary.csv` 和 `<prefix>_solution.csv`。
+-summary 记录 CFL、求解器、迭代统计、自动选出的步长范围、L2 误差和守恒漂移。
+-所有输出在时间循环结束后写出；`--help` 显示支持的参数。
++```sh
++BUILD_1D=OFF BUILD_2D=ON BUILD_DIR=build-2d-intel bash intel-build.sh
++ctest --test-dir build-2d-intel --output-on-failure
++python3 code_test/2d/test_solver.py --exe build-2d-intel/dg_hdg_2d/dg_hdg_2d \
++  --output code_test/2d/results/local_unique
++build-2d-intel/dg_hdg_2d/dg_hdg_2d --nx 32 --ny 32 --k 2 \
++  --integrator ssp-dirk3 --cfl 2 --T 0.2 --method both --no-save-solution \
++  --prefix output/2d_q2
++```
+ 
+-## 验证
++2D 采用旋转周期简单波和参考项目相同的中心矩形计算域，默认 alpha=45°、gamma=3。
++体积 Jv 为方向一维收缩，缓存仅 u/v/H 三场；HDG 采用单元流式精确凝聚和多右端回代，
++面耦合按限制到面、点上小矩阵、提升分解，避免完整 C 矩阵乘法。
++块 Jacobi 对每个完整单元/面块执行精确 LU 求解，只保存一份 LU，复用装填矩阵。
++张量积用于精确算子收缩、面限制/提升和局部装填，保持完整的方向耦合。
+ 
+-`check_1d` 检查张量步长、连续块数值池、ILU(0) 块数固定、Gauss 精度、基函数导数、强制换行选主元的左右 LU 回代、
+-block ILU 的无缺失填充情形、COLAMD、GMRES 真残差、DG Jacobian 有限差分、
+-DG/HDG Newton 修正等价性、Schur 块/算子一致性、非投影 trace 的完整 HDG 有限差分、
+-时间推进中的守恒、解析解时间收敛，以及 DG/HDG/direct/GMRES 的最终状态。
++[2D 正确性](code_test/2d/README.md)、[收敛](accuracy_test/2d/README.md)、
++[256×256 Slurm 速度测试与 100 GiB 内存预算](speed_test/2d/README.md)。
++
++```sh
++bash accuracy_test/2d/submit.sh
++bash speed_test/2d/submit.sh
++```
+ 
+-计算库启用 `EIGEN_RUNTIME_NO_MALLOC`；默认时间推进从第一步起禁止 Eigen 堆分配，
+-而非先执行一次迭代后再检查。Release 构建也保留这些断言。
+-这验证 Eigen 可控制的分配，不宣称拦截操作系统或 C++ 标准库的所有分配。
++精度网格 N=32/64/128/256；速度 k=8→0，512 网格和既有结果仍仅指 1D。
+ 
+-本次验证后已按存储空间要求清理临时依赖、下载归档、构建产物和测试输出。
+-后续重新编译时需提供 Eigen 与 CMake；FastGL 源码始终保留在 `vendor/fastgl/`。
++实验代码版本、参数与 CPU 的追溯规则见 [PROVENANCE.md](PROVENANCE.md)。
+diff --git a/VALIDATION.md b/VALIDATION.md
+index 880cb68..96f7831 100644
+--- a/VALIDATION.md
++++ b/VALIDATION.md
+@@ -1,53 +1,45 @@
+-# 1D 验证记录
+-
+-日期：2026-10-15。Windows，GCC 14.2.0，Eigen 3.4.0，原项目随附 FastGL。
+-继承的 CMake 默认 AUTO 后端在本机解析为 Eigen 原生内核；另验证了显式 NONE 配置。
+-只进行了小网格实验，没有实现或运行 2D。
+-
+-## 构建及检查
+-
+-- 顶层 CMake 配置、Release 编译及 CTest 通过。
+-- `dg_hdg_1d` 子目录作为独立项目的 CMake 配置通过。
+-- CTest 的独立 `check_1d` 程序通过：张量/矩阵零拷贝视图、连续 BCSR 数值池、
+-  ILU(0) 块数固定、Gauss 精度、Lagrange 导数、强制选主元的左右 LU 回代、
+-  block COLAMD / ILU(0) / GMRES、DG Jacobian 有限差分、DG/HDG Newton 修正一致性、
+-  Schur 块与算子一致性、非投影 trace 的完整 HDG 方程有限差分。
+-- 时间推进检查覆盖 3 单元 P0，以及 8、12 单元 P0/P1/P3；比较 direct、GMRES、
+-  block-Jacobi、block-ILU(0)、natural/COLAMD、DG/HDG，共 70 组组合。
+-- 24 单元 P3 使用 CFL=0.4/0.2/0.1 对解析解进行时间加密检查，误差随步长减小而下降。
+-- 48 单元 P3 的直接参考运行两步，检查较大 LU 工作区；全局维数仅 576。
+-- 从第一步起，所有时间循环都启用 Eigen 禁止堆分配断言，Release 构建仍保留断言。
+-  不将标准库或外部 BLAS/LAPACK 的内部分配纳入这一检查结论。
+-
+-## 与原项目及方法之间的对照
+-
+-8 单元、k=2、CFL=0.2、T=0.02，均使用直接求解：
+-
+-- 原项目与本实现所有输出状态的最大绝对差：`1.1102230246251565e-16`。
+-- 本实现 DG/HDG 最大绝对差：约 `1.11e-16`。
+-- 本实现最大守恒漂移：约 `4.44e-16`。
+-- 同配置 direct / GMRES 最大绝对差：`1.1102230246251565e-16`。
+-
+-32 单元、k=3、CFL=0.2、T=0.1，matrix-free GMRES + block ILU(0) + COLAMD：
+-
+-- DG / HDG 各推进 18 步、各 36 次 Newton 更新。
+-- DG / HDG 最大绝对差：约 `2.11e-15`。
+-- 最大守恒漂移：约 `1.11e-15`。
+-
+-以上误差用于数值一致性验证，不将本机毫秒级单次计时作为性能基准。
+-命令行另确认 `--dt`、`--increment-state`、`--precond ilu` 均明确报错拒绝。
+-
+-## 实现范围与已知边界
+-
+-直接路径为预分配的全局稠密选主元 LU，适合小规模精度参照，空间/时间复杂度为
+-O(n²)/O(n³)。大网格应使用 matrix-free GMRES 路径。
+-
+-本方法依靠正性线搜索，不保证任意粗网格和 CFL 都存在可接受的 Newton 更新。
+-3 单元 P1、过积分 4 点、T=0.015 的粗网格试验触发了正性线搜索失败并停止；
+-本次没有添加改变原离散方程的演化限制器或自动重试算法。
+-高阶完整推进对照采用 8、12 单元网格，3 单元情形用于 P0 周期连接检查。
+-
+-## 存储清理
+-
+-验证完成后删除本次临时下载的 Eigen/CMake、归档、构建目录和测试 CSV，
+-只保留源码、FastGL 与此记录；原项目未修改。再次构建时需提供 Eigen 和 CMake。
++# 1D / 2D 验证协议
++
++1D 实际结果与作业状态见 [RESULTS.md](RESULTS.md)，2D 见 [RESULTS_2D.md](RESULTS_2D.md)。
++本文件规定测试，不把计划或历史结果写成已完成实验。
++
++## 正确性
++
++保留 `dg_hdg_1d/check/` 的独立体积分参考、有限差分、凝聚等价性、
++LU、加权 GMRES 真残差及首次调用 Eigen 禁分配检查。
++新增 DIRK3 配对推进检查和相同 CFL 下的时空同步加密；BE 检查显式指定积分器。
++HDG 每次更新以恢复后的 DG 真残差验收，独立 Jv 诊断验证残差恢复公式。
++日常生产路径检查入口为 `python3 code_test/1d/test_solver.py --exe <明确路径> --output <独立目录>`，
++包含 DIRK3 smoke 和单步完全收敛 BE 的 DG/HDG 比较，并独立验证恢复残差恒等式。
++默认生产构建只编译，不自动执行测试。
++
++## 收敛
++
++`accuracy_test/1d/convergence.py` 使用 32、64、128、256、512 单元，k=2，
++SSP-DIRK(4,3)，CFL=2，T=0.2，HLL safety=1.1，
++Newton 和线性相对容差各 1e-12，max Newton=30。
++每个网格从投影初值开始分别完全收敛 DG 与 HDG。
++记录三个分量 L2 误差、log2(e_h/e_h2)、守恒漂移、Newton/Krylov 数量、
++实际 min/max/mean dt、DG/HDG 的积分 L2 差与最大节点差。
++此为同步时空加密，k=2 对应预期渐近三阶。
++
++## 性能
++
++`speed_test/1d/benchmark.py` 在同一分配节点、一个 CPU 上顺序运行 DG/HDG，
++512 单元、k=0..8、matrix-free、block-Jacobi、BE、CFL=5、steps=1，
++固定四次 Newton 更新，第一更新预热，后三次平均。
++保留每次更新的时间与线性/DG 真残差、完整循环时间、迭代数、资源信息。
++报告 DG 平均/HDG 平均的比值；不以自由度之比或单核函数时间代替端到端测量。
++只有实际测到 k=8 比值 >=8 才能宣称达到目标。
++
++Slurm 速度作业依赖收敛作业 afterok，保证先精度后性能。
++所有结果写进各测试目录下的独立 job_ID，不覆盖先前实验。
++
++## 2D 独立验证
++
++见 `code_test/2d/README.md` 的独立数学检查，另运行旋转简单波、BE/DIRK3、
++30° 旋转与熵波的生产路径 DG/HDG 比较。
++收敛网格固定 32²、64²、128²、256²，Q2、DIRK3、CFL=2、T=0.2、容差均 1e-12。
++速度在 Slurm 上运行 256²、k=8→0，100 GiB，四次 Newton 更新首个预热。
++单元/面块均使用完整块的精确 LU，张量积运算通过独立求积和块/算子恒等式验证代数等价。
++1D 历史实验仍单独保留；2D 状态和完成程度见 `RESULTS_2D.md`。
+diff --git a/cmake/DghBuild.cmake b/cmake/DghBuild.cmake
+index 0e665be..1e8347d 100644
+--- a/cmake/DghBuild.cmake
++++ b/cmake/DghBuild.cmake
+@@ -24,8 +24,8 @@ target_compile_definitions(dgh_build_options INTERFACE
+ option(DGH_NATIVE_ARCH "Tune generated instructions for the build host CPU" OFF)
+ if(DGH_NATIVE_ARCH)
+     if(CMAKE_CXX_COMPILER_ID MATCHES "^(Intel|IntelLLVM)$")
+-        target_compile_options(dgh_build_options INTERFACE -xHost)
+-        message(STATUS "Native CPU optimization: ON (-xHost)")
++        target_compile_options(dgh_build_options INTERFACE -march=native)
++        message(STATUS "Native CPU optimization: ON (-march=native)")
+     elseif(CMAKE_CXX_COMPILER_ID MATCHES "^(GNU|Clang|AppleClang)$")
+         target_compile_options(dgh_build_options INTERFACE -march=native)
+         message(STATUS "Native CPU optimization: ON (-march=native)")
+@@ -66,3 +66,15 @@ function(dgh_add_common target)
+         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../common/src/linalg/block_ilu.cpp"
+         "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../common/src/linalg/gmres.cpp")
+ endfunction()
++
++# SIMD directives without enabling threaded OpenMP. Match the reference build.
++if(CMAKE_CXX_COMPILER_ID STREQUAL "IntelLLVM")
++    target_compile_options(dgh_build_options INTERFACE -qopenmp-simd)
++elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
++    target_compile_options(dgh_build_options INTERFACE -fopenmp-simd)
++endif()
++include(CheckIPOSupported)
++check_ipo_supported(RESULT DGH_IPO_SUPPORTED OUTPUT DGH_IPO_ERROR)
++if(DGH_IPO_SUPPORTED)
++    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE TRUE)
++endif()
+diff --git a/common/include/euler/linalg/dense_lu.hpp b/common/include/euler/linalg/dense_lu.hpp
+index 25cda3f..8f59b1e 100644
+--- a/common/include/euler/linalg/dense_lu.hpp
++++ b/common/include/euler/linalg/dense_lu.hpp
+@@ -16,10 +16,25 @@ class DenseLU {
+     }
+     template <class Input, class Output> void solve(const Input &b, Output &&x) const {
+         scratch_.noalias() = lu_.permutationP() * b;
++        if (lu_.matrixLU().rows() == NVAR) {
++            // A trace block in 1D has exactly NVAR entries. Expose that size to
++            // Eigen so these tiny triangular solves stay inline with MKL too.
++            Eigen::Map<const FluxJacobian> factors(lu_.matrixLU().data());
++            Eigen::Map<State> small(scratch_.data());
++            factors.template triangularView<Eigen::UnitLower>().solveInPlace(small);
++            factors.template triangularView<Eigen::Upper>().solveInPlace(small);
++            x = small;
++            return;
++        }
+         lu_.matrixLU().template triangularView<Eigen::UnitLower>().solveInPlace(scratch_);
+         lu_.matrixLU().template triangularView<Eigen::Upper>().solveInPlace(scratch_);
+         x = scratch_;
+     }
++    void solve_multiple(ConstBlockRef b, BlockRef x) const {
++        x.noalias() = lu_.permutationP() * b;
++        lu_.matrixLU().template triangularView<Eigen::UnitLower>().solveInPlace(x);
++        lu_.matrixLU().template triangularView<Eigen::Upper>().solveInPlace(x);
++    }
+     // In place right solve: X <- X A^-1, one row at a time using U^T,L^T,P.
+     void right_solve(BlockRef x) const {
+         for (int row = 0; row < x.rows(); ++row) {
+diff --git a/common/include/euler/linalg/gmres.hpp b/common/include/euler/linalg/gmres.hpp
+index 4694f97..5cd818d 100644
+--- a/common/include/euler/linalg/gmres.hpp
++++ b/common/include/euler/linalg/gmres.hpp
+@@ -16,7 +16,7 @@ struct LinearResult {
+     int iterations;
+     double relative_residual;
+ };
+-// Restarted right-preconditioned GMRES with twice modified Gram-Schmidt.
++// Restarted right-preconditioned GMRES with twice classical Gram-Schmidt.
+ // A and M^-1 are operator actions. Eigen owns all numerical workspaces.
+ class GMRES {
+   public:
+@@ -24,10 +24,12 @@ class GMRES {
+     LinearResult solve(Action matrix, Action preconditioner, const Vec &rhs, Vec &x,
+                        int max_iterations, double tolerance);
+ 
++    const Vec &residual() const { return residual_; }
++
+   private:
+     int restart_;
+-    Mat basis_, preconditioned_, hessenberg_;
+-    Vec cosine_, sine_, rotated_rhs_, coefficients_, work_, residual_, column_, weights_;
++    Mat basis_, hessenberg_;
++    Vec cosine_, sine_, rotated_rhs_, coefficients_, work_, residual_, column_, weights_, weighted_, projection_;
+     double dot(const Vec &a, const Vec &b) const;
+     double norm(const Vec &a) const;
+ };
+diff --git a/common/include/euler/nodal_basis.hpp b/common/include/euler/nodal_basis.hpp
+index 141c52c..5b9ae85 100644
+--- a/common/include/euler/nodal_basis.hpp
++++ b/common/include/euler/nodal_basis.hpp
+@@ -1,5 +1,5 @@
+ #pragma once
+-#include "types.hpp"
++#include "euler/types.hpp"
+ #include <fastgl.h>
+ #include <algorithm>
+ #include <utility>
+diff --git a/common/src/linalg/block_ilu.cpp b/common/src/linalg/block_ilu.cpp
+index 801ab16..f4b24c9 100644
+--- a/common/src/linalg/block_ilu.cpp
++++ b/common/src/linalg/block_ilu.cpp
+@@ -14,7 +14,7 @@ static BlockGraph permuted_graph(const BlockGraph &graph, const std::vector<int>
+ }
+ BlockPreconditioner::BlockPreconditioner(const BlockGraph &graph, int width, Preconditioner kind,
+                                          bool colamd, int nx_nodes, int ny_nodes)
+-    : order_(block_ordering(graph, colamd)),
++    : order_(block_ordering(graph, kind == Preconditioner::BlockILU0 && colamd)),
+       factors_(permuted_graph(graph, order_, kind), width, nx_nodes, ny_nodes),
+       work_(graph.rows * width), kind_(kind) {
+     diagonal_.reserve(graph.rows);
+@@ -62,6 +62,11 @@ void BlockPreconditioner::factorize() {
+ void BlockPreconditioner::apply(const Vec &rhs, Vec &result) const {
+     const auto &graph = factors_.graph;
+     int width = factors_.width;
++    if (kind_ == Preconditioner::BlockJacobi) {
++        for (int i = 0; i < graph.rows; ++i)
++            diagonal_[i].solve(rhs.segment(i * width, width), result.segment(i * width, width));
++        return;
++    }
+     for (int i = 0; i < graph.rows; ++i)
+         work_.segment(i * width, width) = rhs.segment(order_[i] * width, width);
+     for (int i = 0; i < graph.rows; ++i)
+diff --git a/common/src/linalg/gmres.cpp b/common/src/linalg/gmres.cpp
+index 8803d5a..9b5f473 100644
+--- a/common/src/linalg/gmres.cpp
++++ b/common/src/linalg/gmres.cpp
+@@ -3,20 +3,23 @@
+ #include <limits>
+ namespace euler {
+ GMRES::GMRES(int n, int restart, const Vec &inverse_mass)
+-    : restart_(std::min(n, restart)), basis_(n, restart_ + 1), preconditioned_(n, restart_),
++    : restart_(std::min(n, restart)), basis_(n, restart_ + 1),
+       hessenberg_(restart_ + 1, restart_), cosine_(restart_), sine_(restart_),
+       rotated_rhs_(restart_ + 1), coefficients_(restart_), work_(n), residual_(n), column_(n),
+-      weights_(inverse_mass) {}
++      weights_(inverse_mass), weighted_(n), projection_(restart_) {
++    require(n > 0 && restart > 0 && weights_.size() == n && weights_.allFinite() &&
++            (weights_.array() > 0).all(), "Invalid GMRES metric or dimensions");
++}
+ double GMRES::dot(const Vec &a, const Vec &b) const {
+     return (a.array() * weights_.array() * b.array()).sum();
+ }
+ double GMRES::norm(const Vec &a) const { return std::sqrt(std::max(0.0, dot(a, a))); }
+ LinearResult GMRES::solve(Action A, Action M, const Vec &rhs, Vec &x, int limit, double tolerance) {
+     x.setZero();
++    residual_ = rhs;
+     double rhs_norm = norm(rhs);
+     if (rhs_norm == 0)
+         return {0, 0};
+-    residual_ = rhs;
+     int iterations = 0;
+     while (iterations < limit) {
+         double beta = norm(residual_);
+@@ -30,15 +33,16 @@ LinearResult GMRES::solve(Action A, Action M, const Vec &rhs, Vec &x, int limit,
+         for (int j = 0; j < restart_ && iterations < limit; ++j) {
+             column_ = basis_.col(j);
+             M(column_, work_);
+-            preconditioned_.col(j) = work_;
+             A(work_, column_);
+-            for (int pass = 0; pass < 2; ++pass)
+-                for (int i = 0; i <= j; ++i) {
+-                    work_ = basis_.col(i);
+-                    double h = dot(work_, column_);
+-                    hessenberg_(i, j) += h;
+-                    column_.noalias() -= h * work_;
+-                }
++            // CGS2: two weighted projections and two fused basis actions.
++            // The fixed right preconditioner is applied to the combined update.
++            for (int pass = 0; pass < 2; ++pass) {
++                weighted_.array() = weights_.array() * column_.array();
++                projection_.head(j + 1).noalias() = basis_.leftCols(j + 1).transpose() * weighted_;
++                hessenberg_.col(j).head(j + 1) += projection_.head(j + 1);
++                work_.noalias() = basis_.leftCols(j + 1) * projection_.head(j + 1);
++                column_ -= work_;
++            }
+             double next = norm(column_);
+             hessenberg_(j + 1, j) = next;
+             if (next > 0)
+@@ -68,8 +72,9 @@ LinearResult GMRES::solve(Action A, Action M, const Vec &rhs, Vec &x, int limit,
+                 value -= hessenberg_(i, j) * coefficients_[j];
+             coefficients_[i] = value / hessenberg_(i, i);
+         }
+-        for (int i = 0; i < count; ++i)
+-            x.noalias() += coefficients_[i] * preconditioned_.col(i);
++        work_.noalias() = basis_.leftCols(count) * coefficients_.head(count);
++        M(work_, column_);
++        x += column_;
+         A(x, work_);
+         residual_ = rhs - work_;
+         double relative = norm(residual_) / rhs_norm;
+diff --git a/dg_hdg_1d/check/check_1d.cpp b/dg_hdg_1d/check/check_1d.cpp
+index 7cbcc93..e033e75 100644
+--- a/dg_hdg_1d/check/check_1d.cpp
++++ b/dg_hdg_1d/check/check_1d.cpp
+@@ -146,6 +146,15 @@ void linear_solvers() {
+                 gmres.solve(Action::bind(matrix), Action::bind(preconditioner), rhs, x, 100, 1e-12);
+             near((x - exact).norm(), 1e-10, "Right-preconditioned GMRES solution");
+             near(result.relative_residual, 1e-12, "True GMRES residual");
++            // Reuse after a nonzero solve: callers must see the new equation's
++            // true residual even when the zero RHS takes the early return.
++            rhs.setZero();
++            auto zero = gmres.solve(Action::bind(matrix), Action::bind(preconditioner),
++                                    rhs, x, 100, 1e-12);
++            require(zero.iterations == 0 && zero.relative_residual == 0 &&
++                    x.norm() == 0 && gmres.residual().norm() == 0,
++                    "Zero-RHS GMRES retained a stale residual");
++            matrix.apply(exact, rhs);
+             DirectSolver direct(graph, width);
+             direct.refresh([&](int r, int c, BlockRef b) { b = matrix.at(r, c); });
+             direct.solve(rhs, x, weights);
+@@ -315,6 +324,7 @@ void time_runs() {
+     double previous = 0;
+     for (double cfl : {.4, .2, .1}) {
+         Config c;
++        c.integrator = "be";
+         c.cells = 24;
+         c.degree = 3;
+         c.quadrature = 6;
+diff --git a/dg_hdg_1d/include/euler/config.hpp b/dg_hdg_1d/include/euler/config.hpp
+index 00c59d0..d7aee4e 100644
+--- a/dg_hdg_1d/include/euler/config.hpp
++++ b/dg_hdg_1d/include/euler/config.hpp
+@@ -6,12 +6,14 @@ enum class Preconditioner { BlockJacobi, BlockILU0 };
+ enum class LinearSolver { GMRES, Direct };
+ struct Config {
+     int cells = 32, degree = 3, quadrature = 0;
+-    int restart = 30, max_linear = 600, max_newton = 25, steps = 0;
+-    double cfl = 0.2, final_time = 0.1, safety = 1.1;
+-    double nonlinear_tolerance = 1e-10, linear_tolerance = 1e-11;
+-    Preconditioner preconditioner = Preconditioner::BlockILU0;
++    int restart = 20, max_linear = 1500, max_newton = 30, steps = 0;
++    int newton_steps = 0, warmup_updates = 0;
++    double cfl = 2.0, final_time = 0.2, safety = 1.1;
++    double nonlinear_tolerance = 1e-12, linear_tolerance = 1e-12;
++    Preconditioner preconditioner = Preconditioner::BlockJacobi;
+     LinearSolver linear = LinearSolver::GMRES;
+-    bool colamd = true;
++    bool colamd = false, timing_only = false, check_update = false;
++    std::string integrator = "ssp-dirk3";
+     std::string method = "both", prefix = "output/run";
+ };
+ Config parse(int argc, char **argv);
+diff --git a/dg_hdg_1d/include/euler/discretization.hpp b/dg_hdg_1d/include/euler/discretization.hpp
+index cde2b13..5cf4dde 100644
+--- a/dg_hdg_1d/include/euler/discretization.hpp
++++ b/dg_hdg_1d/include/euler/discretization.hpp
+@@ -1,6 +1,6 @@
+ #pragma once
+ #include "config.hpp"
+-#include "nodal_basis.hpp"
++#include "euler/nodal_basis.hpp"
+ #include "simple_wave.hpp"
+ #include <vector>
+ namespace euler {
+@@ -25,5 +25,9 @@ class Problem {
+     double residual_norm(const Vec &r) const;
+     State integral(const Vec &u) const;
+     State error(const Vec &u, double time) const;
++
++  private:
++    Mat derivative_transpose_;
++    mutable Mat flux_workspace_;
+ };
+ } // namespace euler
+diff --git a/dg_hdg_1d/include/euler/hybrid.hpp b/dg_hdg_1d/include/euler/hybrid.hpp
+index 7e74ca3..97c92ef 100644
+--- a/dg_hdg_1d/include/euler/hybrid.hpp
++++ b/dg_hdg_1d/include/euler/hybrid.hpp
+@@ -1,20 +1,22 @@
+ #pragma once
+ #include "volume_jacobian.hpp"
+-#include "linalg/dense_lu.hpp"
++#include "euler/linalg/dense_lu.hpp"
+ namespace euler {
+ struct CellCondensation {
+-    Mat A, B, C, X; // X=A^-1 B by solves; never store A^-1.
++    Mat A, B, C, X, S; // X=A^-1 B by solves; never store A^-1.
+     Vec y;
+     DenseLU lu;
+     explicit CellCondensation(int width)
+         : A(width, width), B(width, NFACES * NVAR), C(NFACES * NVAR, width),
+-          X(width, NFACES * NVAR), y(width), lu(width) {}
++          X(width, NFACES * NVAR), S(NFACES * NVAR, NFACES * NVAR), y(width), lu(width) {}
+ };
+ class HybridOperator {
+   public:
+     explicit HybridOperator(const Problem &problem);
+     void residual(const Vec &u, const Vec &lambda, Vec &volume, Vec &skeleton) const;
+     void refresh(const Vec &u, const Vec &lambda);
++    void refresh_projected(const Vec &u, const Vec &dg_residual);
++    void recovered_residual(const Vec &schur_direction, Vec &result) const;
+     void apply(const Vec &x, Vec &result) const;
+     void block(int row, int col, BlockRef result) const;
+     void recover(const Vec &trace_direction, Vec &volume_direction) const;
+@@ -25,7 +27,8 @@ class HybridOperator {
+     VolumeJacobian volume_;
+     std::vector<CellCondensation> cells_;
+     Vec volume_residual_, skeleton_residual_, rhs_;
+-    mutable Vec local_, faces_, face_result_;
++    mutable Vec local_, faces_, face_result_, schur_error_;
++    void condense(const Vec &u);
+     int face_index(int cell, int side) const;
+     void gather(const Vec &x, int cell) const;
+ };
+diff --git a/dg_hdg_1d/include/euler/time_integrator.hpp b/dg_hdg_1d/include/euler/time_integrator.hpp
+index ab8b307..7145e4a 100644
+--- a/dg_hdg_1d/include/euler/time_integrator.hpp
++++ b/dg_hdg_1d/include/euler/time_integrator.hpp
+@@ -1,18 +1,23 @@
+ #pragma once
+ #include "hybrid.hpp"
+ #include "dg_operator.hpp"
+-#include "linalg/block_ilu.hpp"
+-#include "linalg/gmres.hpp"
+-#include "linalg/direct.hpp"
++#include "euler/linalg/block_ilu.hpp"
++#include "euler/linalg/gmres.hpp"
++#include "euler/linalg/direct.hpp"
+ #include <optional>
+ namespace euler {
++struct UpdateStatistics {
++    int step, stage, iteration, krylov_iterations;
++    double time, stage_time, dt, cfl, residual_physical_rms, damping;
++    double linear_relative_residual, dg_linear_relative_residual, iteration_s;
++};
+ struct RunStatistics {
+     double final_time = 0, conservation_drift = 0, seconds = 0, max_linear_residual = 0;
+-    double minimum_step = 0, maximum_step = 0;
+-    int steps = 0, newton_iterations = 0, krylov_iterations = 0;
++    double max_dg_linear_residual = 0, minimum_step = 0, maximum_step = 0;
++    double measured_newton_seconds = 0;
++    int steps = 0, newton_iterations = 0, krylov_iterations = 0, measured_updates = 0;
++    std::vector<UpdateStatistics> updates;
+ };
+-// All capacity is acquired in the constructor, before advance(). The object is
+-// reusable for another run on the same mesh; no resize occurs during stepping.
+ class TimeIntegrator {
+   public:
+     TimeIntegrator(Problem &problem, Method method);
+@@ -22,13 +27,15 @@ class TimeIntegrator {
+     Problem &p_;
+     Method method_;
+     Vec state_, trial_, residual_, trial_residual_, direction_, rhs_;
+-    Vec lambda_, trial_lambda_, skeleton_, trial_skeleton_, trace_direction_;
++    Vec lambda_, trace_direction_, equation_error_, independent_error_, step_state_, stage_base_;
++    Mat slopes_;
+     std::optional<HybridOperator> hybrid_;
+-    std::optional<DGOperator> dg_;
++    std::optional<DGOperator> dg_, diagnostic_;
+     std::optional<BlockPreconditioner> preconditioner_;
+     std::optional<GMRES> gmres_;
+     std::optional<DirectSolver> direct_;
+     Vec linear_weights_;
+-    double evaluate(const Vec &u, const Vec &lambda, Vec &r, Vec &g);
++    double dual_norm(const Vec &x) const;
++    double state_norm(const Vec &x) const;
+ };
+ } // namespace euler
+diff --git a/dg_hdg_1d/src/config.cpp b/dg_hdg_1d/src/config.cpp
+index 88e7a00..22d64dc 100644
+--- a/dg_hdg_1d/src/config.cpp
++++ b/dg_hdg_1d/src/config.cpp
+@@ -4,10 +4,12 @@
+ #include <iostream>
+ namespace euler {
+ void validate(const Config &c) {
+-    require(c.cells >= 3 && c.degree >= 0 && c.quadrature >= 0, "Invalid mesh or degree");
++    require(c.cells >= 3 && c.degree >= 0 && c.degree <= 8 && c.quadrature >= 0, "Invalid mesh or degree");
+     require(c.quadrature == 0 || c.quadrature >= c.degree + 1, "Quadrature must be >= degree+1");
+     require(c.restart > 0 && c.max_linear > 0 && c.max_newton > 0 && c.steps >= 0,
+             "Invalid iteration limit");
++    require(c.newton_steps >= 0 && c.warmup_updates >= 0, "Invalid timing update count");
++    require(c.integrator == "be" || c.integrator == "ssp-dirk3", "Invalid integrator");
+     require(std::isfinite(c.cfl) && c.cfl > 0 && std::isfinite(c.final_time) && c.final_time >= 0,
+             "CFL must be positive and final time nonnegative");
+     require(std::isfinite(c.safety) && c.safety >= 1 && std::isfinite(c.nonlinear_tolerance) &&
+@@ -42,6 +44,16 @@ Config parse(int argc, char **argv) {
+         };
+         if (option == "--cells")
+             c.cells = integer();
++        else if (option == "--newton-steps")
++            c.newton_steps = integer();
++        else if (option == "--warmup-updates")
++            c.warmup_updates = integer();
++        else if (option == "--integrator")
++            c.integrator = value();
++        else if (option == "--timing-only")
++            c.timing_only = true;
++        else if (option == "--check-update")
++            c.check_update = true;
+         else if (option == "--k")
+             c.degree = integer();
+         else if (option == "--quad")
+@@ -85,11 +97,13 @@ Config parse(int argc, char **argv) {
+                 name == "block-jacobi" ? Preconditioner::BlockJacobi : Preconditioner::BlockILU0;
+         } else if (option == "--help") {
+             std::cout
+-                << "1D periodic implicit Euler DG / condensed HDG\n"
++                << "1D periodic Euler DG / condensed HDG\n"
+                    "--cells N --k K --quad Q --cfl C (--T T | --steps N)\n"
+                    "--method dg|hdg|both --linear direct|gmres --precond block-jacobi|block-ilu0\n"
+                    "--ordering natural|colamd --restart N --max-linear N --max-newton N\n"
+-                   "--ntol R --ltol R --safety S --prefix PATH\n";
++                   "--ntol R --ltol R --safety S --prefix PATH\n"
++                   "--integrator ssp-dirk3|be --newton-steps N --warmup-updates N\n"
++                   "--timing-only --check-update\n";
+             std::exit(0);
+         } else
+             throw std::runtime_error("Unknown option: " + option);
+diff --git a/dg_hdg_1d/src/discretization.cpp b/dg_hdg_1d/src/discretization.cpp
+index a13fc4f..c7a6c7b 100644
+--- a/dg_hdg_1d/src/discretization.cpp
++++ b/dg_hdg_1d/src/discretization.cpp
+@@ -3,7 +3,8 @@
+ namespace euler {
+ Problem::Problem(const Config &c)
+     : config(c), basis(c.degree, c.quadrature), layout{c.cells, basis.nodes}, h(2.0 / c.cells),
+-      old(layout.size()), mass(layout.size()), inverse_mass(layout.size()), speeds(c.cells) {
++      old(layout.size()), mass(layout.size()), inverse_mass(layout.size()), speeds(c.cells),
++      derivative_transpose_(basis.weighted_derivatives.transpose()), flux_workspace_(basis.points, NVAR) {
+     validate(c);
+     for (int cell = 0; cell < layout.cells; ++cell)
+         for (int v = 0; v < NVAR; ++v)
+@@ -100,13 +101,14 @@ void Problem::trace(const Vec &u, Vec &lambda) const {
+ }
+ void Problem::volume_residual(const Vec &u, Vec &r) const {
+     r.array() = mass.array() * (u - old).array() / step_size;
+-    for (int e = 0; e < layout.cells; ++e)
+-        for (int q = 0; q < basis.points; ++q) {
+-            State f = example.gas.flux(quadrature_state(u, e, q));
+-            for (int v = 0; v < NVAR; ++v)
+-                for (int i = 0; i < layout.nodes; ++i)
+-                    r[layout.index(e, v, i)] -= basis.weighted_derivatives(q, i) * f[v];
+-        }
++    if (basis.nodes == 1) return;
++    for (int e = 0; e < layout.cells; ++e) {
++        for (int q = 0; q < basis.points; ++q)
++            flux_workspace_.row(q) = example.gas.flux(quadrature_state(u, e, q)).transpose();
++        auto cell = layout.cell(r, e);
++        for (int v = 0; v < NVAR; ++v)
++            cell.col(v).noalias() -= derivative_transpose_ * flux_workspace_.col(v);
++    }
+ }
+ void Problem::dg_residual(const Vec &u, Vec &r) const {
+     volume_residual(u, r);
+diff --git a/dg_hdg_1d/src/hybrid.cpp b/dg_hdg_1d/src/hybrid.cpp
+index 4e76c28..4ee2f59 100644
+--- a/dg_hdg_1d/src/hybrid.cpp
++++ b/dg_hdg_1d/src/hybrid.cpp
+@@ -3,7 +3,7 @@ namespace euler {
+ HybridOperator::HybridOperator(const Problem &p)
+     : p_(p), volume_(p), volume_residual_(p.layout.size()), skeleton_residual_(p.layout.cells * NVAR),
+       rhs_(p.layout.cells * NVAR), local_(p.layout.block_size()), faces_(NFACES * NVAR),
+-      face_result_(NFACES * NVAR) {
++      face_result_(NFACES * NVAR), schur_error_(rhs_.size()) {
+     cells_.reserve(p.layout.cells);
+     for (int c = 0; c < p.layout.cells; ++c)
+         cells_.emplace_back(p.layout.block_size());
+@@ -34,6 +34,14 @@ void HybridOperator::residual(const Vec &u, const Vec &lambda, Vec &r, Vec &g) c
+ }
+ void HybridOperator::refresh(const Vec &u, const Vec &lambda) {
+     residual(u, lambda, volume_residual_, skeleton_residual_);
++    condense(u);
++}
++void HybridOperator::refresh_projected(const Vec &u, const Vec &r) {
++    volume_residual_ = r;
++    skeleton_residual_.setZero();
++    condense(u);
++}
++void HybridOperator::condense(const Vec &u) {
+     volume_.refresh(u);
+     rhs_ = -skeleton_residual_;
+     for (int cell = 0; cell < p_.layout.cells; ++cell) {
+@@ -66,6 +74,8 @@ void HybridOperator::refresh(const Vec &u, const Vec &lambda) {
+         data.lu.solve(
+             volume_residual_.segment(cell * p_.layout.block_size(), p_.layout.block_size()),
+             data.y);
++        for (int j = 0; j < NFACES * NVAR; ++j)
++            data.S.col(j).noalias() = -data.C * data.X.col(j);
+         face_result_.noalias() = data.C * data.y;
+         for (int side = 0; side < NFACES; ++side)
+             rhs_.segment<NVAR>(face_index(cell, side) * NVAR) +=
+@@ -78,10 +88,16 @@ void HybridOperator::apply(const Vec &x, Vec &y) const {
+             -(p_.speeds[face].a + p_.speeds[face].b) * x.segment<NVAR>(face * NVAR);
+     for (int cell = 0; cell < p_.layout.cells; ++cell) {
+         gather(x, cell);
+-        local_.noalias() = cells_[cell].X * faces_;
+-        face_result_.noalias() = cells_[cell].C * local_;
++        // In 1D the condensed cell block is always 6x6, independent of k.
++        // Fixed Eigen maps keep this tiny multiply inlined instead of making
++        // one dynamic BLAS GEMV call per cell and Krylov iteration.
++        using FaceVector = Eigen::Matrix<double, NFACES * NVAR, 1>;
++        using FaceMatrix = Eigen::Matrix<double, NFACES * NVAR, NFACES * NVAR>;
++        Eigen::Map<FaceVector>(face_result_.data()).noalias() =
++            Eigen::Map<const FaceMatrix>(cells_[cell].S.data()) *
++            Eigen::Map<const FaceVector>(faces_.data());
+         for (int side = 0; side < NFACES; ++side)
+-            y.segment<NVAR>(face_index(cell, side) * NVAR) -=
++            y.segment<NVAR>(face_index(cell, side) * NVAR) +=
+                 face_result_.segment<NVAR>(side * NVAR);
+     }
+ }
+@@ -96,11 +112,20 @@ void HybridOperator::block(int row, int col, BlockRef result) const {
+         int row_side = adjacent == 0 ? 1 : 0;
+         for (int col_side = 0; col_side < NFACES; ++col_side)
+             if (face_index(cell, col_side) == col)
+-                for (int v = 0; v < NVAR; ++v)
+-                    for (int w = 0; w < NVAR; ++w)
+-                        for (int k = 0; k < p_.layout.block_size(); ++k)
+-                            result(v, w) -=
+-                                data.C(row_side * NVAR + v, k) * data.X(k, col_side * NVAR + w);
++                result += data.S.block<NVAR, NVAR>(row_side * NVAR, col_side * NVAR);
++    }
++}
++void HybridOperator::recovered_residual(const Vec &dl, Vec &result) const {
++    apply(dl, schur_error_);
++    schur_error_ -= rhs_;
++    for (int cell = 0; cell < p_.layout.cells; ++cell) {
++        gather(schur_error_, cell);
++        for (int side = 0; side < NFACES; ++side) {
++            const auto s = p_.speeds[face_index(cell, side)];
++            faces_.segment<NVAR>(side * NVAR) /= -(s.a + s.b);
++        }
++        result.segment(cell * p_.layout.block_size(), p_.layout.block_size()).noalias() =
++            -cells_[cell].B * faces_;
+     }
+ }
+ void HybridOperator::recover(const Vec &dl, Vec &du) const {
+diff --git a/dg_hdg_1d/src/main.cpp b/dg_hdg_1d/src/main.cpp
+index d31176b..94d0991 100644
+--- a/dg_hdg_1d/src/main.cpp
++++ b/dg_hdg_1d/src/main.cpp
+@@ -3,72 +3,101 @@
+ #include <fstream>
+ #include <iomanip>
+ #include <iostream>
++#include <limits>
+ int main(int argc, char **argv) {
+     using namespace euler;
+     try {
+-        Config config = parse(argc, argv);
++        const Config config = parse(argc, argv);
+         Problem problem(config);
+-        auto prefix = std::filesystem::path(config.prefix);
+-        if (prefix.has_parent_path())
+-            std::filesystem::create_directories(prefix.parent_path());
+-        std::ofstream summary(config.prefix + "_summary.csv"),
+-            solution_file(config.prefix + "_solution.csv");
+-        require(bool(summary) && bool(solution_file), "Cannot open output files");
++        const auto prefix = std::filesystem::path(config.prefix);
++        if (prefix.has_parent_path()) std::filesystem::create_directories(prefix.parent_path());
++        std::ofstream summary(config.prefix + "_summary.csv"), updates(config.prefix + "_iterations.csv");
++        require(bool(summary) && bool(updates), "Cannot open output files");
+         summary << std::setprecision(17)
+-                << "method,cells,k,quad,cfl,linear,preconditioner,ordering,steps,final_time,newton_"
+-                   "iterations,krylov_iterations,max_linear_relative_residual,min_step,max_step,"
+-                   "time_loop_s,rho_L2,momentum_L2,energy_L2,max_conservation_drift\n";
+-        solution_file
+-            << std::setprecision(17)
+-            << "method,cell,node,x,rho,momentum,energy,rho_exact,momentum_exact,energy_exact\n";
++            << "method,cells,k,quad,cfl,integrator,linear,preconditioner,ordering,ntol,ltol,safety,"
++               "fixed_newton_steps,warmup_updates,steps,final_time,newton_iterations,krylov_iterations,"
++               "max_linear_relative_residual,max_dg_linear_relative_residual,min_step,max_step,mean_dt,"
++               "time_loop_s,measured_updates,mean_newton_s,volume_dofs,trace_dofs,"
++               "rho_L2,momentum_L2,energy_L2,max_conservation_drift\n";
++        updates << std::setprecision(17)
++            << "method,step,stage,iteration,time,stage_time,dt,cfl,residual_physical_rms,damping,"
++               "krylov_iterations,linear_relative_residual,dg_linear_relative_residual,iteration_s,measured\n";
++        std::ofstream solution_file;
++        if (!config.timing_only) {
++            solution_file.open(config.prefix + "_solution.csv");
++            require(bool(solution_file), "Cannot open solution output");
++            solution_file << std::setprecision(17)
++                << "method,cell,node,x,rho,momentum,energy,rho_exact,momentum_exact,energy_exact\n";
++        }
+         Vec dg_solution(problem.layout.size()), solution(problem.layout.size());
+         bool have_dg = false;
+         for (Method method : {Method::DG, Method::HDG}) {
+-            std::string name = method == Method::DG ? "dg" : "hdg";
+-            if (config.method != "both" && config.method != name)
+-                continue;
++            const std::string name = method == Method::DG ? "dg" : "hdg";
++            if (config.method != "both" && config.method != name) continue;
+             problem.initial(solution);
+             TimeIntegrator integrator(problem, method);
+-            auto stats = integrator.advance(solution);
+-            State error = problem.error(solution, stats.final_time);
+-            summary << name << ',' << config.cells << ',' << config.degree << ','
+-                    << problem.basis.points << ',' << config.cfl << ','
+-                    << (config.linear == LinearSolver::Direct ? "direct" : "gmres") << ','
+-                    << (config.linear == LinearSolver::Direct                ? "none"
+-                        : config.preconditioner == Preconditioner::BlockILU0 ? "block-ilu0"
+-                                                                             : "block-jacobi")
+-                    << ','
+-                    << (config.linear == LinearSolver::Direct ? "none"
+-                        : config.colamd                       ? "colamd"
+-                                                              : "natural")
+-                    << ',' << stats.steps << ',' << stats.final_time << ','
+-                    << stats.newton_iterations << ',' << stats.krylov_iterations << ','
+-                    << stats.max_linear_residual << ',' << stats.minimum_step << ','
+-                    << stats.maximum_step << ',' << stats.seconds;
+-            for (int v = 0; v < NVAR; ++v)
+-                summary << ',' << error[v];
++            const auto stats = integrator.advance(solution);
++            const State error = config.timing_only ? State::Constant(std::numeric_limits<double>::quiet_NaN())
++                                                  : problem.error(solution, stats.final_time);
++            summary << name << ',' << config.cells << ',' << config.degree << ',' << problem.basis.points
++                << ',' << config.cfl << ',' << config.integrator << ','
++                << (config.linear == LinearSolver::Direct ? "direct" : "gmres") << ','
++                << (config.linear == LinearSolver::Direct ? "none" :
++                    config.preconditioner == Preconditioner::BlockJacobi ? "block-jacobi" : "block-ilu0") << ','
++                << (config.linear == LinearSolver::Direct ? "none" :
++                    config.preconditioner == Preconditioner::BlockJacobi || !config.colamd ? "natural" : "colamd")
++                << ',' << config.nonlinear_tolerance << ',' << config.linear_tolerance << ',' << config.safety
++                << ',' << config.newton_steps << ',' << config.warmup_updates << ',' << stats.steps
++                << ',' << stats.final_time << ',' << stats.newton_iterations << ',' << stats.krylov_iterations
++                << ',' << stats.max_linear_residual << ',' << stats.max_dg_linear_residual
++                << ',' << stats.minimum_step << ',' << stats.maximum_step << ','
++                << (stats.steps ? stats.final_time / stats.steps : 0.) << ',' << stats.seconds
++                << ',' << stats.measured_updates << ','
++                << (stats.measured_updates ? stats.measured_newton_seconds / stats.measured_updates : 0.)
++                << ',' << problem.layout.size() << ',' << problem.layout.cells * NVAR;
++            for (int v = 0; v < NVAR; ++v) summary << ',' << error[v];
+             summary << ',' << stats.conservation_drift << '\n';
+-            for (int cell = 0; cell < problem.layout.cells; ++cell)
+-                for (int i = 0; i < problem.layout.nodes; ++i) {
+-                    double x = -1 + problem.h * (cell + .5) + .5 * problem.h * problem.basis.x[i];
+-                    State exact = problem.example.exact(x, stats.final_time);
+-                    solution_file << name << ',' << cell << ',' << i << ',' << x;
+-                    for (int v = 0; v < NVAR; ++v)
+-                        solution_file << ',' << solution[problem.layout.index(cell, v, i)];
+-                    for (int v = 0; v < NVAR; ++v)
+-                        solution_file << ',' << exact[v];
+-                    solution_file << '\n';
+-                }
++            for (std::size_t i = 0; i < stats.updates.size(); ++i) {
++                const auto &u = stats.updates[i];
++                updates << name << ',' << u.step << ',' << u.stage << ',' << u.iteration << ','
++                    << u.time << ',' << u.stage_time << ',' << u.dt << ',' << u.cfl << ','
++                    << u.residual_physical_rms << ',' << u.damping << ',' << u.krylov_iterations << ','
++                    << u.linear_relative_residual << ',' << u.dg_linear_relative_residual << ','
++                    << u.iteration_s << ',' << (i >= static_cast<std::size_t>(config.warmup_updates)) << '\n';
++            }
++            if (!config.timing_only)
++                for (int cell = 0; cell < problem.layout.cells; ++cell)
++                    for (int i = 0; i < problem.layout.nodes; ++i) {
++                        const double x = -1 + problem.h * (cell + .5) + .5 * problem.h * problem.basis.x[i];
++                        const State exact = problem.example.exact(x, stats.final_time);
++                        solution_file << name << ',' << cell << ',' << i << ',' << x;
++                        for (int v = 0; v < NVAR; ++v) solution_file << ',' << solution[problem.layout.index(cell,v,i)];
++                        for (int v = 0; v < NVAR; ++v) solution_file << ',' << exact[v];
++                        solution_file << '\n';
++                    }
+             std::cout << name << ": steps=" << stats.steps << ", Newton=" << stats.newton_iterations
+-                      << ", Krylov=" << stats.krylov_iterations << ", time=" << stats.seconds
+-                      << " s, conservation drift=" << stats.conservation_drift << '\n';
+-            if (method == Method::DG) {
+-                dg_solution = solution;
+-                have_dg = true;
+-            } else if (have_dg) {
+-                double difference = (dg_solution - solution).cwiseAbs().maxCoeff();
+-                std::cout << "DG/HDG max difference=" << difference << '\n';
+-                require(difference < 1e-8, "DG/HDG solutions disagree");
++                << ", Krylov=" << stats.krylov_iterations << ", time=" << stats.seconds
++                << " s, mean Newton=" << (stats.measured_updates ? stats.measured_newton_seconds / stats.measured_updates : 0.)
++                << " s, conservation drift=" << stats.conservation_drift << '\n';
++            if (method == Method::DG) { dg_solution = solution; have_dg = true; }
++            else if (have_dg) {
++                const Vec difference = dg_solution - solution;
++                const double maximum = difference.cwiseAbs().maxCoeff();
++                std::ofstream comparison(config.prefix + "_difference.csv");
++                require(bool(comparison), "Cannot open comparison output");
++                comparison << std::setprecision(17) << "rho_L2,momentum_L2,energy_L2,joint_L2,max_nodal\n";
++                double joint = 0.;
++                for (int v = 0; v < NVAR; ++v) {
++                    double squared = 0.;
++                    for (int cell = 0; cell < problem.layout.cells; ++cell)
++                        squared += (problem.layout.cell(difference,cell).col(v).array().square() *
++                                    problem.layout.cell(problem.mass,cell).col(v).array()).sum();
++                    comparison << std::sqrt(squared) << ',';
++                    joint += squared;
++                }
++                comparison << std::sqrt(joint) << ',' << maximum << '\n';
++                std::cout << "DG/HDG max difference=" << maximum << '\n';
++                require(maximum < 1e-8, "DG/HDG solutions disagree");
+             }
+         }
+     } catch (const std::exception &error) {
+diff --git a/dg_hdg_1d/src/time_integrator.cpp b/dg_hdg_1d/src/time_integrator.cpp
+index d390ac6..337eefd 100644
+--- a/dg_hdg_1d/src/time_integrator.cpp
++++ b/dg_hdg_1d/src/time_integrator.cpp
+@@ -4,156 +4,204 @@
+ #include <limits>
+ namespace euler {
+ namespace {
+-// Restore the caller's allocation state even if an iteration throws.
+ class AllocationGuard {
+     bool previous_;
+-
+   public:
+     explicit AllocationGuard(bool forbid) : previous_(Eigen::internal::is_malloc_allowed()) {
+-        if (forbid)
+-            Eigen::internal::set_is_malloc_allowed(false);
++        if (forbid) Eigen::internal::set_is_malloc_allowed(false);
+     }
+     ~AllocationGuard() { Eigen::internal::set_is_malloc_allowed(previous_); }
+ };
++using Clock = std::chrono::steady_clock;
++double elapsed(Clock::time_point start) {
++    return std::chrono::duration<double>(Clock::now() - start).count();
++}
+ } // namespace
+ TimeIntegrator::TimeIntegrator(Problem &p, Method method)
+     : p_(p), method_(method), state_(p.layout.size()), trial_(p.layout.size()),
+       residual_(p.layout.size()), trial_residual_(p.layout.size()), direction_(p.layout.size()),
+       rhs_(method == Method::DG ? p.layout.size() : p.layout.cells * NVAR),
+-      lambda_(p.layout.cells * NVAR), trial_lambda_(p.layout.cells * NVAR),
+-      skeleton_(p.layout.cells * NVAR), trial_skeleton_(p.layout.cells * NVAR),
+-      trace_direction_(p.layout.cells * NVAR),
++      lambda_(p.layout.cells * NVAR), trace_direction_(p.layout.cells * NVAR),
++      equation_error_(p.layout.size()), independent_error_(p.layout.size()),
++      step_state_(p.layout.size()), stage_base_(p.layout.size()), slopes_(p.layout.size(), 4),
+       linear_weights_(method == Method::DG ? p.inverse_mass : Vec::Ones(rhs_.size())) {
+-    if (method == Method::HDG)
+-        hybrid_.emplace(p);
+-    else
+-        dg_.emplace(p);
++    if (method == Method::HDG) hybrid_.emplace(p);
++    else dg_.emplace(p);
++    if (method == Method::HDG && p.config.check_update) diagnostic_.emplace(p);
+     auto graph = BlockGraph::periodic(p.layout.cells);
+     int width = method == Method::DG ? p.layout.block_size() : NVAR;
+-    if (p.config.linear == LinearSolver::Direct)
+-        direct_.emplace(graph, width);
++    if (p.config.linear == LinearSolver::Direct) direct_.emplace(graph, width);
+     else {
+         preconditioner_.emplace(graph, width, p.config.preconditioner, p.config.colamd);
+         gmres_.emplace(rhs_.size(), p.config.restart, linear_weights_);
+     }
+ }
+-double TimeIntegrator::evaluate(const Vec &u, const Vec &lambda, Vec &r, Vec &g) {
+-    if (method_ == Method::DG) {
+-        p_.dg_residual(u, r);
+-        return p_.residual_norm(r);
+-    }
+-    hybrid_->residual(u, lambda, r, g);
+-    return std::hypot(p_.residual_norm(r), g.norm());
++double TimeIntegrator::dual_norm(const Vec &x) const {
++    return std::sqrt((x.array().square() * p_.inverse_mass.array()).sum());
++}
++double TimeIntegrator::state_norm(const Vec &x) const {
++    return std::sqrt((x.array().square() * p_.mass.array()).sum());
+ }
+ RunStatistics TimeIntegrator::advance(Vec &solution, bool forbid_allocations) {
+-    require(solution.size() == p_.layout.size() && p_.admissible(solution),
+-            "Invalid initial solution");
++    require(solution.size() == p_.layout.size() && p_.admissible(solution), "Invalid initial solution");
+     const auto &c = p_.config;
+-    require(c.steps > 0 || c.final_time < p_.example.shock_time(),
+-            "Final time reaches simple-wave shock");
++    require(c.steps > 0 || c.final_time < p_.example.shock_time(), "Final time reaches simple-wave shock");
++    constexpr double alpha = .24169426078821, beta = alpha / 4., eta = .12915286960590;
++    constexpr double a[4][4] = {{alpha,0,0,0}, {-alpha,alpha,0,0}, {0,1-alpha,alpha,0},
++                               {beta,eta,.5-beta-eta-alpha,alpha}};
++    constexpr double b[4] = {0,1./6,1./6,2./3}, stage_c[4] = {alpha,0,1,.5};
++    const int stages = c.integrator == "be" ? 1 : 4;
+     RunStatistics stats;
+-    State initial_integral = p_.integral(solution);
+-    auto begin = std::chrono::steady_clock::now();
++    const double initial_rate = p_.freeze(solution);
++    // Reserve outside the measured interval. Only standard-library storage can
++    // grow if an unusually long run exceeds this estimate; Eigen stays fixed.
++    const std::size_t estimate = c.steps > 0 ? c.steps :
++        static_cast<std::size_t>(std::ceil(c.final_time * initial_rate / c.cfl) * 4 + 8);
++    stats.updates.reserve(estimate * stages * (c.newton_steps > 0 ? c.newton_steps : c.max_newton));
++    const State initial_integral = p_.integral(solution);
++    auto begin = Clock::now();
+     AllocationGuard guard(forbid_allocations);
+     while (c.steps > 0 ? stats.steps < c.steps : stats.final_time < c.final_time) {
+-        double rate = p_.freeze(solution);
+-        // Preserve the reference project's CFL definition: CFL=dt*rate.
++        const double rate = p_.freeze(solution);
+         double step = c.cfl / rate;
+         if (c.steps == 0) {
+-            double remaining = c.final_time - stats.final_time;
++            const double remaining = c.final_time - stats.final_time;
+             step = std::min(step, remaining);
+-            if (remaining - step <=
+-                16 * std::numeric_limits<double>::epsilon() * std::max(remaining, c.final_time))
+-                step = remaining;
++            if (remaining - step <= 16 * std::numeric_limits<double>::epsilon() *
++                                        std::max(remaining, c.final_time)) step = remaining;
+         }
+         require(std::isfinite(step) && step > 0 && stats.final_time + step > stats.final_time,
+                 "Invalid CFL step");
+-        require(stats.final_time + step < p_.example.shock_time(),
+-                "Step reaches simple-wave shock");
+-        p_.step_size = step;
++        require(stats.final_time + step < p_.example.shock_time(), "Step reaches simple-wave shock");
++        step_state_ = solution;
+         state_ = solution;
+-        p_.trace(state_, lambda_);
+-        bool converged = false;
+-        for (int it = 0; it < c.max_newton; ++it) {
+-            double merit = evaluate(state_, lambda_, residual_, skeleton_);
+-            if (merit <= c.nonlinear_tolerance) {
+-                converged = true;
+-                break;
+-            }
+-            LinearResult linear{};
+-            if (method_ == Method::DG) {
+-                dg_->refresh(state_);
+-                rhs_ = -residual_;
+-                auto blocks = [&](int row, int col, BlockRef b) {
+-                    dg_->block(row, col, b);
+-                };
+-                if (direct_) {
+-                    direct_->refresh(blocks);
+-                    linear = direct_->solve(rhs_, direction_, linear_weights_);
+-                } else {
+-                    preconditioner_->refresh(blocks);
+-                    linear = gmres_->solve(Action::bind(*dg_), Action::bind(*preconditioner_), rhs_,
+-                                           direction_, c.max_linear, c.linear_tolerance);
++        for (int stage = 0; stage < stages; ++stage) {
++            const double diagonal = stages == 1 ? 1. : a[stage][stage];
++            stage_base_ = step_state_;
++            for (int j = 0; j < stage; ++j) stage_base_.noalias() += step * a[stage][j] * slopes_.col(j);
++            if (stage > 0) p_.freeze(state_);
++            p_.step_size = diagonal * step;
++            p_.old = stage_base_;
++            const double tau = p_.step_size, old_norm = state_norm(stage_base_);
++            const int limit = c.newton_steps > 0 ? c.newton_steps : c.max_newton;
++            double initial_rms = -1.;
++            bool converged = false, residual_ready = false;
++            for (int it = 0; it <= limit; ++it) {
++                const auto update_start = Clock::now();
++                if (!residual_ready) p_.dg_residual(state_, residual_);
++                const double norm = dual_norm(residual_), rms = norm / std::sqrt(2.);
++                if (initial_rms < 0) initial_rms = rms;
++                if (c.newton_steps == 0 && rms <= c.nonlinear_tolerance * std::max(1., initial_rms)) {
++                    converged = true;
++                    break;
+                 }
+-            } else {
+-                hybrid_->refresh(state_, lambda_);
+-                rhs_ = hybrid_->rhs();
+-                auto blocks = [&](int row, int col, BlockRef b) { hybrid_->block(row, col, b); };
+-                if (direct_) {
+-                    direct_->refresh(blocks);
+-                    linear = direct_->solve(rhs_, trace_direction_, linear_weights_);
++                if (it == limit) break;
++                // Convert the reference's mass-inverted stage equation allowance
++                // to our physical weak equation, which is divided by tau.
++                const double allowance = 128 * std::numeric_limits<double>::epsilon() *
++                    ((state_norm(state_) + old_norm) / tau + norm);
++                const double target = std::max(10 * c.linear_tolerance * norm, allowance);
++                LinearResult linear{};
++                if (method_ == Method::DG) {
++                    dg_->refresh(state_);
++                    rhs_ = -residual_;
++                    auto blocks = [&](int row, int col, BlockRef block) { dg_->block(row, col, block); };
++                    if (direct_) {
++                        direct_->refresh(blocks);
++                        linear = direct_->solve(rhs_, direction_, linear_weights_);
++                        dg_->apply(direction_, equation_error_);
++                        equation_error_ += residual_;
++                    } else {
++                        preconditioner_->refresh(blocks);
++                        linear = gmres_->solve(Action::bind(*dg_), Action::bind(*preconditioner_),
++                                               rhs_, direction_, c.max_linear, c.linear_tolerance);
++                        equation_error_ = -gmres_->residual();
++                    }
+                 } else {
+-                    preconditioner_->refresh(blocks);
+-                    linear =
+-                        gmres_->solve(Action::bind(*hybrid_), Action::bind(*preconditioner_), rhs_,
+-                                      trace_direction_, c.max_linear, c.linear_tolerance);
++                    hybrid_->refresh_projected(state_, residual_);
++                    rhs_ = hybrid_->rhs();
++                    auto blocks = [&](int row, int col, BlockRef block) { hybrid_->block(row, col, block); };
++                    if (direct_) direct_->refresh(blocks);
++                    else preconditioner_->refresh(blocks);
++                    double tolerance = c.linear_tolerance;
++                    bool valid = false;
++                    for (int attempt = 0; attempt < 4; ++attempt) {
++                        LinearResult current;
++                        if (direct_) current = direct_->solve(rhs_, trace_direction_, linear_weights_);
++                        else current = gmres_->solve(Action::bind(*hybrid_), Action::bind(*preconditioner_),
++                                                      rhs_, trace_direction_, c.max_linear, tolerance);
++                        linear.iterations += current.iterations;
++                        linear.relative_residual = current.relative_residual;
++                        hybrid_->recover(trace_direction_, direction_);
++                        hybrid_->recovered_residual(trace_direction_, equation_error_);
++                        valid = dual_norm(equation_error_) <= target;
++                        if (valid) break;
++                        require(!direct_, "Direct Schur solve fails DG residual criterion");
++                        tolerance *= .01;
++                    }
++                    require(valid, "Recovered DG residual criterion failed after Schur refinement");
+                 }
+-                hybrid_->recover(trace_direction_, direction_);
+-            }
+-            stats.max_linear_residual =
+-                std::max(stats.max_linear_residual, linear.relative_residual);
+-            stats.krylov_iterations += linear.iterations;
+-            ++stats.newton_iterations;
+-            bool accepted = false;
+-            double alpha = 1;
+-            for (int search = 0; search < 30; ++search) {
+-                trial_ = state_ + alpha * direction_;
+-                trial_lambda_ = lambda_;
+-                if (method_ == Method::HDG)
+-                    trial_lambda_.noalias() += alpha * trace_direction_;
+-                if (p_.admissible(trial_)) {
+-                    double next = evaluate(trial_, trial_lambda_, trial_residual_, trial_skeleton_);
+-                    if (next <= (1 - 1e-4 * alpha) * merit) {
+-                        accepted = true;
+-                        break;
++                const double error_norm = dual_norm(equation_error_);
++                require(error_norm <= target, "DG Newton linear residual too large");
++                if (diagnostic_) {
++                    diagnostic_->refresh(state_);
++                    diagnostic_->apply(direction_, independent_error_);
++                    independent_error_ += residual_;
++                    require(dual_norm(independent_error_) <= std::max(4 * target, 1e-12),
++                            "Independent recovered DG equation check failed");
++                    independent_error_ -= equation_error_;
++                    require(dual_norm(independent_error_) <= std::max(4 * allowance, 1e-12),
++                            "Recovered residual identity failed");
++                }
++                double damping = 1.;
++                bool accepted = false;
++                for (int search = 0; search < 30; ++search) {
++                    trial_ = state_ + damping * direction_;
++                    if (p_.admissible(trial_)) {
++                        p_.dg_residual(trial_, trial_residual_);
++                        if (dual_norm(trial_residual_) <= (1 - 1e-4 * damping) * norm + allowance) {
++                            accepted = true;
++                            break;
++                        }
+                     }
++                    damping *= .5;
+                 }
+-                alpha *= .5;
+-            }
+-            if (!accepted)
+-                throw std::runtime_error(
+-                    "Newton line search failed at time=" + std::to_string(stats.final_time) +
+-                    ", iteration=" + std::to_string(it) + ", residual=" + std::to_string(merit));
+-            state_.swap(trial_);
+-            lambda_.swap(trial_lambda_);
+-            if (evaluate(state_, lambda_, residual_, skeleton_) <= c.nonlinear_tolerance) {
+-                converged = true;
+-                break;
++                require(accepted, "Newton line search failed");
++                state_.swap(trial_);
++                residual_.swap(trial_residual_);
++                residual_ready = true;
++                const double duration = elapsed(update_start);
++                stats.max_linear_residual = std::max(stats.max_linear_residual, linear.relative_residual);
++                const double dgrel = norm > 0 ? error_norm / norm : 0.;
++                stats.max_dg_linear_residual = std::max(stats.max_dg_linear_residual, dgrel);
++                stats.krylov_iterations += linear.iterations;
++                if (stats.newton_iterations >= c.warmup_updates) {
++                    stats.measured_newton_seconds += duration;
++                    ++stats.measured_updates;
++                }
++                ++stats.newton_iterations;
++                stats.updates.push_back({stats.steps, stage, it, linear.iterations,
++                    stats.final_time + step, stats.final_time + (stages == 1 ? 1. : stage_c[stage]) * step,
++                    step, step * rate, rms, damping, linear.relative_residual, dgrel, duration});
+             }
++            require(converged || c.newton_steps > 0, "Newton iteration limit reached");
++            slopes_.col(stage) = (state_ - stage_base_) / tau;
++        }
++        if (stages == 1) solution = state_;
++        else {
++            solution = step_state_;
++            for (int stage = 0; stage < stages; ++stage) solution.noalias() += step * b[stage] * slopes_.col(stage);
++            require(p_.admissible(solution), "DIRK3 step produced an inadmissible state");
+         }
+-        require(converged, "Newton iteration limit reached");
+-        solution = state_;
+         stats.final_time = c.steps == 0 && step >= c.final_time - stats.final_time
+-                               ? c.final_time
+-                               : stats.final_time + step;
++                               ? c.final_time : stats.final_time + step;
+         stats.minimum_step = stats.steps == 0 ? step : std::min(stats.minimum_step, step);
+         stats.maximum_step = std::max(stats.maximum_step, step);
+         ++stats.steps;
+-        stats.conservation_drift =
+-            std::max(stats.conservation_drift,
+-                     (p_.integral(solution) - initial_integral).cwiseAbs().maxCoeff());
++        stats.conservation_drift = std::max(stats.conservation_drift,
++            (p_.integral(solution) - initial_integral).cwiseAbs().maxCoeff());
+     }
+-    stats.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - begin).count();
++    stats.seconds = elapsed(begin);
+     return stats;
+ }
+ } // namespace euler
+diff --git a/dg_hdg_2d/include/euler/config.hpp b/dg_hdg_2d/include/euler/config.hpp
+index 09ffd68..c9ad939 100644
+--- a/dg_hdg_2d/include/euler/config.hpp
++++ b/dg_hdg_2d/include/euler/config.hpp
+@@ -6,12 +6,15 @@ enum class Preconditioner { BlockJacobi, BlockILU0 };
+ enum class LinearSolver { GMRES, Direct };
+ struct Config {
+     int nx = 8, ny = 8, degree = 3, quadrature = 0;
+-    int restart = 30, max_linear = 600, max_newton = 25, steps = 0;
+-    double cfl = .2, final_time = .1, safety = 1.1;
+-    double nonlinear_tolerance = 1e-11, linear_tolerance = 1e-12;
+-    Preconditioner preconditioner = Preconditioner::BlockILU0;
++    int restart = 20, max_linear = 1500, max_newton = 30, steps = 0;
++    int newton_steps = 0, warmup_updates = 0;
++    double alpha_degrees = 45.;
++    double cfl = 2., final_time = .2, safety = 1.1;
++    double nonlinear_tolerance = 1e-12, linear_tolerance = 1e-12;
++    Preconditioner preconditioner = Preconditioner::BlockJacobi;
+     LinearSolver linear = LinearSolver::GMRES;
+-    bool colamd = true;
++    bool colamd = false, timing_only = false, check_update = false, save_solution = true;
++    std::string integrator = "ssp-dirk3";
+     std::string method = "both", testcase = "diagonal", prefix = "output/run_2d";
+ };
+ Config parse(int argc, char **argv);
+diff --git a/dg_hdg_2d/include/euler/example.hpp b/dg_hdg_2d/include/euler/example.hpp
+index 7f44225..f32d3e0 100644
+--- a/dg_hdg_2d/include/euler/example.hpp
++++ b/dg_hdg_2d/include/euler/example.hpp
+@@ -5,7 +5,12 @@ namespace euler {
+ struct Example {
+     Gas gas{3.0};
+     std::string testcase;
+-    explicit Example(std::string name) : testcase(std::move(name)) {}
++    double cosine, sine, lx, ly;
++    explicit Example(std::string name, double degrees = 45.)
++        : testcase(std::move(name)), cosine(std::cos(degrees * std::acos(-1.) / 180.)),
++          sine(std::sin(degrees * std::acos(-1.) / 180.)),
++          lx(testcase == "diagonal" ? 2. / cosine : 2.),
++          ly(testcase == "diagonal" ? 2. / sine : 2.) {}
+     State exact(double x, double y, double time) const;
+     double shock_time() const;
+ };
+diff --git a/dg_hdg_2d/include/euler/face_jacobian.hpp b/dg_hdg_2d/include/euler/face_jacobian.hpp
+index ec0050e..a4449bd 100644
+--- a/dg_hdg_2d/include/euler/face_jacobian.hpp
++++ b/dg_hdg_2d/include/euler/face_jacobian.hpp
+@@ -10,13 +10,17 @@ class FaceJacobian {
+     FluxJacobian hdg(int face, int q, bool left) const;
+     double tau(int face, int q, bool left) const;
+     void cell_c(int cell, Eigen::Ref<const Vec> direction, Eigen::Ref<Vec> result) const;
++    void cell_c_many(int cell, ConstBlockRef directions, BlockRef result) const;
+     const Vec &trace_diagonal() const { return diagonal_; }
+-
+   private:
+     const Problem &p_;
+-    // [tangent_node,flux_variable,state_variable,face].
+-    Mat physical_left_, physical_right_, hll_left_, hll_right_, tau_left_, tau_right_, weights_;
++    // Tangent node contiguous; cache u,v,H instead of two full 4x4 derivatives.
++    Mat primitives_left_, primitives_right_, tau_left_, tau_right_, weights_;
++    Mat blend_left_, blend_right_, penalty_;
+     Vec diagonal_;
+-    mutable Mat left_, right_;
++    mutable Mat left_, right_, flux_left_, flux_right_, samples_, coefficients_;
++    mutable Vec pressure_direction_;
++    void normal_action(const Mat &primitive,int face,ConstBlockRef direction,BlockRef result,int axis) const;
++    FluxJacobian physical(int face,int q,bool left) const;
+ };
+-} // namespace euler
++}
+diff --git a/dg_hdg_2d/include/euler/hybrid.hpp b/dg_hdg_2d/include/euler/hybrid.hpp
+index 566c4e7..d7c994c 100644
+--- a/dg_hdg_2d/include/euler/hybrid.hpp
++++ b/dg_hdg_2d/include/euler/hybrid.hpp
+@@ -6,24 +6,28 @@ namespace euler {
+ class HybridOperator {
+   public:
+     explicit HybridOperator(const Problem &problem);
+-    void residual(const Vec &state, const Vec &lambda, Vec &volume, Vec &skeleton) const;
+-    void refresh(const Vec &state, const Vec &lambda);
+-    void apply(const Vec &direction, Vec &result) const;
+-    void block(int row, int col, BlockRef result) const;
+-    void recover(const Vec &trace_direction, Vec &volume_direction) const;
++    void residual(const Vec &state,const Vec &lambda,Vec &volume,Vec &skeleton) const;
++    void refresh(const Vec &state,const Vec &lambda);
++    void refresh_projected(const Vec &state,const Vec &dg_residual);
++    void apply(const Vec &direction,Vec &result) const;
++    void block(int row,int col,BlockRef result) const;
++    void recover(const Vec &trace_direction,Vec &volume_direction) const;
++    void recovered_residual_from_schur(const Vec &equation_error,Vec &result) const;
+     const Vec &rhs() const { return rhs_; }
+-
+   private:
+     const Problem &p_;
+     VolumeJacobian volume_;
+     FaceJacobian faces_jacobian_;
+-    std::vector<DenseLU> lu_;
+-    // Contiguous cell-blocked pools: [row_dof,col_dof,cell].
+-    Mat x_, schur_, y_, a_, b_;
++    DenseLU lu_;
++    // Only X, local Schur and y survive a cell. A/LU/RHS reuse one workspace.
++    Vec x_, schur_;
++    Mat y_, a_, local_rhs_, solved_, face_action_;
+     Vec volume_residual_, skeleton_residual_, rhs_;
+     mutable Vec local_, faces_, face_result_;
+-    void gather(const Vec &input, int cell) const;
+-    void scatter(Vec &output, int cell, const Vec &local) const;
++    mutable Mat face_flux_;
++    void gather(const Vec &input,int cell) const;
++    void scatter(Vec &output,int cell,const Vec &local) const;
+     void assemble_cell(int cell);
++    void condense(const Vec &state);
+ };
+-} // namespace euler
++}
+diff --git a/dg_hdg_2d/include/euler/physics.hpp b/dg_hdg_2d/include/euler/physics.hpp
+index 0719de3..1105062 100644
+--- a/dg_hdg_2d/include/euler/physics.hpp
++++ b/dg_hdg_2d/include/euler/physics.hpp
+@@ -9,6 +9,7 @@ class Gas {
+   public:
+     explicit Gas(double gamma) : gamma_(gamma) {}
+     double gamma() const { return gamma_; }
++    FluxJacobian cached_jacobian(double u, double v, double enthalpy, int axis) const;
+     double pressure(const State &state) const;
+     Primitive primitive(const State &state) const;
+     State flux(const State &state, const Primitive &primitive, int axis) const;
+diff --git a/dg_hdg_2d/include/euler/tensor_product.hpp b/dg_hdg_2d/include/euler/tensor_product.hpp
+index cb82203..8211f2e 100644
+--- a/dg_hdg_2d/include/euler/tensor_product.hpp
++++ b/dg_hdg_2d/include/euler/tensor_product.hpp
+@@ -9,6 +9,7 @@ class TensorProduct {
+     void subtract_weak(ConstBlockRef flux_x, ConstBlockRef flux_y, BlockRef residual) const;
+ 
+   private:
++    template<int N> void subtract_collocated(ConstBlockRef fx, ConstBlockRef fy, BlockRef residual) const;
+     const NodalBasis &b_;
+     double scale_x_, scale_y_;
+     Mat derivative_transpose_, weighted_values_, weighted_values_transpose_;
+diff --git a/dg_hdg_2d/include/euler/volume_jacobian.hpp b/dg_hdg_2d/include/euler/volume_jacobian.hpp
+index d037ef3..fd0b1be 100644
+--- a/dg_hdg_2d/include/euler/volume_jacobian.hpp
++++ b/dg_hdg_2d/include/euler/volume_jacobian.hpp
+@@ -11,13 +11,15 @@ class VolumeJacobian {
+   private:
+     const Problem &p_;
+     TensorProduct tensor_;
+-    // [qx,qy,flux_variable,state_variable,cell], qx contiguous.
+-    Mat x_, y_, derivative_transpose_, weighted_values_transpose_;
++    // [qx,qy,{u,v,H},cell]: 3 cached fields instead of 32 Jacobian entries.
++    Mat primitives_, derivative_transpose_, weighted_values_transpose_;
++    mutable Mat x_, y_; // One cell of explicit derivatives, only for block queries.
+     mutable Mat points_, point_direction_, flux_x_, flux_y_, line_x_, line_y_;
+-    mutable Vec weights_x_, weights_y_;
++    mutable Vec weights_x_, weights_y_, pressure_direction_;
+     double inverse_step_ = 0;
+     bool ready_ = false;
+     void store(int cell, ConstBlockRef states);
++    void cache_cell_jacobians(int cell) const;
+     void point_action(int cell, ConstBlockRef direction) const;
+     void collocated_block(int cell, BlockRef result) const;
+     void overintegrated_block(int cell, BlockRef result) const;
+diff --git a/dg_hdg_2d/src/discretization.cpp b/dg_hdg_2d/src/discretization.cpp
+index 9e4df2a..83dc46c 100644
+--- a/dg_hdg_2d/src/discretization.cpp
++++ b/dg_hdg_2d/src/discretization.cpp
+@@ -2,8 +2,8 @@
+ #include <algorithm>
+ namespace euler {
+ Problem::Problem(const Config &c)
+-    : config(c), basis(c.degree, c.quadrature), layout(c.nx, c.ny, basis.nodes), example(c.testcase),
+-      hx(2. / c.nx), hy(2. / c.ny), old(layout.size()), mass(layout.size()),
++    : config(c), basis(c.degree, c.quadrature), layout(c.nx, c.ny, basis.nodes), example(c.testcase, c.alpha_degrees),
++      hx(example.lx / c.nx), hy(example.ly / c.ny), old(layout.size()), mass(layout.size()),
+       inverse_mass(layout.size()), trace_mass(trace_size()), inverse_trace_mass(trace_size()),
+       speeds(face_count() * basis.nodes), tensor_(basis, hx, hy),
+       points_(basis.points * basis.points, NVAR), flux_x_(points_.rows(), NVAR),
+@@ -46,21 +46,59 @@ State Problem::sample(const Vec &u, int cell, int side, int q) const {
+             state[v] += shape[i] * u[layout.index(cell, v, face_node(side, q, i))];
+     return state;
+ }
+-void Problem::face_values(ConstBlockRef nodal, int side, BlockRef values) const {
+-    const Vec &shape = side % 2 ? basis.right : basis.left;
+-    for (int v = 0; v < NVAR; ++v) {
+-        Eigen::Map<const Mat> sheet(nodal.col(v).data(), basis.nodes, basis.nodes);
+-        if (side < 2) values.col(v).noalias() = sheet.transpose() * shape;
+-        else values.col(v).noalias() = sheet * shape;
++namespace {
++template<int N> void restrict_face(ConstBlockRef nodal,int side,const Vec &shape,BlockRef values) {
++    using Sheet=Eigen::Matrix<double,N,N>;
++    using Line=Eigen::Matrix<double,N,1>;
++    Eigen::Map<const Line> e(shape.data());
++    for(int v=0;v<NVAR;++v) {
++        Eigen::Map<const Sheet> sheet(nodal.col(v).data());
++        Eigen::Map<Line> out(values.col(v).data());
++        if(side<2) out.noalias()=sheet.transpose()*e;
++        else out.noalias()=sheet*e;
+     }
+ }
+-void Problem::lift(int side, ConstBlockRef values, BlockRef nodal, double scale) const {
+-    const Vec &shape = side % 2 ? basis.right : basis.left;
+-    for (int v = 0; v < NVAR; ++v) {
+-        Eigen::Map<Mat> sheet(nodal.col(v).data(), basis.nodes, basis.nodes);
+-        if (side < 2) sheet.noalias() += scale * shape * values.col(v).transpose();
+-        else sheet.noalias() += scale * values.col(v) * shape.transpose();
++template<int N> void lift_face(int side,ConstBlockRef values,BlockRef nodal,const Vec &shape,double scale) {
++    using Sheet=Eigen::Matrix<double,N,N>;
++    using Line=Eigen::Matrix<double,N,1>;
++    Eigen::Map<const Line> e(shape.data());
++    for(int v=0;v<NVAR;++v) {
++        Eigen::Map<Sheet> sheet(nodal.col(v).data());
++        Eigen::Map<const Line> f(values.col(v).data());
++        if(side<2) sheet.noalias()+=scale*e*f.transpose();
++        else sheet.noalias()+=scale*f*e.transpose();
++    }
++}
++}
++void Problem::face_values(ConstBlockRef nodal,int side,BlockRef values) const {
++    const Vec &shape=side%2?basis.right:basis.left;
++    switch(basis.nodes) {
++    case 1: restrict_face<1>(nodal,side,shape,values); return;
++    case 2: restrict_face<2>(nodal,side,shape,values); return;
++    case 3: restrict_face<3>(nodal,side,shape,values); return;
++    case 4: restrict_face<4>(nodal,side,shape,values); return;
++    case 5: restrict_face<5>(nodal,side,shape,values); return;
++    case 6: restrict_face<6>(nodal,side,shape,values); return;
++    case 7: restrict_face<7>(nodal,side,shape,values); return;
++    case 8: restrict_face<8>(nodal,side,shape,values); return;
++    case 9: restrict_face<9>(nodal,side,shape,values); return;
++    }
++    throw std::runtime_error("Unsupported face degree");
++}
++void Problem::lift(int side,ConstBlockRef values,BlockRef nodal,double scale) const {
++    const Vec &shape=side%2?basis.right:basis.left;
++    switch(basis.nodes) {
++    case 1: lift_face<1>(side,values,nodal,shape,scale); return;
++    case 2: lift_face<2>(side,values,nodal,shape,scale); return;
++    case 3: lift_face<3>(side,values,nodal,shape,scale); return;
++    case 4: lift_face<4>(side,values,nodal,shape,scale); return;
++    case 5: lift_face<5>(side,values,nodal,shape,scale); return;
++    case 6: lift_face<6>(side,values,nodal,shape,scale); return;
++    case 7: lift_face<7>(side,values,nodal,shape,scale); return;
++    case 8: lift_face<8>(side,values,nodal,shape,scale); return;
++    case 9: lift_face<9>(side,values,nodal,shape,scale); return;
+     }
++    throw std::runtime_error("Unsupported face degree");
+ }
+ void Problem::evaluate_volume_flux(ConstBlockRef states) const {
+     for (int q = 0; q < states.rows(); ++q) {
+@@ -194,7 +232,7 @@ bool Problem::admissible(const Vec &u) const {
+     return true;
+ }
+ double Problem::residual_norm(const Vec &r) const {
+-    return std::sqrt(.25 * (r.array().square() * inverse_mass.array()).sum());
++    return std::sqrt((r.array().square() * inverse_mass.array()).sum() / (example.lx * example.ly));
+ }
+ State Problem::integral(const Vec &u) const {
+     State result = State::Zero();
+diff --git a/dg_hdg_2d/src/example.cpp b/dg_hdg_2d/src/example.cpp
+index c06793a..4cfcc0b 100644
+--- a/dg_hdg_2d/src/example.cpp
++++ b/dg_hdg_2d/src/example.cpp
+@@ -4,7 +4,7 @@ namespace euler {
+ double Example::shock_time() const {
+     if (testcase == "wave")
+         return std::numeric_limits<double>::infinity();
+-    return 4 / ((gas.gamma() + 1) * std::acos(-1.) * (testcase == "diagonal" ? std::sqrt(2.) : 1.));
++    return 4 / ((gas.gamma() + 1) * std::acos(-1.));
+ }
+ State Example::exact(double x, double y, double t) const {
+     double g = gas.gamma(), pi = std::acos(-1.);
+@@ -17,8 +17,7 @@ State Example::exact(double x, double y, double t) const {
+     require(t < shock_time(), "Simple wave reaches shock time");
+     bool diagonal = testcase == "diagonal";
+     if (diagonal) {
+-        x = (x + y) / std::sqrt(2.);
+-        pi *= std::sqrt(2.);
++        x = cosine * x + sine * y;
+     }
+     double a = (3 - g) / 2, b = (g + 1) / 4;
+     double lo = x - t * (a + b), hi = x - t * (a - b), xi = x - t * a;
+@@ -33,8 +32,8 @@ State Example::exact(double x, double y, double t) const {
+     double jm = std::sin(pi * xi), velocity = .5 * (2 + jm), sound = (g - 1) * (2 - jm) / 4;
+     double rho = std::pow(sound * sound / g, 1 / (g - 1));
+     u[Density] = rho;
+-    u[MomentumX] = rho * velocity / (diagonal ? std::sqrt(2.) : 1.);
+-    u[MomentumY] = diagonal ? rho * velocity / std::sqrt(2.) : 0.;
++    u[MomentumX] = rho * velocity * (diagonal ? cosine : 1.);
++    u[MomentumY] = diagonal ? rho * velocity * sine : 0.;
+     u[Energy] = std::pow(rho, g) / (g - 1) + .5 * rho * velocity * velocity;
+     return u;
+ }
+diff --git a/dg_hdg_2d/src/face_jacobian.cpp b/dg_hdg_2d/src/face_jacobian.cpp
+index 308d98a..862b885 100644
+--- a/dg_hdg_2d/src/face_jacobian.cpp
++++ b/dg_hdg_2d/src/face_jacobian.cpp
+@@ -1,90 +1,111 @@
+ #include "euler/face_jacobian.hpp"
+ namespace euler {
+ FaceJacobian::FaceJacobian(const Problem &p)
+-    : p_(p), physical_left_(p.basis.nodes, NVAR * NVAR * p.face_count()),
+-      physical_right_(physical_left_.rows(), physical_left_.cols()),
+-      hll_left_(physical_left_.rows(), physical_left_.cols()),
+-      hll_right_(physical_left_.rows(), physical_left_.cols()),
+-      tau_left_(p.basis.nodes, p.face_count()), tau_right_(tau_left_.rows(), tau_left_.cols()),
+-      weights_(tau_left_.rows(), tau_left_.cols()), diagonal_(p.trace_size()),
+-      left_(p.basis.nodes, NVAR), right_(p.basis.nodes, NVAR) {
+-    for (int face = 0; face < p.face_count(); ++face)
+-        for (int q = 0; q < p.basis.nodes; ++q) weights_(q, face) = p.face_weight(face, q);
++    : p_(p), primitives_left_(p.basis.nodes,3*p.face_count()),
++      primitives_right_(primitives_left_.rows(),primitives_left_.cols()),
++      tau_left_(p.basis.nodes,p.face_count()),tau_right_(tau_left_.rows(),tau_left_.cols()),
++      weights_(tau_left_.rows(),tau_left_.cols()),blend_left_(weights_.rows(),weights_.cols()),
++      blend_right_(weights_.rows(),weights_.cols()),penalty_(weights_.rows(),weights_.cols()),
++      diagonal_(p.trace_size()),left_(p.basis.nodes,NVAR),right_(p.basis.nodes,NVAR),
++      flux_left_(p.basis.nodes,NVAR),flux_right_(p.basis.nodes,NVAR),
++      samples_(p.face_width(),p.local_trace_size()+1),coefficients_(p.basis.nodes,NVAR*NVAR),
++      pressure_direction_(p.basis.nodes) {
++    for(int face=0;face<p.face_count();++face) for(int q=0;q<p.basis.nodes;++q)
++        weights_(q,face)=p.face_weight(face,q);
+ }
+ void FaceJacobian::refresh(const Vec &state) {
+-    for (int axis = 0; axis < NDIM; ++axis)
+-        for (int cell = 0; cell < p_.layout.cells; ++cell) {
+-            int face = axis * p_.layout.cells + cell, side = 2 * axis + 1;
+-            int next = p_.neighbor(cell, side);
+-            p_.face_values(p_.layout.cell(state, cell), side, left_);
+-            p_.face_values(p_.layout.cell(state, next), side - 1, right_);
+-            for (int q = 0; q < p_.basis.nodes; ++q) {
+-                FluxJacobian l = p_.example.gas.jacobian(left_.row(q).transpose(), axis);
+-                FluxJacobian r = p_.example.gas.jacobian(right_.row(q).transpose(), axis);
+-                auto s = p_.speeds[face * p_.basis.nodes + q];
+-                tau_left_(q, face) = s.a;
+-                tau_right_(q, face) = s.b;
+-                FluxJacobian gl = (weights_(q, face) * s.b / (s.a + s.b)) * (l + s.a * FluxJacobian::Identity());
+-                FluxJacobian gr = (weights_(q, face) * s.a / (s.a + s.b)) * (r - s.b * FluxJacobian::Identity());
+-                for (int w = 0; w < NVAR; ++w)
+-                    for (int v = 0; v < NVAR; ++v) {
+-                        int column = (face * NVAR + w) * NVAR + v;
+-                        physical_left_(q, column) = l(v, w);
+-                        physical_right_(q, column) = r(v, w);
+-                        hll_left_(q, column) = gl(v, w);
+-                        hll_right_(q, column) = gr(v, w);
+-                    }
+-                for (int v = 0; v < NVAR; ++v)
+-                    diagonal_[face * p_.face_width() + v * p_.basis.nodes + q] = -weights_(q, face) * (s.a + s.b);
+-            }
++    for(int axis=0;axis<NDIM;++axis) for(int cell=0;cell<p_.layout.cells;++cell) {
++        const int face=axis*p_.layout.cells+cell, side=2*axis+1;
++        p_.face_values(p_.layout.cell(state,cell),side,left_);
++        p_.face_values(p_.layout.cell(state,p_.neighbor(cell,side)),side-1,right_);
++        for(int q=0;q<p_.basis.nodes;++q) {
++            const auto l=p_.example.gas.primitive(left_.row(q).transpose());
++            const auto r=p_.example.gas.primitive(right_.row(q).transpose());
++            primitives_left_(q,3*face)=l.velocity[0]; primitives_left_(q,3*face+1)=l.velocity[1];
++            primitives_left_(q,3*face+2)=l.enthalpy;
++            primitives_right_(q,3*face)=r.velocity[0]; primitives_right_(q,3*face+1)=r.velocity[1];
++            primitives_right_(q,3*face+2)=r.enthalpy;
++            const auto s=p_.speeds[face*p_.basis.nodes+q];
++            tau_left_(q,face)=s.a; tau_right_(q,face)=s.b;
++            blend_left_(q,face)=weights_(q,face)*s.b/(s.a+s.b);
++            blend_right_(q,face)=weights_(q,face)*s.a/(s.a+s.b);
++            penalty_(q,face)=weights_(q,face)*s.a*s.b/(s.a+s.b);
++            for(int v=0;v<NVAR;++v)
++                diagonal_[face*p_.face_width()+v*p_.basis.nodes+q]=-weights_(q,face)*(s.a+s.b);
+         }
++    }
+ }
+-void FaceJacobian::hll_action(int face, ConstBlockRef l, ConstBlockRef r, BlockRef flux) const {
+-    for (int v = 0; v < NVAR; ++v) {
+-        flux.col(v).setZero();
+-        for (int w = 0; w < NVAR; ++w) {
+-            int column = (face * NVAR + w) * NVAR + v;
+-            flux.col(v).array() += hll_left_.col(column).array() * l.col(w).array() +
+-                                   hll_right_.col(column).array() * r.col(w).array();
+-        }
++void FaceJacobian::normal_action(const Mat &primitive,int face,ConstBlockRef direction,BlockRef result,int axis) const {
++    const auto u=primitive.col(3*face).array(), v=primitive.col(3*face+1).array();
++    const auto H=primitive.col(3*face+2).array();
++    const auto dr=direction.col(Density).array(), dx=direction.col(MomentumX).array();
++    const auto dy=direction.col(MomentumY).array(), de=direction.col(Energy).array();
++    pressure_direction_.array()=(p_.example.gas.gamma()-1.)*(de-u*dx-v*dy+.5*(u.square()+v.square())*dr);
++    if(axis==0) {
++        result.col(Density)=direction.col(MomentumX);
++        result.col(MomentumX).array()=2*u*dx-u.square()*dr+pressure_direction_.array();
++        result.col(MomentumY).array()=u*dy+v*dx-u*v*dr;
++        result.col(Energy).array()=H*(dx-u*dr)+u*(de+pressure_direction_.array());
++    } else {
++        result.col(Density)=direction.col(MomentumY);
++        result.col(MomentumX).array()=u*dy+v*dx-u*v*dr;
++        result.col(MomentumY).array()=2*v*dy-v.square()*dr+pressure_direction_.array();
++        result.col(Energy).array()=H*(dy-v*dr)+v*(de+pressure_direction_.array());
+     }
+ }
+-FluxJacobian FaceJacobian::hll(int face, int q, bool left) const {
+-    const Mat &storage = left ? hll_left_ : hll_right_;
+-    FluxJacobian result;
+-    for (int w = 0; w < NVAR; ++w)
+-        for (int v = 0; v < NVAR; ++v) result(v, w) = storage(q, (face * NVAR + w) * NVAR + v);
++void FaceJacobian::hll_action(int face,ConstBlockRef l,ConstBlockRef r,BlockRef flux) const {
++    const int axis=face/p_.layout.cells;
++    normal_action(primitives_left_,face,l,flux_left_,axis);
++    normal_action(primitives_right_,face,r,flux_right_,axis);
++    for(int v=0;v<NVAR;++v)
++        flux.col(v).array()=blend_left_.col(face).array()*flux_left_.col(v).array()+
++            blend_right_.col(face).array()*flux_right_.col(v).array()+
++            penalty_.col(face).array()*(l.col(v)-r.col(v)).array();
++}
++FluxJacobian FaceJacobian::physical(int face,int q,bool left) const {
++    const Mat &a=left?primitives_left_:primitives_right_;
++    return p_.example.gas.cached_jacobian(a(q,3*face),a(q,3*face+1),a(q,3*face+2),face/p_.layout.cells);
++}
++FluxJacobian FaceJacobian::hll(int face,int q,bool left) const {
++    FluxJacobian result=physical(face,q,left)*(left?blend_left_(q,face):blend_right_(q,face));
++    result.diagonal().array()+=left?penalty_(q,face):-penalty_(q,face);
+     return result;
+ }
+-double FaceJacobian::tau(int face, int q, bool left) const {
+-    return left ? tau_left_(q, face) : tau_right_(q, face);
++double FaceJacobian::tau(int face,int q,bool left) const {
++    return left?tau_left_(q,face):tau_right_(q,face);
+ }
+-FluxJacobian FaceJacobian::hdg(int face, int q, bool left) const {
+-    const Mat &storage = left ? physical_left_ : physical_right_;
+-    FluxJacobian result;
+-    for (int w = 0; w < NVAR; ++w)
+-        for (int v = 0; v < NVAR; ++v)
+-            result(v, w) = (left ? 1 : -1) * storage(q, (face * NVAR + w) * NVAR + v);
+-    result.diagonal().array() += tau(face, q, left);
+-    result *= weights_(q, face);
++FluxJacobian FaceJacobian::hdg(int face,int q,bool left) const {
++    FluxJacobian result=(left?1.:-1.)*physical(face,q,left);
++    result.diagonal().array()+=tau(face,q,left);
++    result*=weights_(q,face);
+     return result;
+ }
+-void FaceJacobian::cell_c(int cell, Eigen::Ref<const Vec> direction, Eigen::Ref<Vec> result) const {
+-    Eigen::Map<const Mat> nodal(direction.data(), p_.layout.plane(), NVAR);
+-    auto fs = p_.faces(cell);
+-    for (int side = 0; side < NFACES; ++side) {
+-        int face = fs[side];
+-        bool left = side % 2 != 0;
+-        const Mat &physical = left ? physical_left_ : physical_right_;
+-        const Mat &stabilization = left ? tau_left_ : tau_right_;
+-        p_.face_values(nodal, side, left_);
+-        Eigen::Map<Mat> output(result.data() + side * p_.face_width(), p_.basis.nodes, NVAR);
+-        for (int v = 0; v < NVAR; ++v) {
+-            output.col(v).array() = stabilization.col(face).array() * left_.col(v).array();
+-            for (int w = 0; w < NVAR; ++w)
+-                output.col(v).array() += (left ? 1 : -1) * physical.col((face * NVAR + w) * NVAR + v).array() * left_.col(w).array();
+-            output.col(v).array() *= weights_.col(face).array();
++void FaceJacobian::cell_c(int cell,Eigen::Ref<const Vec> direction,Eigen::Ref<Vec> result) const {
++    Eigen::Map<const Mat> input(direction.data(),p_.layout.block_size(),1);
++    Eigen::Map<Mat> output(result.data(),p_.local_trace_size(),1);
++    cell_c_many(cell,input,output);
++}
++void FaceJacobian::cell_c_many(int cell,ConstBlockRef directions,BlockRef result) const {
++    const int n=p_.basis.nodes, fw=p_.face_width(), columns=directions.cols();
++    require(columns<=samples_.cols(),"Too many local RHS columns");
++    const auto fs=p_.faces(cell);
++    for(int side=0;side<NFACES;++side) {
++        for(int j=0;j<columns;++j) {
++            Eigen::Map<const Mat> nodal(directions.col(j).data(),p_.layout.plane(),NVAR);
++            Eigen::Map<Mat> values(samples_.col(j).data(),n,NVAR);
++            p_.face_values(nodal,side,values);
++        }
++        for(int q=0;q<n;++q) {
++            const auto derivative=hdg(fs[side],q,side%2!=0);
++            for(int w=0;w<NVAR;++w) for(int v=0;v<NVAR;++v)
++                coefficients_(q,w*NVAR+v)=derivative(v,w);
++        }
++        for(int v=0;v<NVAR;++v) {
++            auto output=result.block(side*fw+v*n,0,n,columns);
++            output.array()=(samples_.block(0,0,n,columns).array().colwise()*coefficients_.col(v).array());
++            for(int w=1;w<NVAR;++w)
++                output.array()+=(samples_.block(w*n,0,n,columns).array().colwise()*coefficients_.col(w*NVAR+v).array());
+         }
+     }
+ }
+-} // namespace euler
++}
+diff --git a/dg_hdg_2d/src/initial_and_error.cpp b/dg_hdg_2d/src/initial_and_error.cpp
+index 4f7d109..c8a98b3 100644
+--- a/dg_hdg_2d/src/initial_and_error.cpp
++++ b/dg_hdg_2d/src/initial_and_error.cpp
+@@ -11,8 +11,8 @@ void Problem::initial(Vec &u) const {
+         for (int j = 0; j < Q; ++j)
+             for (int i = 0; i < Q; ++i)
+                 samples.row(i + Q * j) = example.exact(
+-                    -1 + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
+-                    -1 + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], 0).transpose();
++                    -.5 * example.lx + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
++                    -.5 * example.ly + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], 0).transpose();
+         for (int v = 0; v < NVAR; ++v) {
+             Eigen::Map<const Mat> sample(samples.col(v).data(), Q, Q);
+             multiply(basis.projection, sample, scratch);
+@@ -63,8 +63,8 @@ State Problem::error(const Vec &u, double time) const {
+         for (int j = 0; j < Q; ++j)
+             for (int i = 0; i < Q; ++i) {
+                 State difference = values.row(i + Q * j).transpose() - example.exact(
+-                    -1 + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
+-                    -1 + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], time);
++                    -.5 * example.lx + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
++                    -.5 * example.ly + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], time);
+                 result.array() += .25 * hx * hy * basis.error_w[i] * basis.error_w[j] *
+                                   difference.array().square();
+             }
+diff --git a/dg_hdg_2d/src/physics.cpp b/dg_hdg_2d/src/physics.cpp
+index 623493d..b97c8c4 100644
+--- a/dg_hdg_2d/src/physics.cpp
++++ b/dg_hdg_2d/src/physics.cpp
+@@ -39,6 +39,22 @@ FluxJacobian Gas::jacobian(const State &u, const Primitive &p, int axis) const {
+     a(Energy, Energy) += p.velocity[axis];
+     return a;
+ }
++FluxJacobian Gas::cached_jacobian(double u, double v, double H, int axis) const {
++    const double gm = gamma_ - 1., speed2 = u*u + v*v;
++    FluxJacobian a = FluxJacobian::Zero();
++    if (axis == 0) {
++        a(Density, MomentumX) = 1.;
++        a.row(MomentumX) << .5*(gamma_-3)*u*u + .5*gm*v*v, (3-gamma_)*u, -gm*v, gm;
++        a.row(MomentumY) << -u*v, v, u, 0.;
++        a.row(Energy) << u*(.5*gm*speed2-H), H-gm*u*u, -gm*u*v, gamma_*u;
++    } else {
++        a(Density, MomentumY) = 1.;
++        a.row(MomentumX) << -u*v, v, u, 0.;
++        a.row(MomentumY) << .5*gm*u*u + .5*(gamma_-3)*v*v, -gm*u, (3-gamma_)*v, gm;
++        a.row(Energy) << v*(.5*gm*speed2-H), -gm*u*v, H-gm*v*v, gamma_*v;
++    }
++    return a;
++}
+ Speed einfeldt(const State &l, const State &r, const Gas &gas, double safety, int axis) {
+     auto pl = gas.primitive(l), pr = gas.primitive(r);
+     require(l[Density] > 0 && r[Density] > 0 && pl.pressure > 0 && pr.pressure > 0,
+diff --git a/dg_hdg_2d/src/tensor_product.cpp b/dg_hdg_2d/src/tensor_product.cpp
+index 48d1055..ab04ee7 100644
+--- a/dg_hdg_2d/src/tensor_product.cpp
++++ b/dg_hdg_2d/src/tensor_product.cpp
+@@ -20,9 +20,37 @@ void TensorProduct::interpolate(ConstBlockRef nodal, BlockRef points) const {
+         points.col(v) = Eigen::Map<const Vec>(sheet_.data(), b_.points * b_.points);
+     }
+ }
++template<int N>
++void TensorProduct::subtract_collocated(ConstBlockRef fx, ConstBlockRef fy, BlockRef residual) const {
++    using Sheet=Eigen::Matrix<double,N,N>;
++    const Eigen::Map<const Sheet> d(b_.weighted_derivatives.data());
++    for(int v=0;v<NVAR;++v) {
++        const Eigen::Map<const Sheet> x(fx.col(v).data()), y(fy.col(v).data());
++        Eigen::Map<Sheet> output(residual.col(v).data());
++        Sheet wx,wy;
++        wx.noalias()=d.transpose()*x;
++        wy.noalias()=y*d;
++        for(int j=0;j<N;++j) {
++            output.col(j).noalias()-=(scale_x_*b_.w[j])*wx.col(j);
++            output.col(j).array()-=scale_y_*b_.w.array()*wy.col(j).array();
++        }
++    }
++}
+ void TensorProduct::subtract_weak(ConstBlockRef fx, ConstBlockRef fy, BlockRef residual) const {
+     if (b_.nodes == 1)
+         return;
++    if(b_.points==b_.nodes) {
++        switch(b_.nodes) {
++        case 2: subtract_collocated<2>(fx,fy,residual); return;
++        case 3: subtract_collocated<3>(fx,fy,residual); return;
++        case 4: subtract_collocated<4>(fx,fy,residual); return;
++        case 5: subtract_collocated<5>(fx,fy,residual); return;
++        case 6: subtract_collocated<6>(fx,fy,residual); return;
++        case 7: subtract_collocated<7>(fx,fy,residual); return;
++        case 8: subtract_collocated<8>(fx,fy,residual); return;
++        case 9: subtract_collocated<9>(fx,fy,residual); return;
++        }
++    }
+     for (int v = 0; v < NVAR; ++v) {
+         Eigen::Map<const Mat> x(fx.col(v).data(), b_.points, b_.points);
+         Eigen::Map<const Mat> y(fy.col(v).data(), b_.points, b_.points);
+diff --git a/dg_hdg_2d/src/volume_jacobian.cpp b/dg_hdg_2d/src/volume_jacobian.cpp
+index fb941bc..d8e9061 100644
+--- a/dg_hdg_2d/src/volume_jacobian.cpp
++++ b/dg_hdg_2d/src/volume_jacobian.cpp
+@@ -2,25 +2,29 @@
+ namespace euler {
+ VolumeJacobian::VolumeJacobian(const Problem &p)
+     : p_(p), tensor_(p.basis, p.hx, p.hy),
+-      x_(p.basis.points * p.basis.points, NVAR * NVAR * p.layout.cells), y_(x_.rows(), x_.cols()),
++      primitives_(p.basis.points*p.basis.points, 3*p.layout.cells),
+       derivative_transpose_(p.basis.weighted_derivatives.transpose()),
+-      weighted_values_transpose_(p.basis.values.transpose() * p.basis.qw.asDiagonal()),
++      weighted_values_transpose_(p.basis.values.transpose()*p.basis.qw.asDiagonal()),
++      x_(primitives_.rows(),NVAR*NVAR), y_(x_.rows(),x_.cols()),
+       points_(x_.rows(), NVAR), point_direction_(x_.rows(), NVAR),
+       flux_x_(x_.rows(), NVAR), flux_y_(x_.rows(), NVAR),
+       line_x_(p.basis.nodes, p.basis.nodes), line_y_(p.basis.nodes, p.basis.nodes),
+-      weights_x_(p.basis.points), weights_y_(p.basis.points) {}
++      weights_x_(p.basis.points), weights_y_(p.basis.points), pressure_direction_(x_.rows()) {}
+ void VolumeJacobian::store(int cell, ConstBlockRef states) {
+-    for (int q = 0; q < states.rows(); ++q) {
+-        State state = states.row(q).transpose();
+-        auto primitive = p_.example.gas.primitive(state);
+-        FluxJacobian x = p_.example.gas.jacobian(state, primitive, 0);
+-        FluxJacobian y = p_.example.gas.jacobian(state, primitive, 1);
+-        for (int w = 0; w < NVAR; ++w)
+-            for (int v = 0; v < NVAR; ++v) {
+-                int column = (cell * NVAR + w) * NVAR + v;
+-                x_(q, column) = x(v, w);
+-                y_(q, column) = y(v, w);
+-            }
++    for(int q=0;q<states.rows();++q) {
++        const auto primitive=p_.example.gas.primitive(states.row(q).transpose());
++        primitives_(q,3*cell)=primitive.velocity[0];
++        primitives_(q,3*cell+1)=primitive.velocity[1];
++        primitives_(q,3*cell+2)=primitive.enthalpy;
++    }
++}
++void VolumeJacobian::cache_cell_jacobians(int cell) const {
++    for(int q=0;q<primitives_.rows();++q) {
++        const auto x=p_.example.gas.cached_jacobian(primitives_(q,3*cell),primitives_(q,3*cell+1),primitives_(q,3*cell+2),0);
++        const auto y=p_.example.gas.cached_jacobian(primitives_(q,3*cell),primitives_(q,3*cell+1),primitives_(q,3*cell+2),1);
++        for(int w=0;w<NVAR;++w) for(int v=0;v<NVAR;++v) {
++            x_(q,w*NVAR+v)=x(v,w); y_(q,w*NVAR+v)=y(v,w);
++        }
+     }
+ }
+ void VolumeJacobian::refresh(const Vec &state) {
+@@ -37,15 +41,20 @@ void VolumeJacobian::refresh(const Vec &state) {
+     ready_ = true;
+ }
+ void VolumeJacobian::point_action(int cell, ConstBlockRef direction) const {
+-    for (int v = 0; v < NVAR; ++v) {
+-        flux_x_.col(v).setZero();
+-        flux_y_.col(v).setZero();
+-        for (int w = 0; w < NVAR; ++w) {
+-            int column = (cell * NVAR + w) * NVAR + v;
+-            flux_x_.col(v).array() += x_.col(column).array() * direction.col(w).array();
+-            flux_y_.col(v).array() += y_.col(column).array() * direction.col(w).array();
+-        }
+-    }
++    const auto u=primitives_.col(3*cell).array(), v=primitives_.col(3*cell+1).array();
++    const auto H=primitives_.col(3*cell+2).array();
++    const auto dr=direction.col(Density).array(), dx=direction.col(MomentumX).array();
++    const auto dy=direction.col(MomentumY).array(), de=direction.col(Energy).array();
++    pressure_direction_.array()=(p_.example.gas.gamma()-1.)*(de-u*dx-v*dy+.5*(u.square()+v.square())*dr);
++    const auto dp=pressure_direction_.array();
++    flux_x_.col(Density)=direction.col(MomentumX);
++    flux_y_.col(Density)=direction.col(MomentumY);
++    flux_x_.col(MomentumX).array()=2*u*dx-u.square()*dr+dp;
++    flux_x_.col(MomentumY).array()=u*dy+v*dx-u*v*dr;
++    flux_y_.col(MomentumX)=flux_x_.col(MomentumY);
++    flux_y_.col(MomentumY).array()=2*v*dy-v.square()*dr+dp;
++    flux_x_.col(Energy).array()=H*(dx-u*dr)+u*(de+dp);
++    flux_y_.col(Energy).array()=H*(dy-v*dr)+v*(de+dp);
+ }
+ void VolumeJacobian::apply(const Vec &direction, Vec &result) const {
+     require(ready_, "Refresh the volume Jacobian before applying it");
+@@ -60,7 +69,7 @@ void VolumeJacobian::apply(const Vec &direction, Vec &result) const {
+         tensor_.subtract_weak(flux_x_, flux_y_, p_.layout.cell(result, cell));
+     }
+ }
+-void VolumeJacobian::collocated_block(int cell, BlockRef result) const {
++void VolumeJacobian::collocated_block(int /*cell*/, BlockRef result) const {
+     const int n = p_.basis.nodes, plane = p_.layout.plane();
+     for (int w = 0; w < NVAR; ++w)
+         for (int jy = 0; jy < n; ++jy)
+@@ -68,7 +77,7 @@ void VolumeJacobian::collocated_block(int cell, BlockRef result) const {
+                 int node = jx + n * jy;
+                 auto column = result.col(p_.layout.local(w, node));
+                 for (int v = 0; v < NVAR; ++v) {
+-                    int coefficient = (cell * NVAR + w) * NVAR + v;
++                    int coefficient = w * NVAR + v;
+                     column.segment(v * plane + n * jy, n).noalias() -=
+                         (.5 * p_.hy * p_.basis.w[jy] * x_(node, coefficient)) *
+                         derivative_transpose_.col(jx);
+@@ -78,7 +87,7 @@ void VolumeJacobian::collocated_block(int cell, BlockRef result) const {
+                 }
+             }
+ }
+-void VolumeJacobian::overintegrated_block(int cell, BlockRef result) const {
++void VolumeJacobian::overintegrated_block(int /*cell*/, BlockRef result) const {
+     const auto &b = p_.basis;
+     const int n = b.nodes, Q = b.points, plane = p_.layout.plane();
+     // Contract qx first into n-by-n line matrices; then assemble qy factors.
+@@ -86,7 +95,7 @@ void VolumeJacobian::overintegrated_block(int cell, BlockRef result) const {
+     for (int qb = 0; qb < Q; ++qb)
+         for (int w = 0; w < NVAR; ++w)
+             for (int v = 0; v < NVAR; ++v) {
+-                int coefficient = (cell * NVAR + w) * NVAR + v;
++                int coefficient = w * NVAR + v;
+                 for (int k = 0; k < n; ++k) {
+                     weights_x_.array() = x_.col(coefficient).segment(qb * Q, Q).array() * b.values.col(k).array();
+                     weights_y_.array() = y_.col(coefficient).segment(qb * Q, Q).array() * b.values.col(k).array();
+@@ -109,6 +118,7 @@ void VolumeJacobian::block(int cell, BlockRef result) const {
+     require(ready_, "Refresh the volume Jacobian before assembling a block");
+     result.setZero();
+     if (p_.basis.nodes > 1) {
++        cache_cell_jacobians(cell);
+         if (p_.basis.points == p_.basis.nodes) collocated_block(cell, result);
+         else overintegrated_block(cell, result);
+     }
+diff --git a/scripts/build.ps1 b/scripts/build.ps1
+index 29aff88..583db23 100644
+--- a/scripts/build.ps1
++++ b/scripts/build.ps1
+@@ -11,11 +11,11 @@ try {
+     New-Item -ItemType Directory -Force build/objects | Out-Null
+     $flags = @('-std=c++17', '-O2', '-Wall', '-Wextra', '-Wpedantic',
+                '-UNDEBUG', '-DEIGEN_RUNTIME_NO_MALLOC', '-DEIGEN_DONT_PARALLELIZE',
+-               '-Idg_hdg_1d/include', '-Ivendor/fastgl', '-isystem', $Eigen)
++               '-Idg_hdg_1d/include', '-Icommon/include', '-Ivendor/fastgl', '-isystem', $Eigen)
+     $sources = @('src/config.cpp', 'src/physics.cpp', 'src/simple_wave.cpp',
+                  'src/discretization.cpp', 'src/volume_jacobian.cpp', 'src/dg_operator.cpp',
+                  'src/hybrid.cpp', 'src/time_integrator.cpp',
+-                 'src/linalg/block_graph.cpp', 'src/linalg/block_ilu.cpp', 'src/linalg/gmres.cpp')
++                 '../common/src/linalg/block_graph.cpp', '../common/src/linalg/block_ilu.cpp', '../common/src/linalg/gmres.cpp')
+     $objects = @()
+     & $Cxx @flags -c vendor/fastgl/fastgl.cpp -o build/objects/fastgl.o
+     if ($LASTEXITCODE -ne 0) { throw 'FastGL compilation failed' }

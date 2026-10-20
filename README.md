@@ -1,98 +1,89 @@
-# 1D Euler：分块 DG / HDG 重构
+# Eigen Euler：1D / 2D DG 与凝聚 HDG
 
-本目录是独立实现；`../DG_HDG_Euler_Cpp` 仅作为数学参照，不依赖或修改原目录。
-本阶段只实现 1D 周期 Euler、隐式 Euler 时间离散、冻结 Einfeldt/HLL 波速，以及
-代数等价的 DG 与 augmented-trace HDG。没有开始 2D 实现。
+保留 `common/`、`dg_hdg_1d/`、`dg_hdg_2d/`、`cmake/`、`vendor/fastgl/` 架构，
+以现有 1D 算法为核心，使用 Eigen 和 FastGL，不依赖 MFEM。
+1D 与 2D 分别构建独立可执行文件和测试；公共线性代数复用 Eigen。
+数值协议参照 [mfem_euler2d_cpp](https://github.com/YueWu2002/mfem_euler2d_cpp)，
+将旋转二维简单波限制到一维周期区间 [-1,1]，gamma=3。
 
-## 文件框架
+- [数学定义](MATHEMATICS.md)：简单波、Gauss DG、DIRK3、凝聚及残差标准。
+- [架构与性能边界](DESIGN.md)：Eigen 布局、matrix-free、局部块与预分配。
+- [验证协议](VALIDATION.md)、[1D 实验](RESULTS.md)、[2D 实验](RESULTS_2D.md)、[内存估算](MEMORY_ESTIMATE.md)。
+- `accuracy_test/1d/`：独立 1D 收敛测试；`speed_test/1d/`：独立 1D Slurm 速度测试。
 
-```text
-CMakeLists.txt                 继承原项目顶层结构，仅启用 1D
-cmake/                        继承原项目编译选项、BLAS/LAPACK 配置
-vendor/fastgl/                原项目 FastGL，始终参与构建与链接
-dg_hdg_1d/CMakeLists.txt       1D 独立构建入口
-dg_hdg_1d/include/euler/
-  types.hpp                    constexpr NVAR、物理分量名称、张量 Layout
-  config.hpp                   运行选项
-  physics.hpp                  Gas、Euler 通量/解析导数、Einfeldt 波速
-  simple_wave.hpp              算例持有 gamma，解析解与光滑时间范围
-  nodal_basis.hpp              仅初始化时计算的参考单元，无 basis.cpp 包装层
-  discretization.hpp           质量张量、DG 残差、状态插值与积分
-  volume_jacobian.hpp          积分点 Jacobian 缓存、配点特化、体积分块与 Jv
-  dg_operator.hpp              Newton 状态快照、缓存面导数、完整 DG 的 block/apply
-  hybrid.hpp                   HDG 局部块、静态凝聚、Schur 算子及恢复
-  time_integrator.hpp          预分配工作区、CFL、Newton、正性线搜索
-  linalg/
-    block_graph.hpp            单元/界面级 CSR 图、块矩阵、块图 COLAMD
-    dense_lu.hpp               块内选主元 LU、左/右回代，均不求逆
-    block_ilu.hpp              分块 ILU(0) / block-Jacobi
-    gmres.hpp                  Eigen 工作区上的 matrix-free GMRES
-    direct.hpp                 全局选主元 LU，供小规模准确参考
-dg_hdg_1d/src/                对应模块的 .cpp；main.cpp 只处理运行与输出
-  linalg/                     分块线性代数实现
-dg_hdg_1d/check/
-  main.cpp                     独立检查程序入口
-  check_1d.hpp/.cpp             检查代码完全独立于计算库
-  linearization.cpp            缓存生命周期、首次调用无 Eigen 分配检查
-  dg_reference.hpp/.cpp        独立的一般积分点参考实现
-  benchmark_dg.cpp             小网格的系数刷新、块装填与 Jv 计时
-scripts/
-  build.ps1                    没有 CMake 时使用 MinGW 的本地构建入口
-DESIGN.md                      张量次序、方程、预条件及内存约束
-```
+## 构建
 
-## 构建与运行
-
-依赖为 C++17、Eigen >= 3.4，以及随项目保留的 FastGL。
-COLAMD 使用 Eigen 自带实现，不需要外部稀疏求解库。
-原项目的 `DGH_BLAS_BACKEND`、`DGH_LAPACK_BACKEND` 和 `DGH_NATIVE_ARCH` 选项继续保留。
-Eigen 可通过安装包提供 `Eigen3Config.cmake`，或把 Eigen 3.4.0 解压到
-`.deps/eigen-3.4.0/`（此目录不纳入源代码）。
+C++17、CMake >=3.22、Eigen >=3.4。构建和配置不会运行测试。
 
 ```sh
-cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --config Release
-ctest --test-dir build -C Release --output-on-failure
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DDGH_NATIVE_ARCH=ON
+cmake --build build -j 4
+ctest --test-dir build --output-on-failure
+python3 code_test/1d/test_solver.py --exe build/dg_hdg_1d/dg_hdg \
+  --output code_test/1d/results/local_unique
 ```
 
-Windows 当前环境也可使用：
+OSCAR 使用 `bash intel-build.sh`（默认构建 1D），加载 Intel 编译器、MKL、Eigen 和 CMake，
+单线程、Release、native、SIMD、IPO；实际编译信息写入构建日志。
+速度作业在分配到的 Intel 计算节点编译并运行，避免跨 CPU 的 native 指令差异。
 
-```powershell
-./scripts/build.ps1
-./build/check_1d.exe
-./build/benchmark_dg.exe
-./build/dg_hdg.exe --cells 32 --k 3 --cfl 0.2 --T 0.1 --method both
-./build/dg_hdg.exe --cells 8 --k 2 --cfl 0.2 --T 0.03 --linear direct --prefix output/reference
-./build/dg_hdg.exe --cells 32 --k 3 --steps 10 --precond block-jacobi --ordering natural
+## 1D 运行
+
+```sh
+build/dg_hdg_1d/dg_hdg --cells 32 --k 2 --integrator ssp-dirk3 \
+  --cfl 2 --T 0.2 --method both --precond block-jacobi \
+  --ntol 1e-12 --ltol 1e-12 --prefix output/dirk3
+
+# 受控速度工作负载；仅最后三次 Newton 更新进入均值
+build/dg_hdg_1d/dg_hdg --cells 512 --k 8 --integrator be \
+  --steps 1 --newton-steps 4 --warmup-updates 1 --cfl 5 \
+  --precond block-jacobi --timing-only --method both --prefix output/speed
 ```
 
-`--linear gmres`（默认）和 `--linear direct` 均支持 DG / HDG。
-CMake 构建的程序位于 `build/dg_hdg_1d/`（多配置生成器可能另有 Release 子目录）。
-直接路径使用全局稠密选主元 LU，**内存 O(n²)、分解 O(n³)，仅用于小规模参考**；
-HDG 的 n 是界面 DOF 数。此选择保证直接路径也能在时间循环内禁止 Eigen 堆分配。
-GMRES 路径没有全局标量稀疏矩阵或全局稠密矩阵。
-DG 每次 Newton 线性求解前刷新一次积分点与面导数，所有 GMRES 作用及块查询复用该快照。
-默认配点时不做恒等插值，体积分块直接按微分矩阵系数装填；`--quad` 超积分仍受支持。
-模块调用顺序、缓存失效条件及辅助张量布局见 `DESIGN.md`。
+默认 DIRK3、block-Jacobi、自然块顺序；`--integrator be` 保留后向 Euler。
+`--linear direct` 为小规模稠密参考，主路径始终 matrix-free；
+block ILU(0) 继续可用。输出 summary、逐 Newton 更新计时和可选节点解。
+`--timing-only` 跳过误差积分与解文件，仍保留残差验收及正性检查。
 
-时间步只由 `--cfl` 决定，可用 `--T` 或 `--steps` 停止，两者不能同时指定。
-`--dt`、`--increment-state`、普通 `ilu`、外部稀疏求解后端均不存在。
-`gamma` 只在 `SimpleWave` 中设置一次，不是状态、命令行或 CSV 字段。
+## 1D 实验顺序
 
-输出为 `<prefix>_summary.csv` 和 `<prefix>_solution.csv`。
-summary 记录 CFL、求解器、迭代统计、自动选出的步长范围、L2 误差和守恒漂移。
-所有输出在时间循环结束后写出；`--help` 显示支持的参数。
+```sh
+bash accuracy_test/1d/submit.sh
+# 收敛作业成功后，依赖关系确保先精度后速度
+bash speed_test/1d/submit.sh --dependency afterok:ACCURACY_JOB_ID
+```
 
-## 验证
+收敛网格 32/64/128/256/512，k=2、DIRK3、CFL=2、T=0.2。
+速度网格 512，BE、CFL=5、每次运行四次 Newton 更新，首个预热，后三个均值。
+脚本保留命令、源码快照、编译日志、CPU/编译器信息和可执行文件哈希，
+每次作业独立输出，不覆盖旧实验。8 倍目标不能替代测量结果。
 
-`check_1d` 检查张量步长、连续块数值池、ILU(0) 块数固定、Gauss 精度、基函数导数、强制换行选主元的左右 LU 回代、
-block ILU 的无缺失填充情形、COLAMD、GMRES 真残差、DG Jacobian 有限差分、
-DG/HDG Newton 修正等价性、Schur 块/算子一致性、非投影 trace 的完整 HDG 有限差分、
-时间推进中的守恒、解析解时间收敛，以及 DG/HDG/direct/GMRES 的最终状态。
+## 2D 张量积实现
 
-计算库启用 `EIGEN_RUNTIME_NO_MALLOC`；默认时间推进从第一步起禁止 Eigen 堆分配，
-而非先执行一次迭代后再检查。Release 构建也保留这些断言。
-这验证 Eigen 可控制的分配，不宣称拦截操作系统或 C++ 标准库的所有分配。
+```sh
+BUILD_1D=OFF BUILD_2D=ON BUILD_DIR=build-2d-intel bash intel-build.sh
+ctest --test-dir build-2d-intel --output-on-failure
+python3 code_test/2d/test_solver.py --exe build-2d-intel/dg_hdg_2d/dg_hdg_2d \
+  --output code_test/2d/results/local_unique
+build-2d-intel/dg_hdg_2d/dg_hdg_2d --nx 32 --ny 32 --k 2 \
+  --integrator ssp-dirk3 --cfl 2 --T 0.2 --method both --no-save-solution \
+  --prefix output/2d_q2
+```
 
-本次验证后已按存储空间要求清理临时依赖、下载归档、构建产物和测试输出。
-后续重新编译时需提供 Eigen 与 CMake；FastGL 源码始终保留在 `vendor/fastgl/`。
+2D 采用旋转周期简单波和参考项目相同的中心矩形计算域，默认 alpha=45°、gamma=3。
+体积 Jv 为方向一维收缩，缓存仅 u/v/H 三场；HDG 采用单元流式精确凝聚和多右端回代，
+面耦合按限制到面、点上小矩阵、提升分解，避免完整 C 矩阵乘法。
+块 Jacobi 对每个完整单元/面块执行精确 LU 求解，只保存一份 LU，复用装填矩阵。
+张量积用于精确算子收缩、面限制/提升和局部装填，保持完整的方向耦合。
+
+[2D 正确性](code_test/2d/README.md)、[收敛](accuracy_test/2d/README.md)、
+[256×256 Slurm 速度测试与 100 GiB 内存预算](speed_test/2d/README.md)。
+
+```sh
+bash accuracy_test/2d/submit.sh
+bash speed_test/2d/submit.sh
+```
+
+精度网格 N=32/64/128/256；速度 k=8→0，512 网格和既有结果仍仅指 1D。
+
+实验代码版本、参数与 CPU 的追溯规则见 [AGENTS.md](AGENTS.md)。

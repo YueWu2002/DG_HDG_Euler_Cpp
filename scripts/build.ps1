@@ -11,11 +11,11 @@ try {
     New-Item -ItemType Directory -Force build/objects | Out-Null
     $flags = @('-std=c++17', '-O2', '-Wall', '-Wextra', '-Wpedantic',
                '-UNDEBUG', '-DEIGEN_RUNTIME_NO_MALLOC', '-DEIGEN_DONT_PARALLELIZE',
-               '-Idg_hdg_1d/include', '-Ivendor/fastgl', '-isystem', $Eigen)
+               '-Idg_hdg_1d/include', '-Icommon/include', '-Ivendor/fastgl', '-isystem', $Eigen)
     $sources = @('src/config.cpp', 'src/physics.cpp', 'src/simple_wave.cpp',
                  'src/discretization.cpp', 'src/volume_jacobian.cpp', 'src/dg_operator.cpp',
                  'src/hybrid.cpp', 'src/time_integrator.cpp',
-                 'src/linalg/block_graph.cpp', 'src/linalg/block_ilu.cpp', 'src/linalg/gmres.cpp')
+                 '../common/src/linalg/block_graph.cpp', '../common/src/linalg/block_ilu.cpp', '../common/src/linalg/gmres.cpp')
     $objects = @()
     & $Cxx @flags -c vendor/fastgl/fastgl.cpp -o build/objects/fastgl.o
     if ($LASTEXITCODE -ne 0) { throw 'FastGL compilation failed' }

@@ -1,5 +1,5 @@
 #pragma once
-#include "types.hpp"
+#include "euler/types.hpp"
 #include <fastgl.h>
 #include <algorithm>
 #include <utility>

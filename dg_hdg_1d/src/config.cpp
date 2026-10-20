@@ -4,10 +4,12 @@
 #include <iostream>
 namespace euler {
 void validate(const Config &c) {
-    require(c.cells >= 3 && c.degree >= 0 && c.quadrature >= 0, "Invalid mesh or degree");
+    require(c.cells >= 3 && c.degree >= 0 && c.degree <= 8 && c.quadrature >= 0, "Invalid mesh or degree");
     require(c.quadrature == 0 || c.quadrature >= c.degree + 1, "Quadrature must be >= degree+1");
     require(c.restart > 0 && c.max_linear > 0 && c.max_newton > 0 && c.steps >= 0,
             "Invalid iteration limit");
+    require(c.newton_steps >= 0 && c.warmup_updates >= 0, "Invalid timing update count");
+    require(c.integrator == "be" || c.integrator == "ssp-dirk3", "Invalid integrator");
     require(std::isfinite(c.cfl) && c.cfl > 0 && std::isfinite(c.final_time) && c.final_time >= 0,
             "CFL must be positive and final time nonnegative");
     require(std::isfinite(c.safety) && c.safety >= 1 && std::isfinite(c.nonlinear_tolerance) &&
@@ -42,6 +44,16 @@ Config parse(int argc, char **argv) {
         };
         if (option == "--cells")
             c.cells = integer();
+        else if (option == "--newton-steps")
+            c.newton_steps = integer();
+        else if (option == "--warmup-updates")
+            c.warmup_updates = integer();
+        else if (option == "--integrator")
+            c.integrator = value();
+        else if (option == "--timing-only")
+            c.timing_only = true;
+        else if (option == "--check-update")
+            c.check_update = true;
         else if (option == "--k")
             c.degree = integer();
         else if (option == "--quad")
@@ -85,11 +97,13 @@ Config parse(int argc, char **argv) {
                 name == "block-jacobi" ? Preconditioner::BlockJacobi : Preconditioner::BlockILU0;
         } else if (option == "--help") {
             std::cout
-                << "1D periodic implicit Euler DG / condensed HDG\n"
+                << "1D periodic Euler DG / condensed HDG\n"
                    "--cells N --k K --quad Q --cfl C (--T T | --steps N)\n"
                    "--method dg|hdg|both --linear direct|gmres --precond block-jacobi|block-ilu0\n"
                    "--ordering natural|colamd --restart N --max-linear N --max-newton N\n"
-                   "--ntol R --ltol R --safety S --prefix PATH\n";
+                   "--ntol R --ltol R --safety S --prefix PATH\n"
+                   "--integrator ssp-dirk3|be --newton-steps N --warmup-updates N\n"
+                   "--timing-only --check-update\n";
             std::exit(0);
         } else
             throw std::runtime_error("Unknown option: " + option);

@@ -9,6 +9,7 @@ class TensorProduct {
     void subtract_weak(ConstBlockRef flux_x, ConstBlockRef flux_y, BlockRef residual) const;
 
   private:
+    template<int N> void subtract_collocated(ConstBlockRef fx, ConstBlockRef fy, BlockRef residual) const;
     const NodalBasis &b_;
     double scale_x_, scale_y_;
     Mat derivative_transpose_, weighted_values_, weighted_values_transpose_;

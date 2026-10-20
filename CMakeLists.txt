@@ -11,3 +11,8 @@ option(DGH_BUILD_1D "Build the 1D solver" ON)
 if(DGH_BUILD_1D)
     add_subdirectory(dg_hdg_1d)
 endif()
+
+option(DGH_BUILD_2D "Build the 2D tensor-product solver" ON)
+if(DGH_BUILD_2D)
+    add_subdirectory(dg_hdg_2d)
+endif()

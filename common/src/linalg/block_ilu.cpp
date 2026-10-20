@@ -14,7 +14,7 @@ static BlockGraph permuted_graph(const BlockGraph &graph, const std::vector<int>
 }
 BlockPreconditioner::BlockPreconditioner(const BlockGraph &graph, int width, Preconditioner kind,
                                          bool colamd, int nx_nodes, int ny_nodes)
-    : order_(block_ordering(graph, colamd)),
+    : order_(block_ordering(graph, kind == Preconditioner::BlockILU0 && colamd)),
       factors_(permuted_graph(graph, order_, kind), width, nx_nodes, ny_nodes),
       work_(graph.rows * width), kind_(kind) {
     diagonal_.reserve(graph.rows);
@@ -62,6 +62,11 @@ void BlockPreconditioner::factorize() {
 void BlockPreconditioner::apply(const Vec &rhs, Vec &result) const {
     const auto &graph = factors_.graph;
     int width = factors_.width;
+    if (kind_ == Preconditioner::BlockJacobi) {
+        for (int i = 0; i < graph.rows; ++i)
+            diagonal_[i].solve(rhs.segment(i * width, width), result.segment(i * width, width));
+        return;
+    }
     for (int i = 0; i < graph.rows; ++i)
         work_.segment(i * width, width) = rhs.segment(order_[i] * width, width);
     for (int i = 0; i < graph.rows; ++i)

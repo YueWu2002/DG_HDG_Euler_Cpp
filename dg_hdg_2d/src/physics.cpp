@@ -39,6 +39,22 @@ FluxJacobian Gas::jacobian(const State &u, const Primitive &p, int axis) const {
     a(Energy, Energy) += p.velocity[axis];
     return a;
 }
+FluxJacobian Gas::cached_jacobian(double u, double v, double H, int axis) const {
+    const double gm = gamma_ - 1., speed2 = u*u + v*v;
+    FluxJacobian a = FluxJacobian::Zero();
+    if (axis == 0) {
+        a(Density, MomentumX) = 1.;
+        a.row(MomentumX) << .5*(gamma_-3)*u*u + .5*gm*v*v, (3-gamma_)*u, -gm*v, gm;
+        a.row(MomentumY) << -u*v, v, u, 0.;
+        a.row(Energy) << u*(.5*gm*speed2-H), H-gm*u*u, -gm*u*v, gamma_*u;
+    } else {
+        a(Density, MomentumY) = 1.;
+        a.row(MomentumX) << -u*v, v, u, 0.;
+        a.row(MomentumY) << .5*gm*u*u + .5*(gamma_-3)*v*v, -gm*u, (3-gamma_)*v, gm;
+        a.row(Energy) << v*(.5*gm*speed2-H), -gm*u*v, H-gm*v*v, gamma_*v;
+    }
+    return a;
+}
 Speed einfeldt(const State &l, const State &r, const Gas &gas, double safety, int axis) {
     auto pl = gas.primitive(l), pr = gas.primitive(r);
     require(l[Density] > 0 && r[Density] > 0 && pl.pressure > 0 && pr.pressure > 0,

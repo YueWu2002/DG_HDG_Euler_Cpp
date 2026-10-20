@@ -1,0 +1,12 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7635952
+##  Job Name : eigen-2d-speed
+##  Nodelist : node2301
+##      CPUs : 1
+##  Mem/Node : 102400 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Mon Oct 19 21:50:29 EDT 2026
+###############################################################################
+Start dg: N=256x256, k=8, exact block Jacobi
+Completed dg k=8: mean=2146.3353 s, RSS=58.1901 GiB
+Start hdg: N=256x256, k=8, exact block Jacobi

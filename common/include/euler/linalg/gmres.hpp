@@ -16,7 +16,7 @@ struct LinearResult {
     int iterations;
     double relative_residual;
 };
-// Restarted right-preconditioned GMRES with twice modified Gram-Schmidt.
+// Restarted right-preconditioned GMRES with twice classical Gram-Schmidt.
 // A and M^-1 are operator actions. Eigen owns all numerical workspaces.
 class GMRES {
   public:
@@ -24,10 +24,12 @@ class GMRES {
     LinearResult solve(Action matrix, Action preconditioner, const Vec &rhs, Vec &x,
                        int max_iterations, double tolerance);
 
+    const Vec &residual() const { return residual_; }
+
   private:
     int restart_;
-    Mat basis_, preconditioned_, hessenberg_;
-    Vec cosine_, sine_, rotated_rhs_, coefficients_, work_, residual_, column_, weights_;
+    Mat basis_, hessenberg_;
+    Vec cosine_, sine_, rotated_rhs_, coefficients_, work_, residual_, column_, weights_, weighted_, projection_;
     double dot(const Vec &a, const Vec &b) const;
     double norm(const Vec &a) const;
 };

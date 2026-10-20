@@ -2,8 +2,8 @@
 #include <algorithm>
 namespace euler {
 Problem::Problem(const Config &c)
-    : config(c), basis(c.degree, c.quadrature), layout(c.nx, c.ny, basis.nodes), example(c.testcase),
-      hx(2. / c.nx), hy(2. / c.ny), old(layout.size()), mass(layout.size()),
+    : config(c), basis(c.degree, c.quadrature), layout(c.nx, c.ny, basis.nodes), example(c.testcase, c.alpha_degrees),
+      hx(example.lx / c.nx), hy(example.ly / c.ny), old(layout.size()), mass(layout.size()),
       inverse_mass(layout.size()), trace_mass(trace_size()), inverse_trace_mass(trace_size()),
       speeds(face_count() * basis.nodes), tensor_(basis, hx, hy),
       points_(basis.points * basis.points, NVAR), flux_x_(points_.rows(), NVAR),
@@ -46,21 +46,59 @@ State Problem::sample(const Vec &u, int cell, int side, int q) const {
             state[v] += shape[i] * u[layout.index(cell, v, face_node(side, q, i))];
     return state;
 }
-void Problem::face_values(ConstBlockRef nodal, int side, BlockRef values) const {
-    const Vec &shape = side % 2 ? basis.right : basis.left;
-    for (int v = 0; v < NVAR; ++v) {
-        Eigen::Map<const Mat> sheet(nodal.col(v).data(), basis.nodes, basis.nodes);
-        if (side < 2) values.col(v).noalias() = sheet.transpose() * shape;
-        else values.col(v).noalias() = sheet * shape;
+namespace {
+template<int N> void restrict_face(ConstBlockRef nodal,int side,const Vec &shape,BlockRef values) {
+    using Sheet=Eigen::Matrix<double,N,N>;
+    using Line=Eigen::Matrix<double,N,1>;
+    Eigen::Map<const Line> e(shape.data());
+    for(int v=0;v<NVAR;++v) {
+        Eigen::Map<const Sheet> sheet(nodal.col(v).data());
+        Eigen::Map<Line> out(values.col(v).data());
+        if(side<2) out.noalias()=sheet.transpose()*e;
+        else out.noalias()=sheet*e;
     }
 }
-void Problem::lift(int side, ConstBlockRef values, BlockRef nodal, double scale) const {
-    const Vec &shape = side % 2 ? basis.right : basis.left;
-    for (int v = 0; v < NVAR; ++v) {
-        Eigen::Map<Mat> sheet(nodal.col(v).data(), basis.nodes, basis.nodes);
-        if (side < 2) sheet.noalias() += scale * shape * values.col(v).transpose();
-        else sheet.noalias() += scale * values.col(v) * shape.transpose();
+template<int N> void lift_face(int side,ConstBlockRef values,BlockRef nodal,const Vec &shape,double scale) {
+    using Sheet=Eigen::Matrix<double,N,N>;
+    using Line=Eigen::Matrix<double,N,1>;
+    Eigen::Map<const Line> e(shape.data());
+    for(int v=0;v<NVAR;++v) {
+        Eigen::Map<Sheet> sheet(nodal.col(v).data());
+        Eigen::Map<const Line> f(values.col(v).data());
+        if(side<2) sheet.noalias()+=scale*e*f.transpose();
+        else sheet.noalias()+=scale*f*e.transpose();
     }
+}
+}
+void Problem::face_values(ConstBlockRef nodal,int side,BlockRef values) const {
+    const Vec &shape=side%2?basis.right:basis.left;
+    switch(basis.nodes) {
+    case 1: restrict_face<1>(nodal,side,shape,values); return;
+    case 2: restrict_face<2>(nodal,side,shape,values); return;
+    case 3: restrict_face<3>(nodal,side,shape,values); return;
+    case 4: restrict_face<4>(nodal,side,shape,values); return;
+    case 5: restrict_face<5>(nodal,side,shape,values); return;
+    case 6: restrict_face<6>(nodal,side,shape,values); return;
+    case 7: restrict_face<7>(nodal,side,shape,values); return;
+    case 8: restrict_face<8>(nodal,side,shape,values); return;
+    case 9: restrict_face<9>(nodal,side,shape,values); return;
+    }
+    throw std::runtime_error("Unsupported face degree");
+}
+void Problem::lift(int side,ConstBlockRef values,BlockRef nodal,double scale) const {
+    const Vec &shape=side%2?basis.right:basis.left;
+    switch(basis.nodes) {
+    case 1: lift_face<1>(side,values,nodal,shape,scale); return;
+    case 2: lift_face<2>(side,values,nodal,shape,scale); return;
+    case 3: lift_face<3>(side,values,nodal,shape,scale); return;
+    case 4: lift_face<4>(side,values,nodal,shape,scale); return;
+    case 5: lift_face<5>(side,values,nodal,shape,scale); return;
+    case 6: lift_face<6>(side,values,nodal,shape,scale); return;
+    case 7: lift_face<7>(side,values,nodal,shape,scale); return;
+    case 8: lift_face<8>(side,values,nodal,shape,scale); return;
+    case 9: lift_face<9>(side,values,nodal,shape,scale); return;
+    }
+    throw std::runtime_error("Unsupported face degree");
 }
 void Problem::evaluate_volume_flux(ConstBlockRef states) const {
     for (int q = 0; q < states.rows(); ++q) {
@@ -194,7 +232,7 @@ bool Problem::admissible(const Vec &u) const {
     return true;
 }
 double Problem::residual_norm(const Vec &r) const {
-    return std::sqrt(.25 * (r.array().square() * inverse_mass.array()).sum());
+    return std::sqrt((r.array().square() * inverse_mass.array()).sum() / (example.lx * example.ly));
 }
 State Problem::integral(const Vec &u) const {
     State result = State::Zero();

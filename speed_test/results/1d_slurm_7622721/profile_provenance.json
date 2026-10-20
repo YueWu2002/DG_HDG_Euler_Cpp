@@ -1,0 +1,11 @@
+{
+  "dimension": "1d",
+  "legacy": true,
+  "original_files": [
+    "speed_test/1d/profile_summary_20261019.csv"
+  ],
+  "code_version": null,
+  "cpu_model": null,
+  "parameters": "See CSV columns; missing metadata cannot be reconstructed from the retained files.",
+  "note": "Original raw run directories were removed in earlier cleanup. Preserve surviving data; do not infer missing identity."
+}

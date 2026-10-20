@@ -1,0 +1,46 @@
+
+Lmod is automatically replacing "intel-oneapi-compilers/2025.2.0-bmbg" with
+"gcc/11.5.0-wfyo".
+
+-- Native CPU optimization: ON (-march=native)
+-- MKL found: linking MKL::MKL (LP64, sequential)
+-- BLAS linked: YES (MKL; target MKL::MKL)
+-- C++ compiler: IntelLLVM 2025.2.0 (/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx)
+-- Eigen backend: MKL (requested MKL)
+-- Performing Test DGH_MKL_LAPACKE_LINKS
+-- Performing Test DGH_MKL_LAPACKE_LINKS - Success
+-- Eigen LAPACK linked: YES (MKL)
+-- Eigen LAPACK backend: MKL (requested MKL)
+-- Configuring done (5.4s)
+-- Generating done (2.0s)
+-- Build files have been written to: /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-2d-intel
+[  4%] Built target dgh_fastgl
+[  6%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/config.cpp.o
+[ 43%] Built target euler_2d
+[ 47%] Built target dg_hdg_2d
+[ 50%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/dg_operator.cpp.o
+[ 52%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/discretization.cpp.o
+[ 56%] Built target check_2d
+[ 59%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/hybrid.cpp.o
+[ 61%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/physics.cpp.o
+[ 63%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/simple_wave.cpp.o
+[ 65%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/time_integrator.cpp.o
+[ 68%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/src/volume_jacobian.cpp.o
+[ 70%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/__/common/src/linalg/block_graph.cpp.o
+[ 72%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/__/common/src/linalg/block_ilu.cpp.o
+[ 75%] Building CXX object dg_hdg_1d/CMakeFiles/euler_1d.dir/__/common/src/linalg/gmres.cpp.o
+[ 77%] Linking CXX static library libeuler_1d.a
+[ 77%] Built target euler_1d
+[ 81%] Building CXX object dg_hdg_1d/CMakeFiles/dg_hdg.dir/src/main.cpp.o
+[ 81%] Building CXX object dg_hdg_1d/CMakeFiles/check_1d.dir/check/main.cpp.o
+[ 84%] Building CXX object dg_hdg_1d/CMakeFiles/check_1d.dir/check/check_1d.cpp.o
+[ 86%] Linking CXX executable dg_hdg
+[ 88%] Building CXX object dg_hdg_1d/CMakeFiles/check_1d.dir/check/linearization.cpp.o
+[ 90%] Building CXX object dg_hdg_1d/CMakeFiles/check_1d.dir/check/dg_reference.cpp.o
+[ 90%] Built target dg_hdg
+[ 93%] Building CXX object dg_hdg_1d/CMakeFiles/benchmark_dg.dir/check/benchmark_dg.cpp.o
+[ 95%] Linking CXX executable check_1d
+[ 97%] Building CXX object dg_hdg_1d/CMakeFiles/benchmark_dg.dir/check/dg_reference.cpp.o
+[100%] Linking CXX executable benchmark_dg
+[100%] Built target benchmark_dg
+[100%] Built target check_1d

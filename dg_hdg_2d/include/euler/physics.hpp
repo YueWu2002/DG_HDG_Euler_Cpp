@@ -9,6 +9,7 @@ class Gas {
   public:
     explicit Gas(double gamma) : gamma_(gamma) {}
     double gamma() const { return gamma_; }
+    FluxJacobian cached_jacobian(double u, double v, double enthalpy, int axis) const;
     double pressure(const State &state) const;
     Primitive primitive(const State &state) const;
     State flux(const State &state, const Primitive &primitive, int axis) const;

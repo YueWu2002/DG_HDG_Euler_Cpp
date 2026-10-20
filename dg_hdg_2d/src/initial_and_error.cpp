@@ -11,8 +11,8 @@ void Problem::initial(Vec &u) const {
         for (int j = 0; j < Q; ++j)
             for (int i = 0; i < Q; ++i)
                 samples.row(i + Q * j) = example.exact(
-                    -1 + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
-                    -1 + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], 0).transpose();
+                    -.5 * example.lx + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
+                    -.5 * example.ly + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], 0).transpose();
         for (int v = 0; v < NVAR; ++v) {
             Eigen::Map<const Mat> sample(samples.col(v).data(), Q, Q);
             multiply(basis.projection, sample, scratch);
@@ -63,8 +63,8 @@ State Problem::error(const Vec &u, double time) const {
         for (int j = 0; j < Q; ++j)
             for (int i = 0; i < Q; ++i) {
                 State difference = values.row(i + Q * j).transpose() - example.exact(
-                    -1 + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
-                    -1 + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], time);
+                    -.5 * example.lx + hx * (cell % layout.nx + .5) + .5 * hx * basis.error_x[i],
+                    -.5 * example.ly + hy * (cell / layout.nx + .5) + .5 * hy * basis.error_x[j], time);
                 result.array() += .25 * hx * hy * basis.error_w[i] * basis.error_w[j] *
                                   difference.array().square();
             }

@@ -4,7 +4,7 @@ namespace euler {
 double Example::shock_time() const {
     if (testcase == "wave")
         return std::numeric_limits<double>::infinity();
-    return 4 / ((gas.gamma() + 1) * std::acos(-1.) * (testcase == "diagonal" ? std::sqrt(2.) : 1.));
+    return 4 / ((gas.gamma() + 1) * std::acos(-1.));
 }
 State Example::exact(double x, double y, double t) const {
     double g = gas.gamma(), pi = std::acos(-1.);
@@ -17,8 +17,7 @@ State Example::exact(double x, double y, double t) const {
     require(t < shock_time(), "Simple wave reaches shock time");
     bool diagonal = testcase == "diagonal";
     if (diagonal) {
-        x = (x + y) / std::sqrt(2.);
-        pi *= std::sqrt(2.);
+        x = cosine * x + sine * y;
     }
     double a = (3 - g) / 2, b = (g + 1) / 4;
     double lo = x - t * (a + b), hi = x - t * (a - b), xi = x - t * a;
@@ -33,8 +32,8 @@ State Example::exact(double x, double y, double t) const {
     double jm = std::sin(pi * xi), velocity = .5 * (2 + jm), sound = (g - 1) * (2 - jm) / 4;
     double rho = std::pow(sound * sound / g, 1 / (g - 1));
     u[Density] = rho;
-    u[MomentumX] = rho * velocity / (diagonal ? std::sqrt(2.) : 1.);
-    u[MomentumY] = diagonal ? rho * velocity / std::sqrt(2.) : 0.;
+    u[MomentumX] = rho * velocity * (diagonal ? cosine : 1.);
+    u[MomentumY] = diagonal ? rho * velocity * sine : 0.;
     u[Energy] = std::pow(rho, g) / (g - 1) + .5 * rho * velocity * velocity;
     return u;
 }

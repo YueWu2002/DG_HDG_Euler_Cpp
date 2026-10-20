@@ -1,0 +1,23 @@
+{
+  "dimension": "1d",
+  "legacy": true,
+  "original_files": [
+    "speed_test/1d/timings_slurm_7622721.csv",
+    "speed_test/1d/speedup_slurm_7622721.csv"
+  ],
+  "code_version": null,
+  "cpu_model": "Intel Xeon Platinum 8268",
+  "parameters": "See CSV columns; missing metadata cannot be reconstructed from the retained files.",
+  "note": "Original raw run directories were removed in earlier cleanup. Preserve surviving data; do not infer missing identity.",
+  "slurm_job_id": "7622721",
+  "host": "node1837",
+  "executable_sha256": "da18d8c6e359e544259dd911f8e43ae08f757ed6b5dc5d83a01c5ce54357f8f2",
+  "metadata_source": "RESULTS.md",
+  "profile_attachment": {
+    "file": "profile_summary_20261019.csv",
+    "provenance": "profile_provenance.json",
+    "original_directory": "speed_test/results/1d_profile_20261019",
+    "same_code_version_confirmed": false,
+    "note": "Merged at user request for organization; profile CPU and code version remain unknown. Slurm metadata applies only to the Slurm timing/speedup files."
+  }
+}

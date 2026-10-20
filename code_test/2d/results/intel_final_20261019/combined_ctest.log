@@ -1,0 +1,10 @@
+Internal ctest changing into directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-2d-intel
+Test project /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-2d-intel
+    Start 1: dg_hdg_1d_checks
+1/2 Test #1: dg_hdg_1d_checks .................   Passed    0.20 sec
+    Start 2: dg_hdg_2d_checks
+2/2 Test #2: dg_hdg_2d_checks .................   Passed    0.26 sec
+
+100% tests passed, 0 tests failed out of 2
+
+Total Test time (real) =   0.50 sec

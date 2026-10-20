@@ -1,0 +1,9 @@
+{
+  "returncode": 0,
+  "wall_s": 0.04078795202076435,
+  "user_cpu_s": 0.008844,
+  "system_cpu_s": 0.007771999999999999,
+  "peak_rss_kib": 14592,
+  "host": "node2315.oscar.ccv.brown.edu",
+  "slurm_job_id": "7615922"
+}

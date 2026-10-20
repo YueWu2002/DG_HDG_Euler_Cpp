@@ -1,6 +1,6 @@
 #pragma once
 #include "config.hpp"
-#include "nodal_basis.hpp"
+#include "euler/nodal_basis.hpp"
 #include "simple_wave.hpp"
 #include <vector>
 namespace euler {
@@ -25,5 +25,9 @@ class Problem {
     double residual_norm(const Vec &r) const;
     State integral(const Vec &u) const;
     State error(const Vec &u, double time) const;
+
+  private:
+    Mat derivative_transpose_;
+    mutable Mat flux_workspace_;
 };
 } // namespace euler

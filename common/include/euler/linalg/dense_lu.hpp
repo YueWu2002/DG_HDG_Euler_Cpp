@@ -16,9 +16,24 @@ class DenseLU {
     }
     template <class Input, class Output> void solve(const Input &b, Output &&x) const {
         scratch_.noalias() = lu_.permutationP() * b;
+        if (lu_.matrixLU().rows() == NVAR) {
+            // A trace block in 1D has exactly NVAR entries. Expose that size to
+            // Eigen so these tiny triangular solves stay inline with MKL too.
+            Eigen::Map<const FluxJacobian> factors(lu_.matrixLU().data());
+            Eigen::Map<State> small(scratch_.data());
+            factors.template triangularView<Eigen::UnitLower>().solveInPlace(small);
+            factors.template triangularView<Eigen::Upper>().solveInPlace(small);
+            x = small;
+            return;
+        }
         lu_.matrixLU().template triangularView<Eigen::UnitLower>().solveInPlace(scratch_);
         lu_.matrixLU().template triangularView<Eigen::Upper>().solveInPlace(scratch_);
         x = scratch_;
+    }
+    void solve_multiple(ConstBlockRef b, BlockRef x) const {
+        x.noalias() = lu_.permutationP() * b;
+        lu_.matrixLU().template triangularView<Eigen::UnitLower>().solveInPlace(x);
+        lu_.matrixLU().template triangularView<Eigen::Upper>().solveInPlace(x);
     }
     // In place right solve: X <- X A^-1, one row at a time using U^T,L^T,P.
     void right_solve(BlockRef x) const {

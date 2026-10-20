@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "code_version": "5383fb8b2864+src.93149b2591611a14",
+  "base_commit": "5383fb8b28640c1fcef46f0a12ee3eeff60fc30d",
+  "source_sha256": "93149b2591611a14cfeff614137ec8fc285df0b2c41f81518f3ba889219bcd0c",
+  "dimension": "2d",
+  "experiment": "accuracy",
+  "submitted_utc": "2026-10-20T03:49:04.660714+00:00",
+  "sbatch_args": [],
+  "source_manifest": "source.sha256",
+  "source_directory": "source",
+  "parameters": "job_<id>/data/*.command.json",
+  "runtime": "job_<id>/data/provenance.json"
+}

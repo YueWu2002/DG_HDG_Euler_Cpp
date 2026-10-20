@@ -1,0 +1,8 @@
+Internal ctest changing into directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/2d/results/submission_20261019T234902_AtKkgL/job_7640912/build
+Test project /oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/2d/results/submission_20261019T234902_AtKkgL/job_7640912/build
+    Start 1: dg_hdg_2d_checks
+1/1 Test #1: dg_hdg_2d_checks .................   Passed    0.46 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.50 sec

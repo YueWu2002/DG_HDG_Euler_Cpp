@@ -146,6 +146,15 @@ void linear_solvers() {
                 gmres.solve(Action::bind(matrix), Action::bind(preconditioner), rhs, x, 100, 1e-12);
             near((x - exact).norm(), 1e-10, "Right-preconditioned GMRES solution");
             near(result.relative_residual, 1e-12, "True GMRES residual");
+            // Reuse after a nonzero solve: callers must see the new equation's
+            // true residual even when the zero RHS takes the early return.
+            rhs.setZero();
+            auto zero = gmres.solve(Action::bind(matrix), Action::bind(preconditioner),
+                                    rhs, x, 100, 1e-12);
+            require(zero.iterations == 0 && zero.relative_residual == 0 &&
+                    x.norm() == 0 && gmres.residual().norm() == 0,
+                    "Zero-RHS GMRES retained a stale residual");
+            matrix.apply(exact, rhs);
             DirectSolver direct(graph, width);
             direct.refresh([&](int r, int c, BlockRef b) { b = matrix.at(r, c); });
             direct.solve(rhs, x, weights);
@@ -315,6 +324,7 @@ void time_runs() {
     double previous = 0;
     for (double cfl : {.4, .2, .1}) {
         Config c;
+        c.integrator = "be";
         c.cells = 24;
         c.degree = 3;
         c.quadrature = 6;

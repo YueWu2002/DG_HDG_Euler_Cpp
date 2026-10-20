@@ -3,7 +3,8 @@
 namespace euler {
 Problem::Problem(const Config &c)
     : config(c), basis(c.degree, c.quadrature), layout{c.cells, basis.nodes}, h(2.0 / c.cells),
-      old(layout.size()), mass(layout.size()), inverse_mass(layout.size()), speeds(c.cells) {
+      old(layout.size()), mass(layout.size()), inverse_mass(layout.size()), speeds(c.cells),
+      derivative_transpose_(basis.weighted_derivatives.transpose()), flux_workspace_(basis.points, NVAR) {
     validate(c);
     for (int cell = 0; cell < layout.cells; ++cell)
         for (int v = 0; v < NVAR; ++v)
@@ -100,13 +101,14 @@ void Problem::trace(const Vec &u, Vec &lambda) const {
 }
 void Problem::volume_residual(const Vec &u, Vec &r) const {
     r.array() = mass.array() * (u - old).array() / step_size;
-    for (int e = 0; e < layout.cells; ++e)
-        for (int q = 0; q < basis.points; ++q) {
-            State f = example.gas.flux(quadrature_state(u, e, q));
-            for (int v = 0; v < NVAR; ++v)
-                for (int i = 0; i < layout.nodes; ++i)
-                    r[layout.index(e, v, i)] -= basis.weighted_derivatives(q, i) * f[v];
-        }
+    if (basis.nodes == 1) return;
+    for (int e = 0; e < layout.cells; ++e) {
+        for (int q = 0; q < basis.points; ++q)
+            flux_workspace_.row(q) = example.gas.flux(quadrature_state(u, e, q)).transpose();
+        auto cell = layout.cell(r, e);
+        for (int v = 0; v < NVAR; ++v)
+            cell.col(v).noalias() -= derivative_transpose_ * flux_workspace_.col(v);
+    }
 }
 void Problem::dg_residual(const Vec &u, Vec &r) const {
     volume_residual(u, r);

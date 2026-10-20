@@ -2,25 +2,29 @@
 namespace euler {
 VolumeJacobian::VolumeJacobian(const Problem &p)
     : p_(p), tensor_(p.basis, p.hx, p.hy),
-      x_(p.basis.points * p.basis.points, NVAR * NVAR * p.layout.cells), y_(x_.rows(), x_.cols()),
+      primitives_(p.basis.points*p.basis.points, 3*p.layout.cells),
       derivative_transpose_(p.basis.weighted_derivatives.transpose()),
-      weighted_values_transpose_(p.basis.values.transpose() * p.basis.qw.asDiagonal()),
+      weighted_values_transpose_(p.basis.values.transpose()*p.basis.qw.asDiagonal()),
+      x_(primitives_.rows(),NVAR*NVAR), y_(x_.rows(),x_.cols()),
       points_(x_.rows(), NVAR), point_direction_(x_.rows(), NVAR),
       flux_x_(x_.rows(), NVAR), flux_y_(x_.rows(), NVAR),
       line_x_(p.basis.nodes, p.basis.nodes), line_y_(p.basis.nodes, p.basis.nodes),
-      weights_x_(p.basis.points), weights_y_(p.basis.points) {}
+      weights_x_(p.basis.points), weights_y_(p.basis.points), pressure_direction_(x_.rows()) {}
 void VolumeJacobian::store(int cell, ConstBlockRef states) {
-    for (int q = 0; q < states.rows(); ++q) {
-        State state = states.row(q).transpose();
-        auto primitive = p_.example.gas.primitive(state);
-        FluxJacobian x = p_.example.gas.jacobian(state, primitive, 0);
-        FluxJacobian y = p_.example.gas.jacobian(state, primitive, 1);
-        for (int w = 0; w < NVAR; ++w)
-            for (int v = 0; v < NVAR; ++v) {
-                int column = (cell * NVAR + w) * NVAR + v;
-                x_(q, column) = x(v, w);
-                y_(q, column) = y(v, w);
-            }
+    for(int q=0;q<states.rows();++q) {
+        const auto primitive=p_.example.gas.primitive(states.row(q).transpose());
+        primitives_(q,3*cell)=primitive.velocity[0];
+        primitives_(q,3*cell+1)=primitive.velocity[1];
+        primitives_(q,3*cell+2)=primitive.enthalpy;
+    }
+}
+void VolumeJacobian::cache_cell_jacobians(int cell) const {
+    for(int q=0;q<primitives_.rows();++q) {
+        const auto x=p_.example.gas.cached_jacobian(primitives_(q,3*cell),primitives_(q,3*cell+1),primitives_(q,3*cell+2),0);
+        const auto y=p_.example.gas.cached_jacobian(primitives_(q,3*cell),primitives_(q,3*cell+1),primitives_(q,3*cell+2),1);
+        for(int w=0;w<NVAR;++w) for(int v=0;v<NVAR;++v) {
+            x_(q,w*NVAR+v)=x(v,w); y_(q,w*NVAR+v)=y(v,w);
+        }
     }
 }
 void VolumeJacobian::refresh(const Vec &state) {
@@ -37,15 +41,20 @@ void VolumeJacobian::refresh(const Vec &state) {
     ready_ = true;
 }
 void VolumeJacobian::point_action(int cell, ConstBlockRef direction) const {
-    for (int v = 0; v < NVAR; ++v) {
-        flux_x_.col(v).setZero();
-        flux_y_.col(v).setZero();
-        for (int w = 0; w < NVAR; ++w) {
-            int column = (cell * NVAR + w) * NVAR + v;
-            flux_x_.col(v).array() += x_.col(column).array() * direction.col(w).array();
-            flux_y_.col(v).array() += y_.col(column).array() * direction.col(w).array();
-        }
-    }
+    const auto u=primitives_.col(3*cell).array(), v=primitives_.col(3*cell+1).array();
+    const auto H=primitives_.col(3*cell+2).array();
+    const auto dr=direction.col(Density).array(), dx=direction.col(MomentumX).array();
+    const auto dy=direction.col(MomentumY).array(), de=direction.col(Energy).array();
+    pressure_direction_.array()=(p_.example.gas.gamma()-1.)*(de-u*dx-v*dy+.5*(u.square()+v.square())*dr);
+    const auto dp=pressure_direction_.array();
+    flux_x_.col(Density)=direction.col(MomentumX);
+    flux_y_.col(Density)=direction.col(MomentumY);
+    flux_x_.col(MomentumX).array()=2*u*dx-u.square()*dr+dp;
+    flux_x_.col(MomentumY).array()=u*dy+v*dx-u*v*dr;
+    flux_y_.col(MomentumX)=flux_x_.col(MomentumY);
+    flux_y_.col(MomentumY).array()=2*v*dy-v.square()*dr+dp;
+    flux_x_.col(Energy).array()=H*(dx-u*dr)+u*(de+dp);
+    flux_y_.col(Energy).array()=H*(dy-v*dr)+v*(de+dp);
 }
 void VolumeJacobian::apply(const Vec &direction, Vec &result) const {
     require(ready_, "Refresh the volume Jacobian before applying it");
@@ -60,7 +69,7 @@ void VolumeJacobian::apply(const Vec &direction, Vec &result) const {
         tensor_.subtract_weak(flux_x_, flux_y_, p_.layout.cell(result, cell));
     }
 }
-void VolumeJacobian::collocated_block(int cell, BlockRef result) const {
+void VolumeJacobian::collocated_block(int /*cell*/, BlockRef result) const {
     const int n = p_.basis.nodes, plane = p_.layout.plane();
     for (int w = 0; w < NVAR; ++w)
         for (int jy = 0; jy < n; ++jy)
@@ -68,7 +77,7 @@ void VolumeJacobian::collocated_block(int cell, BlockRef result) const {
                 int node = jx + n * jy;
                 auto column = result.col(p_.layout.local(w, node));
                 for (int v = 0; v < NVAR; ++v) {
-                    int coefficient = (cell * NVAR + w) * NVAR + v;
+                    int coefficient = w * NVAR + v;
                     column.segment(v * plane + n * jy, n).noalias() -=
                         (.5 * p_.hy * p_.basis.w[jy] * x_(node, coefficient)) *
                         derivative_transpose_.col(jx);
@@ -78,7 +87,7 @@ void VolumeJacobian::collocated_block(int cell, BlockRef result) const {
                 }
             }
 }
-void VolumeJacobian::overintegrated_block(int cell, BlockRef result) const {
+void VolumeJacobian::overintegrated_block(int /*cell*/, BlockRef result) const {
     const auto &b = p_.basis;
     const int n = b.nodes, Q = b.points, plane = p_.layout.plane();
     // Contract qx first into n-by-n line matrices; then assemble qy factors.
@@ -86,7 +95,7 @@ void VolumeJacobian::overintegrated_block(int cell, BlockRef result) const {
     for (int qb = 0; qb < Q; ++qb)
         for (int w = 0; w < NVAR; ++w)
             for (int v = 0; v < NVAR; ++v) {
-                int coefficient = (cell * NVAR + w) * NVAR + v;
+                int coefficient = w * NVAR + v;
                 for (int k = 0; k < n; ++k) {
                     weights_x_.array() = x_.col(coefficient).segment(qb * Q, Q).array() * b.values.col(k).array();
                     weights_y_.array() = y_.col(coefficient).segment(qb * Q, Q).array() * b.values.col(k).array();
@@ -109,6 +118,7 @@ void VolumeJacobian::block(int cell, BlockRef result) const {
     require(ready_, "Refresh the volume Jacobian before assembling a block");
     result.setZero();
     if (p_.basis.nodes > 1) {
+        cache_cell_jacobians(cell);
         if (p_.basis.points == p_.basis.nodes) collocated_block(cell, result);
         else overintegrated_block(cell, result);
     }

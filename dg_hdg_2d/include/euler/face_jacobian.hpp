@@ -10,13 +10,17 @@ class FaceJacobian {
     FluxJacobian hdg(int face, int q, bool left) const;
     double tau(int face, int q, bool left) const;
     void cell_c(int cell, Eigen::Ref<const Vec> direction, Eigen::Ref<Vec> result) const;
+    void cell_c_many(int cell, ConstBlockRef directions, BlockRef result) const;
     const Vec &trace_diagonal() const { return diagonal_; }
-
   private:
     const Problem &p_;
-    // [tangent_node,flux_variable,state_variable,face].
-    Mat physical_left_, physical_right_, hll_left_, hll_right_, tau_left_, tau_right_, weights_;
+    // Tangent node contiguous; cache u,v,H instead of two full 4x4 derivatives.
+    Mat primitives_left_, primitives_right_, tau_left_, tau_right_, weights_;
+    Mat blend_left_, blend_right_, penalty_;
     Vec diagonal_;
-    mutable Mat left_, right_;
+    mutable Mat left_, right_, flux_left_, flux_right_, samples_, coefficients_;
+    mutable Vec pressure_direction_;
+    void normal_action(const Mat &primitive,int face,ConstBlockRef direction,BlockRef result,int axis) const;
+    FluxJacobian physical(int face,int q,bool left) const;
 };
-} // namespace euler
+}

@@ -3,20 +3,23 @@
 #include <limits>
 namespace euler {
 GMRES::GMRES(int n, int restart, const Vec &inverse_mass)
-    : restart_(std::min(n, restart)), basis_(n, restart_ + 1), preconditioned_(n, restart_),
+    : restart_(std::min(n, restart)), basis_(n, restart_ + 1),
       hessenberg_(restart_ + 1, restart_), cosine_(restart_), sine_(restart_),
       rotated_rhs_(restart_ + 1), coefficients_(restart_), work_(n), residual_(n), column_(n),
-      weights_(inverse_mass) {}
+      weights_(inverse_mass), weighted_(n), projection_(restart_) {
+    require(n > 0 && restart > 0 && weights_.size() == n && weights_.allFinite() &&
+            (weights_.array() > 0).all(), "Invalid GMRES metric or dimensions");
+}
 double GMRES::dot(const Vec &a, const Vec &b) const {
     return (a.array() * weights_.array() * b.array()).sum();
 }
 double GMRES::norm(const Vec &a) const { return std::sqrt(std::max(0.0, dot(a, a))); }
 LinearResult GMRES::solve(Action A, Action M, const Vec &rhs, Vec &x, int limit, double tolerance) {
     x.setZero();
+    residual_ = rhs;
     double rhs_norm = norm(rhs);
     if (rhs_norm == 0)
         return {0, 0};
-    residual_ = rhs;
     int iterations = 0;
     while (iterations < limit) {
         double beta = norm(residual_);
@@ -30,15 +33,16 @@ LinearResult GMRES::solve(Action A, Action M, const Vec &rhs, Vec &x, int limit,
         for (int j = 0; j < restart_ && iterations < limit; ++j) {
             column_ = basis_.col(j);
             M(column_, work_);
-            preconditioned_.col(j) = work_;
             A(work_, column_);
-            for (int pass = 0; pass < 2; ++pass)
-                for (int i = 0; i <= j; ++i) {
-                    work_ = basis_.col(i);
-                    double h = dot(work_, column_);
-                    hessenberg_(i, j) += h;
-                    column_.noalias() -= h * work_;
-                }
+            // CGS2: two weighted projections and two fused basis actions.
+            // The fixed right preconditioner is applied to the combined update.
+            for (int pass = 0; pass < 2; ++pass) {
+                weighted_.array() = weights_.array() * column_.array();
+                projection_.head(j + 1).noalias() = basis_.leftCols(j + 1).transpose() * weighted_;
+                hessenberg_.col(j).head(j + 1) += projection_.head(j + 1);
+                work_.noalias() = basis_.leftCols(j + 1) * projection_.head(j + 1);
+                column_ -= work_;
+            }
             double next = norm(column_);
             hessenberg_(j + 1, j) = next;
             if (next > 0)
@@ -68,8 +72,9 @@ LinearResult GMRES::solve(Action A, Action M, const Vec &rhs, Vec &x, int limit,
                 value -= hessenberg_(i, j) * coefficients_[j];
             coefficients_[i] = value / hessenberg_(i, i);
         }
-        for (int i = 0; i < count; ++i)
-            x.noalias() += coefficients_[i] * preconditioned_.col(i);
+        work_.noalias() = basis_.leftCols(count) * coefficients_.head(count);
+        M(work_, column_);
+        x += column_;
         A(x, work_);
         residual_ = rhs - work_;
         double relative = norm(residual_) / rhs_norm;

@@ -3,7 +3,7 @@ namespace euler {
 HybridOperator::HybridOperator(const Problem &p)
     : p_(p), volume_(p), volume_residual_(p.layout.size()), skeleton_residual_(p.layout.cells * NVAR),
       rhs_(p.layout.cells * NVAR), local_(p.layout.block_size()), faces_(NFACES * NVAR),
-      face_result_(NFACES * NVAR) {
+      face_result_(NFACES * NVAR), schur_error_(rhs_.size()) {
     cells_.reserve(p.layout.cells);
     for (int c = 0; c < p.layout.cells; ++c)
         cells_.emplace_back(p.layout.block_size());
@@ -34,6 +34,14 @@ void HybridOperator::residual(const Vec &u, const Vec &lambda, Vec &r, Vec &g) c
 }
 void HybridOperator::refresh(const Vec &u, const Vec &lambda) {
     residual(u, lambda, volume_residual_, skeleton_residual_);
+    condense(u);
+}
+void HybridOperator::refresh_projected(const Vec &u, const Vec &r) {
+    volume_residual_ = r;
+    skeleton_residual_.setZero();
+    condense(u);
+}
+void HybridOperator::condense(const Vec &u) {
     volume_.refresh(u);
     rhs_ = -skeleton_residual_;
     for (int cell = 0; cell < p_.layout.cells; ++cell) {
@@ -66,6 +74,8 @@ void HybridOperator::refresh(const Vec &u, const Vec &lambda) {
         data.lu.solve(
             volume_residual_.segment(cell * p_.layout.block_size(), p_.layout.block_size()),
             data.y);
+        for (int j = 0; j < NFACES * NVAR; ++j)
+            data.S.col(j).noalias() = -data.C * data.X.col(j);
         face_result_.noalias() = data.C * data.y;
         for (int side = 0; side < NFACES; ++side)
             rhs_.segment<NVAR>(face_index(cell, side) * NVAR) +=
@@ -78,10 +88,16 @@ void HybridOperator::apply(const Vec &x, Vec &y) const {
             -(p_.speeds[face].a + p_.speeds[face].b) * x.segment<NVAR>(face * NVAR);
     for (int cell = 0; cell < p_.layout.cells; ++cell) {
         gather(x, cell);
-        local_.noalias() = cells_[cell].X * faces_;
-        face_result_.noalias() = cells_[cell].C * local_;
+        // In 1D the condensed cell block is always 6x6, independent of k.
+        // Fixed Eigen maps keep this tiny multiply inlined instead of making
+        // one dynamic BLAS GEMV call per cell and Krylov iteration.
+        using FaceVector = Eigen::Matrix<double, NFACES * NVAR, 1>;
+        using FaceMatrix = Eigen::Matrix<double, NFACES * NVAR, NFACES * NVAR>;
+        Eigen::Map<FaceVector>(face_result_.data()).noalias() =
+            Eigen::Map<const FaceMatrix>(cells_[cell].S.data()) *
+            Eigen::Map<const FaceVector>(faces_.data());
         for (int side = 0; side < NFACES; ++side)
-            y.segment<NVAR>(face_index(cell, side) * NVAR) -=
+            y.segment<NVAR>(face_index(cell, side) * NVAR) +=
                 face_result_.segment<NVAR>(side * NVAR);
     }
 }
@@ -96,11 +112,20 @@ void HybridOperator::block(int row, int col, BlockRef result) const {
         int row_side = adjacent == 0 ? 1 : 0;
         for (int col_side = 0; col_side < NFACES; ++col_side)
             if (face_index(cell, col_side) == col)
-                for (int v = 0; v < NVAR; ++v)
-                    for (int w = 0; w < NVAR; ++w)
-                        for (int k = 0; k < p_.layout.block_size(); ++k)
-                            result(v, w) -=
-                                data.C(row_side * NVAR + v, k) * data.X(k, col_side * NVAR + w);
+                result += data.S.block<NVAR, NVAR>(row_side * NVAR, col_side * NVAR);
+    }
+}
+void HybridOperator::recovered_residual(const Vec &dl, Vec &result) const {
+    apply(dl, schur_error_);
+    schur_error_ -= rhs_;
+    for (int cell = 0; cell < p_.layout.cells; ++cell) {
+        gather(schur_error_, cell);
+        for (int side = 0; side < NFACES; ++side) {
+            const auto s = p_.speeds[face_index(cell, side)];
+            faces_.segment<NVAR>(side * NVAR) /= -(s.a + s.b);
+        }
+        result.segment(cell * p_.layout.block_size(), p_.layout.block_size()).noalias() =
+            -cells_[cell].B * faces_;
     }
 }
 void HybridOperator::recover(const Vec &dl, Vec &du) const {
