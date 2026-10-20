@@ -10,3 +10,5 @@
 Start dg: N=256x256, k=8, exact block Jacobi
 Completed dg k=8: mean=2146.3353 s, RSS=58.1901 GiB
 Start hdg: N=256x256, k=8, exact block Jacobi
+Completed hdg k=8: mean=400.45153 s, RSS=38.0631 GiB
+Start dg: N=256x256, k=7, exact block Jacobi
