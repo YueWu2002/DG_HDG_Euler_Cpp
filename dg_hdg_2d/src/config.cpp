@@ -5,7 +5,6 @@
 namespace euler {
 void validate(const Config &c) {
     require(c.nx >= 3 && c.ny >= 3 && c.degree >= 0 && c.degree <= 8 && c.quadrature >= 0, "Invalid mesh or degree");
-    require(c.alpha_degrees > 0 && c.alpha_degrees < 90 && std::isfinite(c.alpha_degrees), "Invalid rotation angle");
     require(c.testcase == "diagonal" || c.testcase == "wave" || c.testcase == "axis", "Invalid testcase");
     require(c.quadrature == 0 || c.quadrature >= c.degree + 1, "Quadrature must be >= degree+1");
     require(c.restart > 0 && c.max_linear > 0 && c.max_newton > 0 && c.steps >= 0,
@@ -48,8 +47,6 @@ Config parse(int argc, char **argv) {
             c.nx = integer();
         else if (option == "--ny")
             c.ny = integer();
-        else if (option == "--alpha-deg")
-            c.alpha_degrees = real();
         else if (option == "--testcase")
             c.testcase = value();
         else if (option == "--no-save-solution")
@@ -108,7 +105,7 @@ Config parse(int argc, char **argv) {
         } else if (option == "--help") {
             std::cout
                 << "2D periodic tensor-product Euler DG / condensed HDG\n"
-                   "--nx NX --ny NY --alpha-deg A --testcase diagonal|wave|axis --k K --quad Q --cfl C (--T T | --steps N)\n"
+                   "--nx NX --ny NY --testcase diagonal|wave|axis --k K --quad Q --cfl C (--T T | --steps N)\n"
                    "--method dg|hdg|both --linear direct|gmres --precond block-jacobi\n"
                    "--ordering natural|colamd --restart N --max-linear N --max-newton N\n"
                    "--ntol R --ltol R --safety S --prefix PATH\n"

@@ -1,0 +1,8 @@
+{
+  "key": "k6_hdg",
+  "k": 6,
+  "method": "hdg",
+  "historical_rss_gib": 0.087890625,
+  "extra_basis_gib": 0.0,
+  "requested_memory_gib": 16
+}

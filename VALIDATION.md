@@ -1,6 +1,6 @@
 # 1D / 2D 验证协议
 
-1D 实际结果与作业状态见 [RESULTS.md](RESULTS.md)，2D 见 [RESULTS_2D.md](RESULTS_2D.md)。
+1D/2D 实际结果与作业状态统一见 [RESULTS.md](RESULTS.md)。
 本文件规定测试，不把计划或历史结果写成已完成实验。
 
 ## 正确性
@@ -32,14 +32,27 @@ Newton 和线性相对容差各 1e-12，max Newton=30。
 报告 DG 平均/HDG 平均的比值；不以自由度之比或单核函数时间代替端到端测量。
 只有实际测到 k=8 比值 >=8 才能宣称达到目标。
 
-Slurm 速度作业依赖收敛作业 afterok，保证先精度后性能。
-所有结果写进各测试目录下的独立 job_ID，不覆盖先前实验。
+Slurm 精度与速度独立提交，不自动设置相互依赖。后续收敛批次按网格拆成独立任务，内存分别估算，具体入口规范见 accuracy skill。
+新任务在对应顶层 running 下独立运行，结束后完整归档至 results，不覆盖先前实验。
 
 ## 2D 独立验证
 
 见 `code_test/2d/README.md` 的独立数学检查，另运行旋转简单波、BE/DIRK3、
-30° 旋转与熵波的生产路径 DG/HDG 比较。
+固定旋转算例与熵波的生产路径 DG/HDG 比较，不提供命令行旋转角输入。
 收敛网格固定 32²、64²、128²、256²，Q2、DIRK3、CFL=2、T=0.2、容差均 1e-12。
 速度在 Slurm 上运行 256²、k=8→0，100 GiB，四次 Newton 更新首个预热。
 单元/面块均使用完整块的精确 LU，张量积运算通过独立求积和块/算子恒等式验证代数等价。
-1D 历史实验仍单独保留；2D 状态和完成程度见 `RESULTS_2D.md`。
+1D 历史实验与 2D 状态、完成程度分别记录于 `RESULTS.md` 对应章节。
+
+## 本次已完成实验的残差解释
+
+作业7640912和7635952的完成结果见 `RESULTS.md` 的 2D 章节。HDG Krylov 内部控制逆面质量加权 Schur 相对残差；结束后通过代数映射验收恢复后的 DG 残差。
+验收阈值为 `max(10*ltol*||R||_(M^-1), allowance)`，并不是对恢复后的 DG 相对残差严格施加 ltol。1D HDG Krylov 内部的权重为全1，恢复后的 DG 验收采用相同阈值形式。
+因此 `linear_relative_residual` 和 `dg_linear_relative_residual` 必须分别记录，不能宣称两方法 Krylov 使用完全相同的 DG 度量。独立 `--check-update` 检查用于验证恢复恒等式；正式 timing-only 运行不执行该独立参考求解。
+
+
+## Debug验证与Release实验构建
+
+Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Eigen堆分配的断言；项目`require(...)`物理/残差检查继续生效。Debug保留尺寸、索引和分配检查，不能据此保证未覆盖输入的正确性。
+`intel-build.sh`支持`BUILD_TYPE=Debug|Release`（默认Release）；默认仅Debug开启BUILD_TESTING。code_test驱动要求可追溯到CMakeCache.txt的Debug二进制，拒绝Release或无法核实的构建。
+共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。

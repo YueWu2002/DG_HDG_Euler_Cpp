@@ -1,0 +1,10 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7678279
+##  Job Name : eigen-1d-r20-k6_dg
+##  Nodelist : node1848
+##      CPUs : 1
+##  Mem/Node : 16384 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Tue Oct 20 17:39:54 EDT 2026
+###############################################################################
+k6_dg 0.80778505466666672

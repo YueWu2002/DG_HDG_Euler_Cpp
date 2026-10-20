@@ -1,2 +1,0 @@
-k,nx,ny,preconditioner,dg_jacobi_local,hdg_jacobi_local,integrator,cfl,updates,warmup,measured_updates,dg_mean_s,hdg_mean_s,dg_over_hdg
-8,256,256,block-jacobi,dense,face-dense,be,5,4,1,3,2146.3352602346667,400.45152787433335,5.359787916474659

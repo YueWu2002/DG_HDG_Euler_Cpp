@@ -1,0 +1,8 @@
+Internal ctest changing into directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/code_test/2d/running/cli_no_alpha_20261020_9_pr310e/build
+Test project /oscar/home/ywu355/DG_HDG_Euler_Cpp/code_test/2d/running/cli_no_alpha_20261020_9_pr310e/build
+    Start 1: dg_hdg_2d_checks
+1/1 Test #1: dg_hdg_2d_checks .................   Passed    0.43 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.46 sec

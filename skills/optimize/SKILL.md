@@ -31,6 +31,14 @@ description: 优化本项目 Eigen Euler DG/HDG 1D/2D 的精确算子与局部�
 
 用 `speed_test/2d/memory_estimate.py` 核对 HDG X、Schur、恢复、面因子和系数缓存；再算所有同时存活的阶段状态、临时矩阵、pivot、索引、库和分配器开销。matrix-free 不等于没有大预条件块；100 GiB 是该正式速度实验的参考申请，不是实际峰值或所有配置的保证。
 
+## Release优化与Debug验证
+
+- 正式性能构建使用Release：保留`-O3`、native指令、支持时的IPO及SIMD，以及Eigen/MKL BLAS/LAPACKE路径；通过`NDEBUG`和`EIGEN_NO_DEBUG`关闭Eigen运行时断言，不再对Release强制`-UNDEBUG`。不因此关闭项目`require(...)`的物理可容许性、求解失败和残差验收，也不自动启用fast-math或放宽数值协议。
+- code_test及相关CTest使用独立Debug构建，保留Eigen尺寸/索引断言和`EIGEN_RUNTIME_NO_MALLOC`分配检查；`intel-build.sh`通过`BUILD_TYPE=Debug`选择真实Debug配置，目录名称不能代替配置。code_test入口核验CMakeCache并拒绝Release或无法核实的构建。
+- 实验入口先用`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建、检查，再在`build/`独立构建Release用于accuracy/speed。保留两套配置、构建日志、Debug检查输出及对应二进制SHA256/provenance，不能将Debug检查冒充为Release二进制验证。
+- Release中Eigen无分配断言同时失效，不能宣称该性能进程仍在运行时检查无分配；Debug测试通过也不证明所有输入或Release数值行为正确。关闭断言的实际加速需同配置、同设备对照测量，不能仅凭编译选项宣称收益。
+- 两次构建和Debug检查的额外耗时须在提交前估算并单独申请；不改写在途快照，不把历史开启断言的测量与新Release测量混为同一构建配置。
+
 ## 验证与计时
 
 先按 [debug](../debug/SKILL.md) 运行当前二进制的相关 CTest 与短验证；数学路径改动再按 [accuracy](../accuracy/SKILL.md) 检查精度和收敛阶。不能借优化任务修改正在运行的源码快照。

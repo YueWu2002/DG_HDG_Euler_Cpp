@@ -23,7 +23,7 @@ def main():
         run([exe,'--nx',n,'--ny',n,'--k',2,'--integrator','ssp-dirk3','--cfl',2,'--T',.2,
              '--method','both','--precond','block-jacobi',
              '--ordering','natural','--ntol','1e-12','--ltol','1e-12','--restart',20,
-             '--max-linear',1500,'--max-newton',30,'--safety',1.1,'--alpha-deg',45,
+             '--max-linear',1500,'--max-newton',30,'--safety',1.1,
              '--no-save-solution','--prefix',prefix],prefix)
         difference=rows(f'{prefix}_difference.csv')[0]
         summaries=rows(f'{prefix}_summary.csv')

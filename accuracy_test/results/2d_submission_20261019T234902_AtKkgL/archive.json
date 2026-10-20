@@ -1,0 +1,15 @@
+{
+  "job_id": 7640912,
+  "state": "COMPLETED",
+  "exit_code": "0:0",
+  "elapsed": "02:40:28",
+  "node": "node1836",
+  "allocated_cpus": 1,
+  "requested_memory": "16G",
+  "solver_step_max_rss": "3092060K",
+  "accounting_source": "sacct live query 2026-10-20",
+  "original_directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/2d/results/submission_20261019T234902_AtKkgL",
+  "archived_directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL",
+  "archived_utc": "2026-10-20T20:01:58.087116+00:00",
+  "source_files_verified": 96
+}

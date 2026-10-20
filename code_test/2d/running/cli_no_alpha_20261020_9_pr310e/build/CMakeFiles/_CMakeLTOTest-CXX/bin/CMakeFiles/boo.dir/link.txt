@@ -1,0 +1,1 @@
+/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -ipo -ipo CMakeFiles/boo.dir/main.cpp.o -o boo  libfoo.a

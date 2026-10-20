@@ -1,0 +1,10 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7678307
+##  Job Name : eigen-1d-r100-archive
+##  Nodelist : node1807
+##      CPUs : 1
+##  Mem/Node : 16384 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Tue Oct 20 17:44:46 EDT 2026
+###############################################################################
+/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/1d_restart100_20261020T173221_50_zo048

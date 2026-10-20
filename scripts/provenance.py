@@ -83,4 +83,5 @@ if __name__ == '__main__':
          dimension=args.dimension, experiment=args.experiment,
          submitted_utc=datetime.now(timezone.utc).isoformat(), sbatch_args=args.sbatch_args,
          source_manifest='source.sha256', source_directory='source',
+         retain_source_after_completion=False,
          parameters='job_<id>/data/*.command.json', runtime='job_<id>/data/provenance.json'))

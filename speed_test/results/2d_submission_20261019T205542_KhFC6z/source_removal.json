@@ -1,0 +1,11 @@
+{
+  "removed_utc": "2026-10-20T20:24:00.100693+00:00",
+  "directory": "source",
+  "bytes": 467206,
+  "verified_source_files": 96,
+  "reason": "User requested removing source snapshots; keep SHA256 manifest and version metadata.",
+  "scheduler_state": "COMPLETED",
+  "exit_code": "0:0",
+  "active_user_jobs_at_check": 0,
+  "source_manifest_sha256": "2fe268224441020d0ddb5dbe685ea03f61e0d083e86ecfb30061002e94c7a665"
+}

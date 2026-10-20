@@ -16,9 +16,10 @@ endif()
 add_library(dgh_build_options INTERFACE)
 target_link_libraries(dgh_build_options INTERFACE Eigen3::Eigen)
 target_compile_features(dgh_build_options INTERFACE cxx_std_17)
-# Keep the allocation assertions active in Release as well as Debug.
+# Debug keeps Eigen assertions and allocation guards; Release disables Eigen assertions.
 target_compile_definitions(dgh_build_options INTERFACE
-    EIGEN_RUNTIME_NO_MALLOC EIGEN_DONT_PARALLELIZE EIGEN_STACK_ALLOCATION_LIMIT=524288)
+    EIGEN_RUNTIME_NO_MALLOC EIGEN_DONT_PARALLELIZE EIGEN_STACK_ALLOCATION_LIMIT=524288
+    $<$<CONFIG:Release>:EIGEN_NO_DEBUG>)
 # Opt in to tuning instructions for the machine doing the build. Keep this
 # disabled by default so binaries remain portable across CPU generations.
 option(DGH_NATIVE_ARCH "Tune generated instructions for the build host CPU" OFF)
@@ -38,11 +39,11 @@ else()
 endif()
 # IntelLLVM (icpx) and classic Intel (icpc) are supported CMake C++ IDs.
 if(CMAKE_CXX_COMPILER_ID STREQUAL "Intel" AND NOT MSVC)
-    target_compile_options(dgh_build_options INTERFACE -Wall -UNDEBUG)
+    target_compile_options(dgh_build_options INTERFACE -Wall $<$<CONFIG:Debug>:-UNDEBUG>)
 elseif(MSVC)
-    target_compile_options(dgh_build_options INTERFACE /W4 /UNDEBUG)
+    target_compile_options(dgh_build_options INTERFACE /W4 $<$<CONFIG:Debug>:/UNDEBUG>)
 else()
-    target_compile_options(dgh_build_options INTERFACE -Wall -Wextra -Wpedantic -UNDEBUG)
+    target_compile_options(dgh_build_options INTERFACE -Wall -Wextra -Wpedantic $<$<CONFIG:Debug>:-UNDEBUG>)
 endif()
 # Backend modules use the options target defined above. Their order matters:
 # LAPACK reuses the selected BLAS/MKL libraries, as in the original project.

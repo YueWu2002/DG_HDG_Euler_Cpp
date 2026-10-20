@@ -1,0 +1,10 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7678292
+##  Job Name : eigen-1d-r100-k2_dg
+##  Nodelist : node1848
+##      CPUs : 1
+##  Mem/Node : 16384 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Tue Oct 20 17:41:45 EDT 2026
+###############################################################################
+k2_dg 0.63040914433333339

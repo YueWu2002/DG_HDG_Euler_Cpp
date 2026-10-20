@@ -1,0 +1,13 @@
+{
+  "key": "k8_dg",
+  "k": 8,
+  "method": "dg",
+  "historical_wall_s": 8234.8987,
+  "historical_peak_rss_kib": 61016742.2976,
+  "resource_multiplier": 4.4,
+  "extra_gmres_basis_gib": 6.328125,
+  "estimated_peak_memory_gib": 239.088525,
+  "estimated_wall_s": 32939.5948,
+  "requested_memory_gib": 263,
+  "requested_time": "10:04:00"
+}

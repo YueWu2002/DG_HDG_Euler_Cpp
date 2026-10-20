@@ -1,0 +1,7 @@
+2D periodic tensor-product Euler DG / condensed HDG
+--nx NX --ny NY --testcase diagonal|wave|axis --k K --quad Q --cfl C (--T T | --steps N)
+--method dg|hdg|both --linear direct|gmres --precond block-jacobi
+--ordering natural|colamd --restart N --max-linear N --max-newton N
+--ntol R --ltol R --safety S --prefix PATH
+--integrator ssp-dirk3|be --newton-steps N --warmup-updates N
+--timing-only --check-update --no-save-solution

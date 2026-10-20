@@ -1,0 +1,84 @@
+{
+  "original_directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart100_20261020T173221_50_zo048",
+  "archived_directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/1d_restart100_20261020T173221_50_zo048",
+  "states": {
+    "7678287": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678289": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678290": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678291": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678292": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678293": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678294": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678295": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678296": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678297": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678298": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678299": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678300": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678301": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678302": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678303": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678304": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678305": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7678306": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "archive_job_id": "7678307",
+  "archived_utc": "2026-10-20T21:44:46.978243+00:00"
+}

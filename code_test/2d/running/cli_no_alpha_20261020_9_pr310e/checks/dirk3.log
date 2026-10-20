@@ -1,0 +1,3 @@
+dg: steps=1, Newton=12, Krylov=121, time=0.0109249 s, mean Newton=0.000906499 s, conservation drift=8.88178e-16
+hdg: steps=1, Newton=12, Krylov=124, time=0.0143257 s, mean Newton=0.00119051 s, conservation drift=8.88178e-16
+DG/HDG max difference=2.22045e-16

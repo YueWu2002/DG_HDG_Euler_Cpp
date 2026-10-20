@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "experiment": "speed",
+  "dimension": "1d",
+  "restart": 20,
+  "baseline_restart": 20,
+  "baseline_job_id": "7622721",
+  "baseline_timings_sha256": "6f12d853361c19601007370b82437d35e7531c7fa487bb959f5f67bdd4a35bc2",
+  "cells": 2048,
+  "expected_node": "node1848",
+  "expected_cpu": "Intel(R) Xeon(R) Platinum 8268 CPU @ 2.90GHz",
+  "executable_sha256": "da18d8c6e359e544259dd911f8e43ae08f757ed6b5dc5d83a01c5ce54357f8f2",
+  "code_version": "binary.da18d8c6e359e544",
+  "source_sha256": null,
+  "base_commit": null,
+  "source_identity_note": "Reuses byte-identical baseline solver. 1D historical source identity is unavailable; binary identity is verified.",
+  "driver_manifest_sha256": "686dd991dc15e4b0beb9b156fd8a828c8ef4f162aed74f26f0b9bca3227546d1",
+  "cases": [
+    {
+      "key": "k0_dg",
+      "k": 0,
+      "method": "dg",
+      "historical_rss_gib": 0.05859375,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k0_hdg",
+      "k": 0,
+      "method": "hdg",
+      "historical_rss_gib": 0.06005859375,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k1_dg",
+      "k": 1,
+      "method": "dg",
+      "historical_rss_gib": 0.0615234375,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k1_hdg",
+      "k": 1,
+      "method": "hdg",
+      "historical_rss_gib": 0.0673828125,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k2_dg",
+      "k": 2,
+      "method": "dg",
+      "historical_rss_gib": 0.064453125,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k2_hdg",
+      "k": 2,
+      "method": "hdg",
+      "historical_rss_gib": 0.0703125,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k3_dg",
+      "k": 3,
+      "method": "dg",
+      "historical_rss_gib": 0.06884765625,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k3_hdg",
+      "k": 3,
+      "method": "hdg",
+      "historical_rss_gib": 0.07177734375,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k4_dg",
+      "k": 4,
+      "method": "dg",
+      "historical_rss_gib": 0.0732421875,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k4_hdg",
+      "k": 4,
+      "method": "hdg",
+      "historical_rss_gib": 0.076171875,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k5_dg",
+      "k": 5,
+      "method": "dg",
+      "historical_rss_gib": 0.0791015625,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k5_hdg",
+      "k": 5,
+      "method": "hdg",
+      "historical_rss_gib": 0.08203125,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k6_dg",
+      "k": 6,
+      "method": "dg",
+      "historical_rss_gib": 0.0849609375,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k6_hdg",
+      "k": 6,
+      "method": "hdg",
+      "historical_rss_gib": 0.087890625,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k7_dg",
+      "k": 7,
+      "method": "dg",
+      "historical_rss_gib": 0.09228515625,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k7_hdg",
+      "k": 7,
+      "method": "hdg",
+      "historical_rss_gib": 0.09375,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k8_dg",
+      "k": 8,
+      "method": "dg",
+      "historical_rss_gib": 0.098785400390625,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    },
+    {
+      "key": "k8_hdg",
+      "k": 8,
+      "method": "hdg",
+      "historical_rss_gib": 0.100311279296875,
+      "extra_basis_gib": 0.0,
+      "requested_memory_gib": 16
+    }
+  ],
+  "created_utc": "2026-10-20T21:32:20.960940+00:00",
+  "minimum_memory_gib": 16,
+  "parameter_change": "cells=2048, restart=20; independent method tasks on one selected node",
+  "scheduling_note": "Concurrency and node co-tenancy differ from the sequential baseline; record contention in timing interpretation.",
+  "retain_source_after_completion": false,
+  "recorded_utc": "2026-10-20T21:39:19.873662+00:00",
+  "host": "node1848.oscar.ccv.brown.edu",
+  "cpu": {
+    "vendor_id": "GenuineIntel",
+    "cpu family": "6",
+    "model": "85",
+    "model name": "Intel(R) Xeon(R) Platinum 8268 CPU @ 2.90GHz",
+    "stepping": "7",
+    "microcode": "0x5003901"
+  },
+  "cpu_model": "Intel(R) Xeon(R) Platinum 8268 CPU @ 2.90GHz",
+  "cpu_affinity": [
+    46
+  ],
+  "slurm": {
+    "SLURM_TRES_PER_TASK": "cpu=1",
+    "SLURM_JOB_USER": "ywu355",
+    "SLURM_TASKS_PER_NODE": "1",
+    "SLURM_JOB_UID": "140593960",
+    "SLURM_TASK_PID": "2678188",
+    "SLURM_LOCALID": "0",
+    "SLURM_SUBMIT_DIR": "/oscar/home/ywu355/DG_HDG_Euler_Cpp",
+    "SLURM_JOB_START_TIME": "1792532357",
+    "SLURM_CLUSTER_NAME": "slurmctld",
+    "SLURM_JOB_END_TIME": "1792534157",
+    "SLURM_CPUS_ON_NODE": "1",
+    "SLURM_JOB_CPUS_PER_NODE": "1",
+    "SLURM_GTIDS": "0",
+    "SLURM_JOB_PARTITION": "batch",
+    "SLURM_OOM_KILL_STEP": "0",
+    "SLURM_JOB_NUM_NODES": "1",
+    "SLURM_JOBID": "7678278",
+    "SLURM_JOB_QOS": "normal",
+    "SLURM_PROCID": "0",
+    "SLURM_CPUS_PER_TASK": "1",
+    "SLURM_NTASKS": "1",
+    "SLURM_TOPOLOGY_ADDR": "core_48core.mlnx102.node1848",
+    "SLURM_TOPOLOGY_ADDR_PATTERN": "switch.switch.node",
+    "SLURM_SCRIPT_CONTEXT": "prolog_task",
+    "SLURM_MEM_PER_NODE": "16384",
+    "SLURM_NODELIST": "node1848",
+    "SLURM_JOB_ACCOUNT": "default",
+    "SLURM_PRIO_PROCESS": "0",
+    "SLURM_NPROCS": "1",
+    "SLURM_NNODES": "1",
+    "SLURM_SUBMIT_HOST": "vscode1.oscar.ccv.brown.edu",
+    "SLURM_JOB_ID": "7678278",
+    "SLURM_NODEID": "0",
+    "SLURM_CONF": "/var/spool/slurmd/conf-cache/slurm.conf",
+    "SLURM_JOB_NAME": "eigen-1d-r20-k5_hdg",
+    "SLURM_JOB_GID": "140461535",
+    "SLURM_JOB_NODELIST": "node1848",
+    "SLURM_MPI_TYPE": "pmix",
+    "SLURM_UMASK": "0022",
+    "SLURM_DISTRIBUTION": "cyclic",
+    "SLURM_STEP_ID": "0",
+    "SLURM_STEPID": "0",
+    "SLURM_STEP_NODELIST": "node1848",
+    "SLURM_STEP_NUM_NODES": "1",
+    "SLURM_STEP_NUM_TASKS": "1",
+    "SLURM_STEP_TASKS_PER_NODE": "1",
+    "SLURM_STEP_LAUNCHER_PORT": "36485",
+    "SLURM_SRUN_COMM_PORT": "36485",
+    "SLURM_PMIXP_ABORT_AGENT_PORT": "43283",
+    "SLURM_PMIX_MAPPING_SERV": "(vector,(0,1,1))",
+    "SLURM_SRUN_COMM_HOST": "172.20.214.48",
+    "SLURM_CPU_BIND": "quiet,cores",
+    "SLURM_CPU_BIND_LIST": "",
+    "SLURM_CPU_BIND_TYPE": "cores",
+    "SLURM_CPU_BIND_VERBOSE": "quiet",
+    "SLURM_LAUNCH_NODE_IPADDR": "172.20.214.48"
+  },
+  "threads": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "BLIS_NUM_THREADS": "1"
+  },
+  "executable": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart20_20261020T173220_7e7foy4r/bin/solver"
+}

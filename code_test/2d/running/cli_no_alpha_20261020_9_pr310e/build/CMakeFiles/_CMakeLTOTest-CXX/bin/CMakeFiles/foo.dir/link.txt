@@ -1,0 +1,2 @@
+"/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/llvm-ar" qc libfoo.a CMakeFiles/foo.dir/foo.cpp.o
+"/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/llvm-ranlib" libfoo.a

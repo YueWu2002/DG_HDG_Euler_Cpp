@@ -1,0 +1,695 @@
+{
+  "note": "Removed byte-identical copied raw files; all original experiment data retained. Only the current report is maintained; history backups were removed by the user.",
+  "files": [
+    {
+      "removed": "report_archived_20261020/accuracy/SUCCESS",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/SUCCESS",
+      "sha256": "5e0328ef9cd5d99d2391351cd33b29a1f89d55197476775924ba5434bb9a314c"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/convergence.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/convergence.csv",
+      "sha256": "b3b1c2e1f7b4861f1c2ff2f0b49679c84973ad96beeb2651df63b07fd6ff5541"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/executable.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/executable.json",
+      "sha256": "df869dffbd3cf5606fb7c3cef83578f83e082fa2627208b930cf9c196b619a3d"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128.command.json",
+      "sha256": "011e200b583fbd634ea2b5ab9eadceba8c857eee4bdac5a4b9c1a3b8eef494f2"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128.log",
+      "sha256": "4dd6f43ad7ca9157f806891068e6549bec8cc3562c0de0c8a8515a8145a34245"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128.provenance.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128.provenance.json",
+      "sha256": "97b2193128c87bede79d2cd1f2c391bf8851e783a7461a108852d03627f8e6c4"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128.resources.json",
+      "sha256": "6351a3141bc5c5dbded1eaa0cc90848c9f7fac3d33f27aaa1e3ece1c6d15ebf8"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128_difference.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128_difference.csv",
+      "sha256": "1726122bff80bb5866a049309d46eb6405e1258e31ebb38629bbb0112507f7b4"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128_iterations.csv",
+      "sha256": "c127f010599329ce7cdcee47d3f990c89a2c9b91281fa205065c9fed5226df8c"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n128_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n128_summary.csv",
+      "sha256": "bc8589ec12a7beb8d2b5f640e205d3264ba82323b8b348ec42a167f18101efd3"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256.command.json",
+      "sha256": "7e3b08afb5f8a5d7efdb58fa593fd8c95609c6d7c5b455f8889cdeac35448eb9"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256.log",
+      "sha256": "8fcb5f2d2a3eed6cf69b7b79999f97b298cce56757c31c3d6da53c6efa2a5352"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256.provenance.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256.provenance.json",
+      "sha256": "d866b29133049b1aa462953d4c11c0a9082ddcc0f0f3f6e6da0833c23029faed"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256.resources.json",
+      "sha256": "ef2864d909f3b2a5f9f089c855caeabc77d465b628d83dba4f7bdf73715694b2"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256_difference.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256_difference.csv",
+      "sha256": "70c5644aae4d165e31dad691dd699531a302a3d44202c5146232b9c4c13a077e"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256_iterations.csv",
+      "sha256": "19ffef4de871b13cea4e308f0280fcf5df587544bc4a5a018da3f74d2c576ea5"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n256_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n256_summary.csv",
+      "sha256": "9c570e8be18012fa9cb401a4dce6b5aa2934b8b1532bb66173b2cbb68e063192"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32.command.json",
+      "sha256": "8dfdb8a551e8c7995b08d9d20ccd2af26de44b7f099c2fa755f351e698a7d5cc"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32.log",
+      "sha256": "6559a22c12c4abf431fc4e8cdd5e85ade58cbe09e94c7f37178a6635a4aef68f"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32.provenance.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32.provenance.json",
+      "sha256": "93753fdbec4fcfac4f05be5e968765d7c55cd66b8c8efa534e17226224999736"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32.resources.json",
+      "sha256": "a2485ecd6f596f5c48666b4f100b992b7f76a22097f9d2247485a69632702b13"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32_difference.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32_difference.csv",
+      "sha256": "28df91e99966552444d260ed1aa244a6586046e8d40ffda919faab067582e794"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32_iterations.csv",
+      "sha256": "68162713998d5e7da045bd35f223ef8f444f215de9d60aa50fe7c2ac54b8d948"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n32_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n32_summary.csv",
+      "sha256": "2bd793e4f7fa1ff6526310a2b6b3cf187e8d5c11f8274e0667fe104de412772d"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64.command.json",
+      "sha256": "4ce6d9a5f10aec4e71ec042e048d3d94ab05a908d8e76671b2273b1b6de6cd1c"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64.log",
+      "sha256": "1eb89162e7d97ca7a49f11bee9c8fdffd627a8b963e20c5fbfcd7867edc26f65"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64.provenance.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64.provenance.json",
+      "sha256": "88155634cc43f3e2b37b88dcfbad9c63ef36e0c89dbc71eb2c893632e8106311"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64.resources.json",
+      "sha256": "195f4184adbe87040c6440332247391d9517152cec2a459021d72672ddeb615d"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64_difference.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64_difference.csv",
+      "sha256": "dd0ebe97fc587d8f7484f1eba9172dc77e333669906ec2530850194588cf9c92"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64_iterations.csv",
+      "sha256": "b0dfea8d6684db5b2e326505c2637eff14020f6c072636219ea0124b3e3f6574"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/n64_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/n64_summary.csv",
+      "sha256": "d2e7aa95e18f87467f68f178703f8d8161da45e9ec9f9fed243605660ea427bd"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy/provenance.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/data/provenance.json",
+      "sha256": "8f3ac61798fbf381477827d5809c7aa7dd17f1177c521251b22095713af4e019"
+    },
+    {
+      "removed": "report_archived_20261020/speed/SUCCESS",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/SUCCESS",
+      "sha256": "c462033244da165266756d79ace3a480e6145b257dac7a9bab0d438ea18d171c"
+    },
+    {
+      "removed": "report_archived_20261020/speed/executable.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/executable.json",
+      "sha256": "f3551e2f0307d8d23812622be8cce29721be38de5bcb4ef52bc789b9d373d020"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_dg.command.json",
+      "sha256": "b014797e2012891075d54fa6b38b687f27c5036c0aac84a177f5fe7221c336ee"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_dg.log",
+      "sha256": "18fd56660bc32066c99c802ed9e6fdc405398543ef969cec05fc1eb9bb14bb41"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_dg.resources.json",
+      "sha256": "78243fc4fc1412f434e57da777046638659c0f9b768136509a936079b4a07e79"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_dg_iterations.csv",
+      "sha256": "d4df606b946c7a95d23b7dfee7a3d10e34a93977d7d056dc17e3aab608e8e704"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_dg_summary.csv",
+      "sha256": "84fa956c3da9c6cc449c55bc5db90131f7da683af034da14fc999cfb243acc33"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_hdg.command.json",
+      "sha256": "999dfba98693994e13a03663cde1c912b0cf8dfaccad1e948812375badbb5a18"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_hdg.log",
+      "sha256": "f7d6694028f4aa1cb5b6ac2278dace2a5b939ae94f96ae057dd97bc2823543b2"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_hdg.resources.json",
+      "sha256": "668858d5b0d007f9abf71ff9bab00738bce92b40210895b4832afca0d46af519"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_hdg_iterations.csv",
+      "sha256": "4c564fb765d7b9757c9ffa7adee6c085fdc3f0cc623011599be0c7ee3d89ae06"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k0_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k0_hdg_summary.csv",
+      "sha256": "efc745e65fadb447e53582271c2cf87d827648aceb49c7ca68989941584815c0"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_dg.command.json",
+      "sha256": "21804d41d89e1e14185d6eed3be61739f67fe7d7effef81fd04c318f725ff3d8"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_dg.log",
+      "sha256": "8f91e27fe0f1fc71d0d827e9a507ef2c2d2191f9db28dfb51352b596f865b01d"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_dg.resources.json",
+      "sha256": "75a4e315cdd11a1656b0a5e0ac421e3e10d7d93e8f0153946167f26717d2d88a"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_dg_iterations.csv",
+      "sha256": "6f3bf2627ff7d879ab17941fcbdfb5970bbc8112b54d36beef97f441f27ddff7"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_dg_summary.csv",
+      "sha256": "35827b6dac2e38e50bb559971490ba93b47f4597b5a5c40a2a679a22c4d92009"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_hdg.command.json",
+      "sha256": "833d56a6f0dc713c1f3904910b66c4f8849569ab7306206a5f45d6e243fd910a"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_hdg.log",
+      "sha256": "417f8e3c4b2986bbb1130bf73e931c6ebc07267b913b88fab0617734d53c32bb"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_hdg.resources.json",
+      "sha256": "cc2a60b768250910ae68c26c72aaf4488045a0bb316562d1672d92f78187fb89"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_hdg_iterations.csv",
+      "sha256": "2a85ece4af05b6755818e634415e0d56c56a091100efbb1e465d5109e44f6a83"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k1_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k1_hdg_summary.csv",
+      "sha256": "f22017c9a7d1fd3c4f8c81c7e9771b99face68a611f4e7718e6966f405f3f3b7"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_dg.command.json",
+      "sha256": "2037d52009b6b6f8a730069cb63b100808f595efd19a7ebc068a141f7a070b09"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_dg.log",
+      "sha256": "a6ffa9fdd1f6ce352cf5859eb21a5a5f0e461e7ccdd8b58f755e7b1cc4d7c5c9"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_dg.resources.json",
+      "sha256": "c1edfe519675cc04b0f85358e9a7e59585fdd76b4aa731d5ff111e34fc1435f5"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_dg_iterations.csv",
+      "sha256": "4ed1a8d75d7576c5d1e0188248813954d2a22d4e457241cf4413612eb9b57346"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_dg_summary.csv",
+      "sha256": "9d64d6fb9ba665e7154ae0b6eec91db3031474311ae94b82b0e621b2ecc0bb12"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_hdg.command.json",
+      "sha256": "85ab802b0942e21517ab5f0abb7dd2bfddbb7a19c3753ddcecf02fa1beabb864"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_hdg.log",
+      "sha256": "00a81d344a3d7dc0e0ec42fc1d35c9273fec4b58093a745c507877f7e2f569a0"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_hdg.resources.json",
+      "sha256": "c9dcb93e5dd619493d23539d822ebbae14e952b636de51d4a5e29168a1e11b44"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_hdg_iterations.csv",
+      "sha256": "4db23c820bd11daa631659ec2d7d15185c55bea62006baaa1a32b3b080187213"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k2_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k2_hdg_summary.csv",
+      "sha256": "10c473dca4d9d56a653976bfb794871163bf445dc45cc67c94b6e259e68e8035"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_dg.command.json",
+      "sha256": "3584ee6f7ef55ca593080618542dc186361699d8ed4e565afc26504c39cffb5b"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_dg.log",
+      "sha256": "9c22255bee1352c15ea0f70ac6988f0faa73fee622ca73cfed1c5c6db3d57c0f"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_dg.resources.json",
+      "sha256": "07614149a1a57b1f29acfdcfd988625c91e2995528499803a485f5c6e961d3dc"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_dg_iterations.csv",
+      "sha256": "9592783cc9112d384e2cd00e49d70a466a2a49342627fde425e7559c0b8b2a9e"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_dg_summary.csv",
+      "sha256": "600f8ce9e22a731586e1eb344eb6065026fa954f87d39164c132ac159612e1c5"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_hdg.command.json",
+      "sha256": "3ffbbcf7ff200f4e22aed8d9135e704c044696345f6bc47ed617e49e8b4ea6fa"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_hdg.log",
+      "sha256": "23f20d0b46dfb0c1f2c52f2f0bff0b9ef3167b2ad1bdb0d0431472be1aa4b28b"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_hdg.resources.json",
+      "sha256": "8c99813d96be91ed4069276f53f7a063d0a78a8fe06daa80711a499689639aca"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_hdg_iterations.csv",
+      "sha256": "55f26cd12f4ba80343c71bc06a7376e998227870f0734a3778b5b564cf801355"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k3_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k3_hdg_summary.csv",
+      "sha256": "74420c872c61595968c2c7ef0a4b229e080cb12ddcc59e0cf926d60b1169daf4"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_dg.command.json",
+      "sha256": "9c34903671c648de91e384dcd77817eb03af17877aca358d02375960c43c7794"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_dg.log",
+      "sha256": "6f2b96413d10eb180f7217ee47cf218fe0e9983d12ad6c568494fbf80d9081fd"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_dg.resources.json",
+      "sha256": "dd2e8f804713dcc5520680168c148912677a4832535db49378fc9a0ef445d930"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_dg_iterations.csv",
+      "sha256": "221691ca59f52fe21aac51c125f11aad3270787438ac592354791d958d1be846"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_dg_summary.csv",
+      "sha256": "9a8baf089c6f41f093a6af1876188634c68e3acea48f90ef0364dace5ab04457"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_hdg.command.json",
+      "sha256": "ba5c352de57d59b8b850076736b066e2d9985ea4a967268fd680eee5c23fc2c4"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_hdg.log",
+      "sha256": "c0fd5e9fcc9f930ecc374896a617ae50df679307af2be9b05f3666fc1edbce12"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_hdg.resources.json",
+      "sha256": "37dbf4033d7922b7ba43ae15c734615cf3c09ac1e35e19167b46dbd0c0db1dfd"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_hdg_iterations.csv",
+      "sha256": "95bd9bad05d35e92063519b69912a103cd496fdf195f49c42b97f2ef0ab9b5db"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k4_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k4_hdg_summary.csv",
+      "sha256": "a429cf05f3961e991d9e65e1bd80ce52b9c1ae98909576455f30725d8734b48c"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_dg.command.json",
+      "sha256": "289485da7c68e25933f1beb96d368d05633dd6af5715c66d5e62a3355a4ced7d"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_dg.log",
+      "sha256": "b3ff0d57638a36979a952e375648007ec49e2b8c4822cce386eece0ac4cc87df"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_dg.resources.json",
+      "sha256": "bb60577114164dda39b068a63f569f973dc0b5d996b481e18a74ab48ea89d505"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_dg_iterations.csv",
+      "sha256": "edf9d90b85ef0eb64a6fcc549ec2d7522786e2eab38148bc022fc367c6ab92b3"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_dg_summary.csv",
+      "sha256": "dd50ba3d2196b32387338dc90f84e539591d4df05bd7e149a745559a6b163374"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_hdg.command.json",
+      "sha256": "51654a0e9625a39a150190801ddfa5b3263d295131b19a9988160ccfdebdf9bb"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_hdg.log",
+      "sha256": "c5c8b3f00f18662e311b32930a9568cf6740e68df10d3984db7dfd55558523bd"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_hdg.resources.json",
+      "sha256": "1cc1bc1f8c5256ae00fdd4842c5a6cd19f01ac0d5dc4efe2abd3baeb61e3cfeb"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_hdg_iterations.csv",
+      "sha256": "b94e317670eaf61f9a00c582aeda2fc7bb010990b98ad43d10c3f4747d271e80"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k5_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k5_hdg_summary.csv",
+      "sha256": "166a4748bcdecd9c0ded7748372560f3576a6819795b15e554d88a0a8a6f00e7"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_dg.command.json",
+      "sha256": "c0bbcd3baa578c1721517feb9d6e627644dfbfee149058672ea9a6b85001857d"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_dg.log",
+      "sha256": "3faa61c8a2aeb083238a8a3a1fffb344483273533cefbdd26e1dacb7d9fa4336"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_dg.resources.json",
+      "sha256": "2413a060bcf1211ac915da2c98ba25b82ab89efd26fb73c46f4b7486d8720858"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_dg_iterations.csv",
+      "sha256": "2c47e39705da747f7bcc3377b1934cd42ce79f4dcd716f0a4568ac2957e1f47e"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_dg_summary.csv",
+      "sha256": "0321c39644cee848a2a142b6170c49d814b442b013ed772b8d307b06378a0e81"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_hdg.command.json",
+      "sha256": "3b2b4b4836fb905d527622aeea2bc7c7c50a76960e33a0f7d6cdaf1cb7dc6ad3"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_hdg.log",
+      "sha256": "9bdb3a8ee7b41e74762f53daa25563a98e72457291fc9bfe2e181193d82c4eac"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_hdg.resources.json",
+      "sha256": "5a33afbaf81d5190d2c9f99f15a3181e94ccdc7779504c86e82d36b69e6f9eae"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_hdg_iterations.csv",
+      "sha256": "ab4fcb5eb298486bc59d8ae5c9f1979beab65b8a2939a410929c39bb075ff1b4"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k6_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k6_hdg_summary.csv",
+      "sha256": "cc3cec363d2eb149a4f8f31163b50082952f6a83f3baa7600e016cff7f894294"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_dg.command.json",
+      "sha256": "f15189673f57455298ce9dc2b350531b4c8c040e6f2d6304a54316317fd4a191"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_dg.log",
+      "sha256": "e5e0811f1190a36c94ca0c4057917d97a4416001868f59e100ee4fffd94e16cc"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_dg.resources.json",
+      "sha256": "afae98d0aa826e0b87f934d54203725c5e5d4844a1300dc08b37e7faf6d13a87"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_dg_iterations.csv",
+      "sha256": "4bbc63cf9edf2afa1b1c0c2db791d8a47019ff218500bd13f68b197ad93c8c49"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_dg_summary.csv",
+      "sha256": "65936e735bb49a879e9493d0ad67dddc77e333ded0b772628c82db349181044e"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_hdg.command.json",
+      "sha256": "034f349f8f594e5fb162293dc81bde7c412a2fb7b5cfe6a4da561b55fe415d53"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_hdg.log",
+      "sha256": "3a705379d1dd43b5c06b6b976f866442ec83b24039e967f08d231aaaa9d0b1a7"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_hdg.resources.json",
+      "sha256": "751e356272b3663018b9712855da2d7c400d1602174ea6ba6144b376ad89a3cd"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_hdg_iterations.csv",
+      "sha256": "9565af9e76a8787b923a977cacf1184d82a152ebeb5ec4d5d9969c75abc2cdef"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k7_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k7_hdg_summary.csv",
+      "sha256": "c4b1538e1ef75849bfeaeb5a20f9e20ad2b905d1a2185ffd1d9ee1426ec2061b"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_dg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_dg.command.json",
+      "sha256": "8435cf34d3de459ab7e8eb1cb6f166964b55af9b233daadf0b38be2cebb39707"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_dg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_dg.log",
+      "sha256": "915bcafbbe5485573f29b86ccbd961e5788aa5d533e3afb7a93fd6de01d25550"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_dg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_dg.resources.json",
+      "sha256": "f974ae36f751370eaf3077dd89622b85b57c306038e894c1a785331c690c4d89"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_dg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_dg_iterations.csv",
+      "sha256": "912cb6530d0d6f6447a13d41a6432f7d5e1219be0acdb99ebf439d51e7744517"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_dg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_dg_summary.csv",
+      "sha256": "ce3112e9273723c2d101fb30e7e12a296463108cb23290a7fd3edebcda8d8a0c"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_hdg.command.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_hdg.command.json",
+      "sha256": "8fa00bcf87293a421efd373c2a0b83a782374b7aa1e0f2a88035ada9e6726c10"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_hdg.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_hdg.log",
+      "sha256": "0743bcec7c621ce5d8513505e1464df87cd433f26a69b3fb8289d034b89b667b"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_hdg.resources.json",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_hdg.resources.json",
+      "sha256": "c30bc758c4148fc1327ede340bfa7114f818e92db53ec158be97b2debf427433"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_hdg_iterations.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_hdg_iterations.csv",
+      "sha256": "8ff536cfdce3b913a56c52cfb1ad518edbce7ba8a79e90032fd836d0464f6712"
+    },
+    {
+      "removed": "report_archived_20261020/speed/k8_hdg_summary.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/k8_hdg_summary.csv",
+      "sha256": "c4c3e19ea269fdbb28b987a2f90ba6e285dac06cd4cab42c9b62039fc9beb93c"
+    },
+    {
+      "removed": "report_archived_20261020/speed/speedup.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/speedup.csv",
+      "sha256": "3755186c0f6236fb9e7a62abfa7b4acfa11939b4eccad2c934617b7eabfac3ef"
+    },
+    {
+      "removed": "report_archived_20261020/speed/timings.csv",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/timings.csv",
+      "sha256": "6ddfc9ed5411af57c022cc1efe491bbfd8ad926c140841fe91b6e25e02122b66"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy_provenance/base_commit.txt",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/base_commit.txt",
+      "sha256": "38b8548f50fd765e97851c5454005e2e1fef1df8f87d63b880ef85e63abbc6c5"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy_provenance/code_test.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/code_test.log",
+      "sha256": "b695fb0ed9bd750271600b559384cd4f823a514a3e2542577cec6898e0c41460"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy_provenance/ctest.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/ctest.log",
+      "sha256": "71a685600f6e6cfa9cc39ffbd0d852b031575affe98927307c6a23c717861c51"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy_provenance/environment.txt",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_7640912/environment.txt",
+      "sha256": "de82c21c3b19d093c0551e894d20fb8ec8b260b67efae8ddc638a0bba94c55eb"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy_provenance/job_id.txt",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/job_id.txt",
+      "sha256": "9e5114ae99a2d8a3e02ff945c9b2cd862c2e4df5b54b37ef152519882bec8536"
+    },
+    {
+      "removed": "report_archived_20261020/accuracy_provenance/source.sha256",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/results/2d_submission_20261019T234902_AtKkgL/source.sha256",
+      "sha256": "93149b2591611a14cfeff614137ec8fc285df0b2c41f81518f3ba889219bcd0c"
+    },
+    {
+      "removed": "report_archived_20261020/speed_provenance/base_commit.txt",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/base_commit.txt",
+      "sha256": "38b8548f50fd765e97851c5454005e2e1fef1df8f87d63b880ef85e63abbc6c5"
+    },
+    {
+      "removed": "report_archived_20261020/speed_provenance/code_test.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/code_test.log",
+      "sha256": "b695fb0ed9bd750271600b559384cd4f823a514a3e2542577cec6898e0c41460"
+    },
+    {
+      "removed": "report_archived_20261020/speed_provenance/ctest.log",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/ctest.log",
+      "sha256": "b49506cd54590fec9a71e34fb2757267bd52bc2903e204b63f069766ce33133d"
+    },
+    {
+      "removed": "report_archived_20261020/speed_provenance/environment.txt",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/environment.txt",
+      "sha256": "2f1dac76ea3d42b893b410e88dac76f9b9b194edcdb0225b7d886074e5a7955a"
+    },
+    {
+      "removed": "report_archived_20261020/speed_provenance/job_id.txt",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/job_id.txt",
+      "sha256": "ba0c556e005d3a65e71b3e0895c76ccb3f7b98a05d066fc4bca2fa73cf19125d"
+    },
+    {
+      "removed": "report_archived_20261020/speed_provenance/source.sha256",
+      "original": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_submission_20261019T205542_KhFC6z/source.sha256",
+      "sha256": "2fe268224441020d0ddb5dbe685ea03f61e0d083e86ecfb30061002e94c7a665"
+    }
+  ]
+}

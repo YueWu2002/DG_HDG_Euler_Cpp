@@ -29,6 +29,10 @@ Schur 作用只做 gather、块乘、scatter，不在每次 Krylov 乘法重复 
 
 GMRES 用加权两遍重正交与真残差复核，固定右预条件器允许将 Arnoldi 向量组合后
 只作一次回代更新解，不必存储全部预条件 Krylov 向量。
+DG 的 GMRES 内积使用逆体积质量；HDG 在1D使用单位权重，在2D使用逆面质量，内部最小化 Schur 残差。
+HDG 返回后映射得到恢复后的 DG 线性残差，验收阈值为 `max(10*ltol*||R||_(M^-1), allowance)`；
+不满足时收紧 Schur 容差重求。此准则不等于每次 HDG Krylov 迭代采用 DG 残差，也不保证恢复后相对值严格小于 ltol。
+本次实测值和性能结论边界见 `RESULTS.md` 的 2D 章节。
 block-Jacobi 为每个单元/面独立 LU，不需要 COLAMD；
 block ILU(0) 保留块图和可选 COLAMD，没有标量填充。
 

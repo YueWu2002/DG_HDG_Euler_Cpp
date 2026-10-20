@@ -1,0 +1,1 @@
+Source hashes, 18-case coverage, Debug then Release build pipeline, node constraints, individual resources and dependency chain checked. No solver executed locally.

@@ -32,9 +32,16 @@ GMRES 为自实现的重启右预条件求解器，内积采用逆质量权重�
 用 `intel-build.sh`，显式设置独立 BUILD_DIR、BUILD_1D、BUILD_2D 和 BUILD_JOBS；目录名含 debug 不代表调试编译。保持 BLAS/OpenMP 单线程，先运行相关 CTest，再运行对应 `code_test/<维数>/test_solver.py --exe <本次二进制> --output <独立检查目录>`。
 
 - 1D 常规验证：DIRK smoke 与完全收敛的单步 BE，使用 `--check-update` 对照 DG/HDG 更新及最终解。
-- 2D 常规验证：沿用现有驱动的 dirk3、be、rotated、entropy 四项，并检查解差与守恒；不直接照搬 MFEM 的文件字段或两项测试假设。
+- 2D 常规验证：沿用现有驱动的 dirk3、be、entropy 三项（旋转角由算例内部固定，不提供命令行角度输入），并检查解差与守恒；不直接照搬 MFEM 的文件字段或两项测试假设。
 - 需要严格单步 BE 诊断时明确使用 `--integrator be --steps 1`，按收敛准则停止，不设置测速的固定 Newton 次数。
 
 `*_difference.csv` 是方法最终解差；更新检查验证的是线性化更新，两者不可互替。高阶索引、缓存、恢复等改动增加必要的定向检查即可，不扩成长耗时的日常扫描。精度归 accuracy_test，性能归 speed_test，code_test 保持短小验证。
 
 报告修复、依据、实际运行的检查与限制；明确区分当前源码构建的二进制和旧二进制。缺失的历史元信息保留为未知。
+
+
+## Debug验证与Release实验构建
+
+Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Eigen堆分配的断言；项目`require(...)`物理/残差检查继续生效。Debug保留尺寸、索引和分配检查，不能据此保证未覆盖输入的正确性。
+`intel-build.sh`支持`BUILD_TYPE=Debug|Release`（默认Release）；默认仅Debug开启BUILD_TESTING。code_test驱动要求可追溯到CMakeCache.txt的Debug二进制，拒绝Release或无法核实的构建。
+共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。

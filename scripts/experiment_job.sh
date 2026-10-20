@@ -14,7 +14,8 @@ mkdir "$RUN_ROOT"
 python3 -c 'import sys; sys.path.insert(0,"scripts"); from provenance import runtime,save; save(sys.argv[1],runtime())' "$RUN_ROOT/provenance.json"
 trap 'status=$?; printf "%s\n" "$status" > "$RUN_ROOT/exit_code.txt"' EXIT
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 BLIS_NUM_THREADS=1
-export BUILD_DIR="$RUN_ROOT/build" BUILD_JOBS=1 BUILD_TESTING=ON
+export BUILD_DIR="$RUN_ROOT/build" BUILD_JOBS=1 BUILD_TESTING=OFF BUILD_TYPE=Release
+bash scripts/build_debug_checks.sh 1d "$RUN_ROOT"
 bash intel-build.sh > "$RUN_ROOT/build.log" 2>&1
 module purge
 module load intel-oneapi-compilers intel-oneapi-mkl eigen cmake
@@ -29,9 +30,6 @@ PYTHON_EXE=$(command -v python3)
   module list
   sha256sum "$BUILD_DIR/dg_hdg_1d/dg_hdg"
 } > "$RUN_ROOT/environment.txt" 2>&1
-ctest --test-dir "$BUILD_DIR" --output-on-failure > "$RUN_ROOT/ctest.log" 2>&1
-"$PYTHON_EXE" code_test/1d/test_solver.py --exe "$BUILD_DIR/dg_hdg_1d/dg_hdg" \
-  --output "$RUN_ROOT/checks" > "$RUN_ROOT/code_test.log" 2>&1
 if [[ "$DGH_EXPERIMENT" == accuracy ]]; then
   srun --export=ALL --ntasks=1 --cpus-per-task=1 --cpu-bind=cores \
     "$PYTHON_EXE" accuracy_test/1d/convergence.py --exe "$BUILD_DIR/dg_hdg_1d/dg_hdg" \

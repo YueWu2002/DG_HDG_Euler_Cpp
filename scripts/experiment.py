@@ -59,6 +59,18 @@ def run(command, output):
     return metrics
 
 
+def require_debug_build(exe):
+    """code_test requires a separately configured Debug solver."""
+    exe = Path(exe).resolve(strict=True)
+    for parent in exe.parents:
+        cache = parent/'CMakeCache.txt'
+        if cache.is_file():
+            if 'CMAKE_BUILD_TYPE:STRING=Debug' not in cache.read_text().splitlines():
+                raise RuntimeError('code_test requires a Debug build; use BUILD_TYPE=Debug with a separate BUILD_DIR')
+            return exe
+    raise RuntimeError('Cannot verify Debug build: CMakeCache.txt not found for code_test executable')
+
+
 def prepare(output, exe):
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True)

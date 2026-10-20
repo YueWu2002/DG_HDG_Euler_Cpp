@@ -1,0 +1,2 @@
+JobID|State|ExitCode|Elapsed|AllocCPUS|ReqMem|NodeList|SolverStepMaxRSS
+7640912|COMPLETED|0:0|02:40:28|1|16G|node1836|3092060K

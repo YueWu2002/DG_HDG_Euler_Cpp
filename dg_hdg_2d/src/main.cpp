@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
                "fixed_newton_steps,warmup_updates,steps,final_time,newton_iterations,krylov_iterations,"
                "max_linear_relative_residual,max_dg_linear_relative_residual,min_step,max_step,mean_dt,"
                "time_loop_s,measured_updates,mean_newton_s,volume_dofs,trace_dofs,"
-               "rho_L2,momentum_x_L2,momentum_y_L2,energy_L2,max_conservation_drift,alpha_degrees,gamma,lx,ly,jacobi_local\n";
+               "rho_L2,momentum_x_L2,momentum_y_L2,energy_L2,max_conservation_drift,lx,ly,jacobi_local\n";
         updates << std::setprecision(17)
             << "method,step,stage,iteration,time,stage_time,dt,cfl,residual_physical_rms,damping,"
                "krylov_iterations,linear_relative_residual,dg_linear_relative_residual,iteration_s,measured\n";
@@ -56,7 +56,7 @@ int main(int argc, char **argv) {
                 << (stats.measured_updates ? stats.measured_newton_seconds / stats.measured_updates : 0.)
                 << ',' << problem.layout.size() << ',' << problem.trace_size();
             for (int v = 0; v < NVAR; ++v) summary << ',' << error[v];
-            summary << ',' << stats.conservation_drift << ',' << config.alpha_degrees << ',' << problem.example.gas.gamma() << ',' << problem.example.lx << ',' << problem.example.ly << ',' << (method==Method::DG?"dense":"face-dense") << '\n';
+            summary << ',' << stats.conservation_drift << ',' << problem.example.lx << ',' << problem.example.ly << ',' << (method==Method::DG?"dense":"face-dense") << '\n';
             for (std::size_t i = 0; i < stats.updates.size(); ++i) {
                 const auto &u = stats.updates[i];
                 updates << name << ',' << u.step << ',' << u.stage << ',' << u.iteration << ','

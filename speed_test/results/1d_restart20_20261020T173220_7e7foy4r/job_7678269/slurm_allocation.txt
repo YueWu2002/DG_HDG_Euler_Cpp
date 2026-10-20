@@ -1,0 +1,30 @@
+JobId=7678269 JobName=eigen-1d-r20-k1_dg
+   UserId=ywu355(140593960) GroupId=ccv-apma2822_24fall(140461535) MCS_label=N/A
+   Priority=98271 Nice=0 Account=default QOS=normal
+   JobState=RUNNING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:00:03 TimeLimit=00:30:00 TimeMin=N/A
+   SubmitTime=2026-10-20T17:32:50 EligibleTime=2026-10-20T17:32:50
+   AccrueTime=2026-10-20T17:32:50
+   StartTime=2026-10-20T17:37:59 EndTime=2026-10-20T18:07:59 Deadline=N/A
+   PreemptEligibleTime=2026-10-20T17:37:59 PreemptTime=None
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-10-20T17:37:59 Scheduler=Backfill
+   Partition=batch AllocNode:Sid=node1803:3035681
+   ReqNodeList=node1848 ExcNodeList=(null)
+   NodeList=node1848
+   BatchHost=node1848
+   NumNodes=1 NumCPUs=1 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   ReqTRES=cpu=1,mem=16G,node=1,billing=1
+   AllocTRES=cpu=1,mem=16G,node=1,billing=1
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:1 CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=16G MinTmpDiskNode=0
+   Features=intel DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)
+   Command=/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart20_20261020T173220_7e7foy4r/control/job.sh
+   WorkDir=/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart20_20261020T173220_7e7foy4r
+   StdErr=/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart20_20261020T173220_7e7foy4r/scheduler/eigen-1d-r20-k1_dg-7678269.err
+   StdIn=/dev/null
+   StdOut=/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart20_20261020T173220_7e7foy4r/scheduler/eigen-1d-r20-k1_dg-7678269.out
+   TresPerTask=cpu=1
+   
+

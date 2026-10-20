@@ -1,0 +1,136 @@
+{
+  "schema_version": 2,
+  "kind": "accuracy",
+  "job_id": "7640912",
+  "grids": [
+    32,
+    64,
+    128,
+    256
+  ],
+  "full_formal_set": true,
+  "collected_utc": "2026-10-20T20:35:48.568407+00:00",
+  "identity": {
+    "code_version": "5383fb8b2864+src.93149b2591611a14",
+    "source_sha256": "93149b2591611a14cfeff614137ec8fc285df0b2c41f81518f3ba889219bcd0c",
+    "executable_sha256": "812e1075efc2854e89cfc02de8426e23ed757eb1abd497fc104ce2771e98b533",
+    "cpu_model": "Intel(R) Xeon(R) Platinum 8268 CPU @ 2.90GHz",
+    "host": "node1836.oscar.ccv.brown.edu",
+    "slurm_job_id": "7640912"
+  },
+  "input_path_base": "experiment_root",
+  "inputs": [
+    {
+      "path": "archive.json",
+      "sha256": "c419b00d3bf28fc4a77075460f5992d6b52c462b6dc8548eb5e29b496b9b31ec"
+    },
+    {
+      "path": "base_commit.txt",
+      "sha256": "38b8548f50fd765e97851c5454005e2e1fef1df8f87d63b880ef85e63abbc6c5"
+    },
+    {
+      "path": "job_7640912/data/SUCCESS",
+      "sha256": "5e0328ef9cd5d99d2391351cd33b29a1f89d55197476775924ba5434bb9a314c"
+    },
+    {
+      "path": "job_7640912/data/convergence.csv",
+      "sha256": "b3b1c2e1f7b4861f1c2ff2f0b49679c84973ad96beeb2651df63b07fd6ff5541"
+    },
+    {
+      "path": "job_7640912/data/executable.json",
+      "sha256": "df869dffbd3cf5606fb7c3cef83578f83e082fa2627208b930cf9c196b619a3d"
+    },
+    {
+      "path": "job_7640912/data/n128.command.json",
+      "sha256": "011e200b583fbd634ea2b5ab9eadceba8c857eee4bdac5a4b9c1a3b8eef494f2"
+    },
+    {
+      "path": "job_7640912/data/n128.resources.json",
+      "sha256": "6351a3141bc5c5dbded1eaa0cc90848c9f7fac3d33f27aaa1e3ece1c6d15ebf8"
+    },
+    {
+      "path": "job_7640912/data/n128_difference.csv",
+      "sha256": "1726122bff80bb5866a049309d46eb6405e1258e31ebb38629bbb0112507f7b4"
+    },
+    {
+      "path": "job_7640912/data/n128_summary.csv",
+      "sha256": "bc8589ec12a7beb8d2b5f640e205d3264ba82323b8b348ec42a167f18101efd3"
+    },
+    {
+      "path": "job_7640912/data/n256.command.json",
+      "sha256": "7e3b08afb5f8a5d7efdb58fa593fd8c95609c6d7c5b455f8889cdeac35448eb9"
+    },
+    {
+      "path": "job_7640912/data/n256.resources.json",
+      "sha256": "ef2864d909f3b2a5f9f089c855caeabc77d465b628d83dba4f7bdf73715694b2"
+    },
+    {
+      "path": "job_7640912/data/n256_difference.csv",
+      "sha256": "70c5644aae4d165e31dad691dd699531a302a3d44202c5146232b9c4c13a077e"
+    },
+    {
+      "path": "job_7640912/data/n256_summary.csv",
+      "sha256": "9c570e8be18012fa9cb401a4dce6b5aa2934b8b1532bb66173b2cbb68e063192"
+    },
+    {
+      "path": "job_7640912/data/n32.command.json",
+      "sha256": "8dfdb8a551e8c7995b08d9d20ccd2af26de44b7f099c2fa755f351e698a7d5cc"
+    },
+    {
+      "path": "job_7640912/data/n32.resources.json",
+      "sha256": "a2485ecd6f596f5c48666b4f100b992b7f76a22097f9d2247485a69632702b13"
+    },
+    {
+      "path": "job_7640912/data/n32_difference.csv",
+      "sha256": "28df91e99966552444d260ed1aa244a6586046e8d40ffda919faab067582e794"
+    },
+    {
+      "path": "job_7640912/data/n32_summary.csv",
+      "sha256": "2bd793e4f7fa1ff6526310a2b6b3cf187e8d5c11f8274e0667fe104de412772d"
+    },
+    {
+      "path": "job_7640912/data/n64.command.json",
+      "sha256": "4ce6d9a5f10aec4e71ec042e048d3d94ab05a908d8e76671b2273b1b6de6cd1c"
+    },
+    {
+      "path": "job_7640912/data/n64.resources.json",
+      "sha256": "195f4184adbe87040c6440332247391d9517152cec2a459021d72672ddeb615d"
+    },
+    {
+      "path": "job_7640912/data/n64_difference.csv",
+      "sha256": "dd0ebe97fc587d8f7484f1eba9172dc77e333669906ec2530850194588cf9c92"
+    },
+    {
+      "path": "job_7640912/data/n64_summary.csv",
+      "sha256": "d2e7aa95e18f87467f68f178703f8d8161da45e9ec9f9fed243605660ea427bd"
+    },
+    {
+      "path": "job_7640912/environment.txt",
+      "sha256": "de82c21c3b19d093c0551e894d20fb8ec8b260b67efae8ddc638a0bba94c55eb"
+    },
+    {
+      "path": "job_id.txt",
+      "sha256": "9e5114ae99a2d8a3e02ff945c9b2cd862c2e4df5b54b37ef152519882bec8536"
+    },
+    {
+      "path": "slurm_accounting.txt",
+      "sha256": "e29c9ab05bf398435add539b4906984e8f373828579371305bf0e95c7a326ff7"
+    },
+    {
+      "path": "source.sha256",
+      "sha256": "93149b2591611a14cfeff614137ec8fc285df0b2c41f81518f3ba889219bcd0c"
+    },
+    {
+      "path": "submission.json",
+      "sha256": "1440155155b1280a91a9af22e70f7f452e00b4a08815ac98e2bce09c4f9d9e73"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "postprocessing/convergence_summary.csv",
+      "sha256": "a2774d22ddfc8a26be00a54b0c7d0bc1f1907ad0e1bb41be5e20ba5cf82bb53a"
+    }
+  ],
+  "processor_sha256": "21a91fe37983c7cfa79e6f5ad2c04fd5431afae00cf7b25fd726bf8b2329a958",
+  "note": "Raw inputs are referenced, never copied or modified. Historical missing metadata is not reconstructed beyond recorded evidence."
+}

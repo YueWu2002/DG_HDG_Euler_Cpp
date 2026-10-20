@@ -3,7 +3,10 @@
 /output/
 *.exe
 *.o
+*.a
+*/bin/
 /build-intel/
+/build-debug/
 __pycache__/
 /build-2d-intel/
 /build-2d-native/
@@ -23,3 +26,7 @@ __pycache__/
 /accuracy_test/running/**/build/
 /speed_test/running/**/source/
 /speed_test/running/**/build/
+
+# Baseline executable copies for independent timing campaigns.
+/speed_test/running/**/bin/
+/speed_test/results/**/bin/

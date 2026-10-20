@@ -1,0 +1,45 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7635952
+##  Job Name : eigen-2d-speed
+##  Nodelist : node2301
+##      CPUs : 1
+##  Mem/Node : 102400 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Mon Oct 19 21:50:29 EDT 2026
+###############################################################################
+Start dg: N=256x256, k=8, exact block Jacobi
+Completed dg k=8: mean=2146.3353 s, RSS=58.1901 GiB
+Start hdg: N=256x256, k=8, exact block Jacobi
+Completed hdg k=8: mean=400.45153 s, RSS=38.0631 GiB
+Start dg: N=256x256, k=7, exact block Jacobi
+Completed dg k=7: mean=1181.0058 s, RSS=37.5043 GiB
+Start hdg: N=256x256, k=7, exact block Jacobi
+Completed hdg k=7: mean=317.10538 s, RSS=28.2097 GiB
+Start dg: N=256x256, k=6, exact block Jacobi
+Completed dg k=6: mean=687.25251 s, RSS=22.9976 GiB
+Start hdg: N=256x256, k=6, exact block Jacobi
+Completed hdg k=6: mean=201.84026 s, RSS=20.2041 GiB
+Start dg: N=256x256, k=5, exact block Jacobi
+Completed dg k=5: mean=370.7146 s, RSS=13.2655 GiB
+Start hdg: N=256x256, k=5, exact block Jacobi
+Completed hdg k=5: mean=144.62121 s, RSS=13.8551 GiB
+Start dg: N=256x256, k=4, exact block Jacobi
+Completed dg k=4: mean=204.74785 s, RSS=7.0890 GiB
+Start hdg: N=256x256, k=4, exact block Jacobi
+Completed hdg k=4: mean=92.357073 s, RSS=8.9730 GiB
+Start dg: N=256x256, k=3, exact block Jacobi
+Completed dg k=3: mean=87.649673 s, RSS=3.4401 GiB
+Start hdg: N=256x256, k=3, exact block Jacobi
+Completed hdg k=3: mean=55.394698 s, RSS=5.3714 GiB
+Start dg: N=256x256, k=2, exact block Jacobi
+Completed dg k=2: mean=41.521388 s, RSS=1.4664 GiB
+Start hdg: N=256x256, k=2, exact block Jacobi
+Completed hdg k=2: mean=37.497122 s, RSS=2.8600 GiB
+Start dg: N=256x256, k=1, exact block Jacobi
+Completed dg k=1: mean=13.907908 s, RSS=0.5194 GiB
+Start hdg: N=256x256, k=1, exact block Jacobi
+Completed hdg k=1: mean=15.445422 s, RSS=1.2565 GiB
+Start dg: N=256x256, k=0, exact block Jacobi
+Completed dg k=0: mean=5.8539066 s, RSS=0.1275 GiB
+Start hdg: N=256x256, k=0, exact block Jacobi
+Completed hdg k=0: mean=5.5889518 s, RSS=0.3704 GiB

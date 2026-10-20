@@ -1,0 +1,9 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7675906
+##  Job Name : eigen-2d-cli-check
+##  Nodelist : node1848
+##      CPUs : 1
+##  Mem/Node : 4096 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Tue Oct 20 16:53:03 EDT 2026
+###############################################################################

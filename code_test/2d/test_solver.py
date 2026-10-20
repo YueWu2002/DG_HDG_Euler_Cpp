@@ -4,14 +4,13 @@ import argparse
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import prepare,rows,run
+from experiment import require_debug_build,prepare,rows,run
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--exe',required=True);parser.add_argument('--output',required=True)
-    args=parser.parse_args();output,exe=prepare(args.output,args.exe)
+    args=parser.parse_args();output,exe=prepare(args.output,require_debug_build(args.exe))
     for name,extra in [('dirk3',['--T',.02]),('be',['--integrator','be','--T',.02]),
-                        ('rotated',['--alpha-deg',30,'--T',.02]),
                         ('entropy',['--testcase','wave','--T',.02])]:
         prefix=output/name
         run([exe,'--nx',4,'--ny',4,'--k',2,'--cfl',2,'--method','both','--check-update',

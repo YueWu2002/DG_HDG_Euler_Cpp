@@ -2,7 +2,7 @@
 #include <algorithm>
 namespace euler {
 Problem::Problem(const Config &c)
-    : config(c), basis(c.degree, c.quadrature), layout(c.nx, c.ny, basis.nodes), example(c.testcase, c.alpha_degrees),
+    : config(c), basis(c.degree, c.quadrature), layout(c.nx, c.ny, basis.nodes), example(c.testcase),
       hx(example.lx / c.nx), hy(example.ly / c.ny), old(layout.size()), mass(layout.size()),
       inverse_mass(layout.size()), trace_mass(trace_size()), inverse_trace_mass(trace_size()),
       speeds(face_count() * basis.nodes), tensor_(basis, hx, hy),

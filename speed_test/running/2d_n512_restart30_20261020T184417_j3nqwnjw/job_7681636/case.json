@@ -1,0 +1,13 @@
+{
+  "key": "k6_hdg",
+  "k": 6,
+  "method": "hdg",
+  "historical_wall_s": 782.9452,
+  "historical_peak_rss_kib": 21185534.3616,
+  "resource_multiplier": 4.4,
+  "extra_gmres_basis_gib": 1.09375,
+  "estimated_peak_memory_gib": 81.91015,
+  "estimated_wall_s": 3131.7808,
+  "requested_memory_gib": 91,
+  "requested_time": "00:58:00"
+}

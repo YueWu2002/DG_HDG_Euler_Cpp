@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.22)
+project(DG_HDG_Euler VERSION 1.0.0 LANGUAGES CXX
+    DESCRIPTION "Implicit DG and condensed HDG Euler solvers")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
+endif()
+include(CTest)
+include(cmake/DghBuild.cmake)
+option(DGH_BUILD_1D "Build the 1D solver" ON)
+if(DGH_BUILD_1D)
+    add_subdirectory(dg_hdg_1d)
+endif()
+
+option(DGH_BUILD_2D "Build the 2D tensor-product solver" ON)
+if(DGH_BUILD_2D)
+    add_subdirectory(dg_hdg_2d)
+endif()

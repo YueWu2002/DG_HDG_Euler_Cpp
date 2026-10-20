@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import prepare, rows, run
+from experiment import require_debug_build,prepare, rows, run
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
     parser.add_argument('--exe', required=True)
     parser.add_argument('--output', required=True)
     args = parser.parse_args()
-    output, exe = prepare(args.output, args.exe)
+    output, exe = prepare(args.output, require_debug_build(args.exe))
     for name, options in (
         ('dirk_smoke', ['--cells', 16, '--k', 2, '--integrator', 'ssp-dirk3', '--T', .02]),
         ('be_update', ['--cells', 32, '--k', 3, '--integrator', 'be', '--steps', 1])):

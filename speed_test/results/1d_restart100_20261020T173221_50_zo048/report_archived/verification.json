@@ -1,0 +1,17 @@
+{
+  "checked_utc": "2026-10-20T21:47:09.011427+00:00",
+  "cases": 18,
+  "updates": 72,
+  "status": "PASS",
+  "checks": [
+    "input/output SHA256",
+    "binary identity",
+    "archived terminal states",
+    "commands and N=2048/restart",
+    "four updates and 0/1/1/1",
+    "recomputed means",
+    "CPU/node",
+    "exit codes",
+    "scheduler out/err retained"
+  ]
+}

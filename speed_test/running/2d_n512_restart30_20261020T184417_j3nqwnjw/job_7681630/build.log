@@ -1,0 +1,44 @@
+
+Lmod is automatically replacing "intel-oneapi-compilers/2025.2.0-bmbg" with
+"gcc/11.5.0-wfyo".
+
+-- The CXX compiler identification is IntelLLVM 2025.2.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Native CPU optimization: ON (-march=native)
+-- MKL found: linking MKL::MKL (LP64, sequential)
+-- BLAS linked: YES (MKL; target MKL::MKL)
+-- C++ compiler: IntelLLVM 2025.2.0 (/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx)
+-- Eigen backend: MKL (requested MKL)
+-- Performing Test DGH_MKL_LAPACKE_LINKS
+-- Performing Test DGH_MKL_LAPACKE_LINKS - Success
+-- Eigen LAPACK linked: YES (MKL)
+-- Eigen LAPACK backend: MKL (requested MKL)
+-- Configuring done (7.2s)
+-- Generating done (0.4s)
+-- Build files have been written to: /oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T184417_j3nqwnjw/job_7681630/build
+[  5%] Building CXX object CMakeFiles/dgh_fastgl.dir/vendor/fastgl/fastgl.cpp.o
+[ 10%] Linking CXX static library libdgh_fastgl.a
+[ 10%] Built target dgh_fastgl
+[ 15%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/config.cpp.o
+[ 21%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/dg_operator.cpp.o
+[ 26%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/discretization.cpp.o
+[ 31%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/example.cpp.o
+[ 36%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/face_jacobian.cpp.o
+[ 42%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/hybrid.cpp.o
+[ 47%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/initial_and_error.cpp.o
+[ 52%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/physics.cpp.o
+[ 57%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/tensor_product.cpp.o
+[ 63%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/time_integrator.cpp.o
+[ 68%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/src/volume_jacobian.cpp.o
+[ 73%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/__/common/src/linalg/block_graph.cpp.o
+[ 78%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/__/common/src/linalg/block_ilu.cpp.o
+[ 84%] Building CXX object dg_hdg_2d/CMakeFiles/euler_2d.dir/__/common/src/linalg/gmres.cpp.o
+[ 89%] Linking CXX static library libeuler_2d.a
+[ 89%] Built target euler_2d
+[ 94%] Building CXX object dg_hdg_2d/CMakeFiles/dg_hdg_2d.dir/src/main.cpp.o
+[100%] Linking CXX executable dg_hdg_2d
+[100%] Built target dg_hdg_2d

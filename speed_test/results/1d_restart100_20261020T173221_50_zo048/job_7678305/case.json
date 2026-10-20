@@ -1,0 +1,8 @@
+{
+  "key": "k8_hdg",
+  "k": 8,
+  "method": "hdg",
+  "historical_rss_gib": 0.100311279296875,
+  "extra_basis_gib": 0.003662109375,
+  "requested_memory_gib": 16
+}

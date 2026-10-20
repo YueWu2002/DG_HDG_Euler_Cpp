@@ -1,0 +1,29 @@
+Start testing: Oct 20 16:54 EDT
+----------------------------------------------------------
+1/1 Testing: dg_hdg_2d_checks
+1/1 Test: dg_hdg_2d_checks
+Command: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/code_test/2d/running/cli_no_alpha_20261020_9_pr310e/build/dg_hdg_2d/check_2d"
+Directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/code_test/2d/running/cli_no_alpha_20261020_9_pr310e/build/dg_hdg_2d
+"dg_hdg_2d_checks" start time: Oct 20 16:54 EDT
+Output:
+----------------------------------------------------------
+degree=0 overintegration=0 operators passed
+degree=0 overintegration=1 operators passed
+degree=1 overintegration=0 operators passed
+degree=1 overintegration=1 operators passed
+degree=2 overintegration=0 operators passed
+degree=2 overintegration=1 operators passed
+degree=4 overintegration=0 operators passed
+degree=4 overintegration=1 operators passed
+degree=8 overintegration=0 operators passed
+degree=8 overintegration=1 operators passed
+All 2D checks passed
+<end of output>
+Test time =   0.43 sec
+----------------------------------------------------------
+Test Passed.
+"dg_hdg_2d_checks" end time: Oct 20 16:54 EDT
+"dg_hdg_2d_checks" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 20 16:54 EDT

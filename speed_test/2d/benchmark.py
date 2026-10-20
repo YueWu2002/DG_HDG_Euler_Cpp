@@ -27,7 +27,7 @@ def main():
                 '--integrator','be','--steps',1,'--newton-steps',4,'--warmup-updates',1,
                 '--cfl',5,'--precond','block-jacobi',
                 '--ordering','natural','--ntol','1e-12','--ltol','1e-12','--restart',20,
-                '--max-linear',1500,'--safety',1.1,'--alpha-deg',45,'--timing-only','--prefix',prefix],prefix)
+                '--max-linear',1500,'--safety',1.1,'--timing-only','--prefix',prefix],prefix)
             summary=rows(f'{prefix}_summary.csv')[0]; updates=rows(f'{prefix}_iterations.csv')
             if len(updates)!=4 or [r['measured'] for r in updates]!=['0','1','1','1'] or int(summary['measured_updates'])!=3:
                 raise RuntimeError('Expected exactly four updates, first warmup')

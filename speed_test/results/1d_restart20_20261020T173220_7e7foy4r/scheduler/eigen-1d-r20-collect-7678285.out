@@ -1,0 +1,10 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7678285
+##  Job Name : eigen-1d-r20-collect
+##  Nodelist : node1809
+##      CPUs : 1
+##  Mem/Node : 16384 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Tue Oct 20 17:41:45 EDT 2026
+###############################################################################
+/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/1d_restart20_20261020T173220_7e7foy4r/report_archived/REPORT.md
