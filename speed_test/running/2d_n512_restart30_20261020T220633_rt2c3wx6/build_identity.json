@@ -1,0 +1,6 @@
+{
+  "executable_sha256": "5429a2f3a7556476bfb88ebd9241bc0b1abe70315af34d26f7a1f03f42715e79",
+  "expected_cpu": "Intel(R) Xeon(R) Platinum 8268 CPU @ 2.90GHz",
+  "build_job_id": "7687730",
+  "build_directory": "job_7687730/build"
+}

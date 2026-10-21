@@ -15,6 +15,10 @@ description: 执行或分析本项目 Eigen Euler 1D/2D DG/HDG 精度与收敛�
 
 ## 提交前资源预估（必须执行）
 
+- 计算时限必须先根据匹配历史数据和实际规模预估，再充分增大。Krylov迭代次数、restart、谱性质、网格加密及节点争用会改变成本，不能准确预测总耗时；不得只按单元数线性缩放或只加很小余量。根据不确定性明确选择充分的时间倍率，记录原始估计、放大依据、最终时限；用户指定双倍时限时，逐项对上一轮申请时限翻倍。超时数据只能作为耗时下界，不能作为成功运行需求。
+- 新构建可执行文件统一位于各构建目录的 `bin/*.exe`，静态库为构建目录内的 `*.a`；批次运行副本位于该批次 `bin/solver.exe`。Debug与Release各自保留配置、日志及二进制身份。历史命令与旧路径不回写。
+
+
 - 优先读取根目录 [MEMORY_ESTIMATE.md](../../MEMORY_ESTIMATE.md) 的匹配实测表与估算说明，作为资源预估依据；其中已记录规模、协议、实际RSS/wall和来源，覆盖充分时不必翻找或重新遍历历史数据，以减少重复读取和token开销。仅在缺少对应规模/配置、版本不匹配、需要更高精度或数据存疑时，沿该文档来源链接定向核查必要文件。新增有效测量后及时更新该参考表，未知信息仍明确标注。
 - 提交任何新 Slurm 测试前，必须先预估该任务的峰值内存和总运行时长，再据此确定 `--mem`、`--time`；不得先提交统一的大额资源申请、事后才估算，也不得将最大算例申请机械套用到所有任务。
 - 优先查找已完成且可比的历史运行，核对维数、单元总数、阶数、DG/HDG、积分器、步数或终止时间、容差、GMRES restart、预条件器、代码/二进制版本、CPU和线程。以实际 `peak_rss_kib`、进程 `wall_s` 及对应 Slurm accounting 为依据；申请量不作为实测值，失败/OOM或超时数据不能当作成功运行的完整需求。
@@ -100,3 +104,5 @@ collect与archive任务不限制node、CPU型号或Intel特性，可在任意可
 Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Eigen堆分配的断言；项目`require(...)`物理/残差检查继续生效。Debug保留尺寸、索引和分配检查，不能据此保证未覆盖输入的正确性。
 `intel-build.sh`支持`BUILD_TYPE=Debug|Release`（默认Release）；默认仅Debug开启BUILD_TESTING。code_test驱动要求可追溯到CMakeCache.txt的Debug二进制，拒绝Release或无法核实的构建。
 共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。
+
+共享脚本的目录约定见 [scripts/README.md](../../scripts/README.md)。本地驱动写入进程身份与退出状态；显式使用 `scripts/archive_finished.py --run-root <目录>` 归档已停止的本地运行。源码快照不打包bin、构建目录及二进制；Git只忽略产物，保留配置、日志和完整来源。

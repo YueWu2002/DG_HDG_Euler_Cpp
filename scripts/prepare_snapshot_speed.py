@@ -12,7 +12,7 @@ import tempfile
 from speed_campaign import rows, save, sha
 
 
-def prepare(node, cells, factor, minimum, restart=20, build_time="02:00:00"):
+def prepare(node, cells, factor, minimum, restart=20, build_time="02:00:00", time_multiplier=2.0, required_cpu=None):
     project=Path(__file__).resolve().parents[1]
     history=project/'speed_test/results/2d_submission_20261019T205542_KhFC6z/job_7635952/data/timings.csv'
     root=Path(tempfile.mkdtemp(prefix=f'2d_n{cells}_restart{restart}_{datetime.now():%Y%m%dT%H%M%S}_',dir=project/'speed_test/running'))
@@ -42,13 +42,14 @@ def prepare(node, cells, factor, minimum, restart=20, build_time="02:00:00"):
             extra_basis=max(0,restart-20)*dofs*8/1024**3
             estimated_memory=historical_rss*scale+extra_basis
             memory=max(minimum,math.ceil(estimated_memory*(factor/scale)))
-            minutes=max(1,math.ceil(historical_wall*factor/60))
+            previous_minutes=max(1,math.ceil(historical_wall*factor/60))
+            minutes=math.ceil(previous_minutes*time_multiplier)
             duration=f'{minutes//60:02}:{minutes%60:02}:00'
             cases.append(dict(key=f'k{k}_{method}',k=k,method=method,historical_wall_s=historical_wall,
                               historical_peak_rss_kib=historical_rss*1024**2,resource_multiplier=factor,
                               extra_gmres_basis_gib=extra_basis,estimated_peak_memory_gib=estimated_memory,
                               estimated_wall_s=historical_wall*scale,
-                              requested_memory_gib=memory,requested_time=duration))
+                              requested_memory_gib=memory,previous_requested_time_minutes=previous_minutes,time_multiplier=time_multiplier,requested_time=duration))
     for name in ['speed_campaign.py','experiment.py','provenance.py']:
         shutil.copy2(project/'scripts'/name,root/'control'/name)
     (root/'control/job.sh').write_text('''#!/usr/bin/env bash
@@ -66,7 +67,7 @@ exec srun --ntasks=1 --cpus-per-task=1 /usr/bin/python3 "$@"
     files=['CMakeLists.txt','cmake','common','dg_hdg_1d','dg_hdg_2d','vendor','scripts','intel-build.sh','skills',
            'AGENTS.md','README.md','MATHEMATICS.md','DESIGN.md','VALIDATION.md','MEMORY_ESTIMATE.md','RESULTS.md',
            'code_test/2d','accuracy_test/2d','speed_test/2d']
-    producer=subprocess.Popen(['tar','-C',str(project),'--exclude=__pycache__','--exclude=results','--exclude=running','-cf','-',*files],stdout=subprocess.PIPE)
+    producer=subprocess.Popen(['tar','-C',str(project),'--exclude=__pycache__','--exclude=results','--exclude=running','--exclude=bin','--exclude=build','--exclude=build-*','--exclude=CMakeFiles','--exclude=*.exe','--exclude=*.a','--exclude=*.o','--exclude=*.obj','--exclude=*.pyc','--exclude=*.so','--exclude=*.so.*','-cf','-',*files],stdout=subprocess.PIPE)
     subprocess.run(['tar','-C',str(root/'source'),'-xf','-'],stdin=producer.stdout,check=True)
     producer.stdout.close()
     if producer.wait()!=0:raise RuntimeError('Snapshot creation failed')
@@ -78,12 +79,12 @@ exec srun --ntasks=1 --cpus-per-task=1 /usr/bin/python3 "$@"
     driver=''.join(f'{sha(p)}  control/{p.name}\n' for p in sorted((root/'control').iterdir()))
     (root/'driver.sha256').write_text(driver)
     save(root/'submission.json',dict(schema_version=1,experiment='speed',dimension='2d',cells=cells,restart=restart,
-         fresh_build=True,build_time=build_time,build_resource_note='16GiB; two configurations plus Debug checks; 2h initial budget with uncertain Debug runtime',expected_node=node,expected_cpu=None,executable_sha256=None,code_version=f'{base[:12]}+src.{digest[:16]}',
+         fresh_build=True,build_time=build_time,build_resource_note=f'16GiB; Debug checks plus independent Release build; requested {build_time}, runtime uncertain',expected_node=node,required_cpu=required_cpu,expected_cpu=None,executable_sha256=None,code_version=f'{base[:12]}+src.{digest[:16]}',
          source_sha256=digest,base_commit=base,driver_manifest_sha256=sha(root/'driver.sha256'),cases=cases,
          baseline_job_id='7635952',baseline_restart=20,baseline_timings_sha256=sha(root/'baseline/timings.csv'),
-         minimum_memory_gib=minimum,resource_rule='MEMORY_ESTIMATE table; RSS times cells ratio plus extra restart basis, then margin; wall times factor, rounded up',
+         minimum_memory_gib=minimum,resource_rule='MEMORY_ESTIMATE table; RSS times cells ratio plus extra restart basis, then margin; wall times factor, rounded up, then independent time_multiplier',
          resource_reference='MEMORY_ESTIMATE.md / 2D 256x256 GMRES20',resource_reference_sha256=sha(reference),
-         time_uncertainty='Restart change may change iteration count and orthogonalization cost; no measured 512x512 GMRES30 baseline',
+         time_multiplier=time_multiplier,time_uncertainty='Restart change may change iteration count and orthogonalization cost; no measured 512x512 GMRES30 baseline',
          retain_source_after_completion=False,source_directory='source',source_manifest='source.sha256',
          created_utc=datetime.now(timezone.utc).isoformat(),scheduling_note='Each (k,method) independently scheduled on one node after shared build; concurrency varies.'))
     print(root)
@@ -94,11 +95,13 @@ exec srun --ntasks=1 --cpus-per-task=1 /usr/bin/python3 "$@"
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--node',required=True)
+    parser.add_argument('--required-cpu',help='Exact CPU model checked on build node before compilation')
     parser.add_argument('--cells',type=int,default=512)
     parser.add_argument('--restart',type=int,default=20)
     parser.add_argument('--build-time',default='02:00:00')
     parser.add_argument('--factor',type=float,default=4.4)
+    parser.add_argument('--time-multiplier',type=float,default=2.0,help='Multiply rounded prior time budget; Krylov runtime is uncertain')
     parser.add_argument('--minimum-memory-gib',type=int,default=16)
     args=parser.parse_args()
-    if args.cells<3 or args.factor<=0 or args.minimum_memory_gib<1 or args.restart<1:parser.error('Invalid resource or mesh request')
-    prepare(args.node,args.cells,args.factor,args.minimum_memory_gib,args.restart,args.build_time)
+    if args.cells<3 or args.factor<=0 or args.minimum_memory_gib<1 or args.restart<1 or args.time_multiplier<1:parser.error('Invalid resource or mesh request')
+    prepare(args.node,args.cells,args.factor,args.minimum_memory_gib,args.restart,args.build_time,args.time_multiplier,args.required_cpu)

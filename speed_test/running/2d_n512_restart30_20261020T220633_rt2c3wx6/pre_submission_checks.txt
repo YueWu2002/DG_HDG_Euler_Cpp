@@ -1,0 +1,3 @@
+PREPARED, NOT SUBMITTED.
+8 filesystem/provenance regression checks passed. Python syntax passed. All source manifest hashes verified. Snapshot excludes binary/build/run artifacts. CMake bin/*.exe and build/*.a configuration present. Debug then Release on compute node; exact 8268 CPU and host checked before compilation. Executable copy uses relative build identity for CMake provenance. 512x512, k=0..8, DG/HDG, restart=30, per-case budgets twice original, min16GiB. node2347 is an unverified candidate; no jobs launched.
+User authorized submission. Frozen source and driver hashes verified. Source/control ignored by Git; metadata/results not ignored. Submitted successfully; see submitted_jobs.csv and job_ids.json.

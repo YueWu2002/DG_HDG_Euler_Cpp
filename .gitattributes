@@ -1,0 +1,5 @@
+
+# Preserve original experiment evidence byte-for-byte, including generated whitespace.
+accuracy_test/results/** -text -whitespace
+speed_test/results/** -text -whitespace
+code_test/results/** -text -whitespace

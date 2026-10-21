@@ -29,13 +29,13 @@ PYTHON_EXE=$(command -v python3)
   icpx --version
   cmake --version
   module list
-  sha256sum "$BUILD_DIR/dg_hdg_2d/dg_hdg_2d"
+  sha256sum "$BUILD_DIR/bin/dg_hdg_2d.exe"
   printf 'python=%s\n' "$PYTHON_EXE"
 } >> "$RUN_ROOT/environment.txt" 2>&1
 if [[ "$DGH_EXPERIMENT" == accuracy ]]; then
   srun --export=ALL --ntasks=1 --cpus-per-task=1 --cpu-bind=cores \
-    "$PYTHON_EXE" accuracy_test/2d/convergence.py --exe "$BUILD_DIR/dg_hdg_2d/dg_hdg_2d" --output "$RUN_ROOT/data"
+    "$PYTHON_EXE" accuracy_test/2d/convergence.py --exe "$BUILD_DIR/bin/dg_hdg_2d.exe" --output "$RUN_ROOT/data"
 else
   srun --export=ALL --ntasks=1 --cpus-per-task=1 --cpu-bind=cores \
-    "$PYTHON_EXE" speed_test/2d/benchmark.py --exe "$BUILD_DIR/dg_hdg_2d/dg_hdg_2d" --output "$RUN_ROOT/data"
+    "$PYTHON_EXE" speed_test/2d/benchmark.py --exe "$BUILD_DIR/bin/dg_hdg_2d.exe" --output "$RUN_ROOT/data"
 fi

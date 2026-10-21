@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Move only scheduler-confirmed terminal runs from running/ to results/."""
+"""Archive terminal Slurm runs or explicitly selected finished local runs."""
 import argparse
 import json
 from pathlib import Path
 import subprocess
 import shutil
 import getpass
+import os
+import platform
 from datetime import datetime, timezone
 
 TERMINAL = {'COMPLETED', 'FAILED', 'CANCELLED', 'TIMEOUT', 'OUT_OF_MEMORY',
@@ -16,13 +18,45 @@ def archive(root, only=None):
     for folder in sorted((root/'running').iterdir()):
         if only is not None and folder.resolve() != only.resolve():
             continue
-        if not folder.is_dir() or not (folder/'job_id.txt').exists():
+        if not folder.is_dir():
+            continue
+        if not (folder/'job_id.txt').exists():
+            # Local drivers record a PID and final exit status. Never guess
+            # completion from SUCCESS alone or touch a remote local process.
+            process = folder/'local_process.json'
+            if only is None or not process.is_file() or not (folder/'exit_code.txt').is_file():
+                continue
+            info = json.loads(process.read_text())
+            if info['host'] != platform.node():
+                continue
+            try:
+                os.kill(int(info['pid']), 0)
+            except ProcessLookupError:
+                pass
+            except PermissionError:
+                continue
+            else:
+                continue
+            active = subprocess.run(['squeue', '-h', '-u', getpass.getuser(), '-o', '%Z|%o'],
+                                    capture_output=True, text=True, check=True)
+            if str(folder.resolve()) in active.stdout:
+                continue
+            destination = root/'results'/folder.name
+            if destination.exists():
+                raise FileExistsError(destination)
+            (folder/'archive.json').write_text(json.dumps(dict(
+                mode='local', exit_code=(folder/'exit_code.txt').read_text().strip(),
+                original_directory=str(folder.resolve()),
+                archived_utc=datetime.now(timezone.utc).isoformat()), indent=2)+'\n')
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            folder.rename(destination)
+            print(f'{folder} -> {destination}')
             continue
         job = (folder/'job_id.txt').read_text().strip().split(';')[0]
         if not job.isdigit():
             raise ValueError(f'Invalid job ID: {folder}')
-        live = subprocess.run(['squeue', '-h', '-j', job, '-o', '%i'], capture_output=True, text=True)
-        if live.returncode or live.stdout.strip():
+        live = subprocess.run(['squeue', '-h', '-u', getpass.getuser(), '-o', '%i'], capture_output=True, text=True)
+        if live.returncode or job in live.stdout.split():
             continue
         accounting = subprocess.run(['sacct', '-X', '-j', job, '-n', '-P',
                                      '--format=JobIDRaw,State,ExitCode'], check=True, capture_output=True, text=True)
@@ -30,7 +64,7 @@ def archive(root, only=None):
         if len(matches) != 1 or matches[0][1].split()[0].rstrip('+') not in TERMINAL:
             continue
         # Other active jobs may still use this run's scripts or snapshot.
-        active = subprocess.run(['squeue', '-h', '-u', getpass.getuser(), '-o', '%E|%Z'],
+        active = subprocess.run(['squeue', '-h', '-u', getpass.getuser(), '-o', '%E|%Z|%o'],
                                 capture_output=True, text=True)
         if active.returncode:
             continue
@@ -64,9 +98,9 @@ def archive(root, only=None):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--root', type=Path, default=Path(__file__).resolve().parents[1])
-    parser.add_argument('--run-root', type=Path, help='Archive only this scheduler-confirmed finished run')
+    parser.add_argument('--run-root', type=Path, help='Archive only this finished Slurm/local run')
     args = parser.parse_args()
-    for name in ('accuracy_test', 'speed_test'):
+    for name in ('accuracy_test', 'speed_test', 'code_test'):
         root = args.root/name
         (root/'running').mkdir(parents=True, exist_ok=True)
         (root/'results').mkdir(parents=True, exist_ok=True)

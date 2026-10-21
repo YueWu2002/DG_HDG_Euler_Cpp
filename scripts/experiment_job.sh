@@ -15,6 +15,8 @@ python3 -c 'import sys; sys.path.insert(0,"scripts"); from provenance import run
 trap 'status=$?; printf "%s\n" "$status" > "$RUN_ROOT/exit_code.txt"' EXIT
 export OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 BLIS_NUM_THREADS=1
 export BUILD_DIR="$RUN_ROOT/build" BUILD_JOBS=1 BUILD_TESTING=OFF BUILD_TYPE=Release
+{ date -Is; hostname; lscpu; module list; } >> "$RUN_ROOT/environment.txt" 2>&1
+scontrol show job "$SLURM_JOB_ID" > "$RUN_ROOT/slurm_allocation.txt"
 bash scripts/build_debug_checks.sh 1d "$RUN_ROOT"
 bash intel-build.sh > "$RUN_ROOT/build.log" 2>&1
 module purge
@@ -28,14 +30,14 @@ PYTHON_EXE=$(command -v python3)
   icpx --version
   cmake --version
   module list
-  sha256sum "$BUILD_DIR/dg_hdg_1d/dg_hdg"
-} > "$RUN_ROOT/environment.txt" 2>&1
+  sha256sum "$BUILD_DIR/bin/dg_hdg.exe"
+} >> "$RUN_ROOT/environment.txt" 2>&1
 if [[ "$DGH_EXPERIMENT" == accuracy ]]; then
   srun --export=ALL --ntasks=1 --cpus-per-task=1 --cpu-bind=cores \
-    "$PYTHON_EXE" accuracy_test/1d/convergence.py --exe "$BUILD_DIR/dg_hdg_1d/dg_hdg" \
+    "$PYTHON_EXE" accuracy_test/1d/convergence.py --exe "$BUILD_DIR/bin/dg_hdg.exe" \
       --output "$RUN_ROOT/data"
 else
   srun --export=ALL --ntasks=1 --cpus-per-task=1 --cpu-bind=cores \
-    "$PYTHON_EXE" speed_test/1d/benchmark.py --exe "$BUILD_DIR/dg_hdg_1d/dg_hdg" \
+    "$PYTHON_EXE" speed_test/1d/benchmark.py --exe "$BUILD_DIR/bin/dg_hdg.exe" \
       --output "$RUN_ROOT/data"
 fi

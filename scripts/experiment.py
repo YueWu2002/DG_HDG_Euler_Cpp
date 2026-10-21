@@ -13,6 +13,7 @@ from datetime import datetime
 from provenance import runtime, save
 
 _CONTEXT = {}
+_OUTPUT = None
 
 
 def rows(path):
@@ -71,12 +72,37 @@ def require_debug_build(exe):
     raise RuntimeError('Cannot verify Debug build: CMakeCache.txt not found for code_test executable')
 
 
+def require_solver_layout(exe):
+    """New runs use an explicit executable inside its build/campaign bin/."""
+    exe = Path(exe).absolute()
+    if exe.suffix != '.exe' or exe.parent.name != 'bin':
+        raise RuntimeError(f'Expected bin/*.exe; got {exe}')
+    return exe.resolve(strict=True)
+
+
+def prepare_checks(output, exe, dimension):
+    exe = require_debug_build(require_solver_layout(exe))
+    # Embedded checks belong to their parent experiment, not a second archive.
+    parent = os.environ.get('DGH_CHECK_ROOT')
+    if parent:
+        parent = Path(parent).resolve()
+        output = parent/'checks' if output is None else Path(output).resolve()
+        if output != parent/'checks':
+            raise RuntimeError('Embedded code_test output must be <run>/checks')
+        return prepare(output, exe)
+    return prepare_experiment(output, exe, 'code', dimension)
+
+
 def prepare(output, exe):
+    global _OUTPUT
+    exe = require_solver_layout(exe)
     output = Path(output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     if any(output.iterdir()):
         raise RuntimeError(f'Output must be empty: {output}')
-    exe = Path(exe).resolve(strict=True)
+    _OUTPUT = output
+    if not os.environ.get('SLURM_JOB_ID'):
+        save(output/'local_process.json', dict(pid=os.getpid(), host=platform.node()))
     (output/'executable.json').write_text(json.dumps(dict(
         path=str(exe), sha256=hashlib.sha256(exe.read_bytes()).hexdigest(),
         host=platform.node(), slurm_job_id=os.environ.get('SLURM_JOB_ID', '')), indent=2)+'\n')
@@ -98,7 +124,7 @@ def prepare_experiment(output, exe, experiment, dimension):
     if running.name != 'running':
         raise RuntimeError(f'New experiments must run below running/: {running}')
     # Validate executable before creating a new run directory.
-    exe = Path(exe).resolve(strict=True)
+    exe = require_solver_layout(exe)
     if output is None:
         running.mkdir(parents=True, exist_ok=True)
         output = Path(tempfile.mkdtemp(
@@ -109,3 +135,14 @@ def prepare_experiment(output, exe, experiment, dimension):
             raise RuntimeError(f'--output must be inside {running}; got {output}')
     print(f'Output: {output}', flush=True)
     return prepare(output, exe)
+
+
+def run_main(main):
+    """Keep an exit status for local and batch drivers, including failures."""
+    status = 1
+    try:
+        main()
+        status = 0
+    finally:
+        if _OUTPUT is not None:
+            (_OUTPUT/'exit_code.txt').write_text(str(status)+'\n')

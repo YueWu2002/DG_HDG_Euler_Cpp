@@ -1,0 +1,8 @@
+Internal ctest changing into directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T220633_rt2c3wx6/job_7687730/build-debug
+Test project /oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T220633_rt2c3wx6/job_7687730/build-debug
+    Start 1: dg_hdg_2d_checks
+1/1 Test #1: dg_hdg_2d_checks .................   Passed   10.74 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =  10.78 sec

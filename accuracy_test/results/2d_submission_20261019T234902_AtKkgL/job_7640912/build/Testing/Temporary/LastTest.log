@@ -1,0 +1,29 @@
+Start testing: Oct 19 23:52 EDT
+----------------------------------------------------------
+1/1 Testing: dg_hdg_2d_checks
+1/1 Test: dg_hdg_2d_checks
+Command: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/2d/results/submission_20261019T234902_AtKkgL/job_7640912/build/dg_hdg_2d/check_2d"
+Directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/accuracy_test/2d/results/submission_20261019T234902_AtKkgL/job_7640912/build/dg_hdg_2d
+"dg_hdg_2d_checks" start time: Oct 19 23:52 EDT
+Output:
+----------------------------------------------------------
+degree=0 overintegration=0 operators passed
+degree=0 overintegration=1 operators passed
+degree=1 overintegration=0 operators passed
+degree=1 overintegration=1 operators passed
+degree=2 overintegration=0 operators passed
+degree=2 overintegration=1 operators passed
+degree=4 overintegration=0 operators passed
+degree=4 overintegration=1 operators passed
+degree=8 overintegration=0 operators passed
+degree=8 overintegration=1 operators passed
+All 2D checks passed
+<end of output>
+Test time =   0.46 sec
+----------------------------------------------------------
+Test Passed.
+"dg_hdg_2d_checks" end time: Oct 19 23:52 EDT
+"dg_hdg_2d_checks" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 19 23:52 EDT

@@ -1,32 +1,55 @@
-/build/
+# Ignore generated binaries only; retain build configuration, logs and manifests.
 /.deps/
-/output/
-*.exe
-*.o
-*.a
-*/bin/
-/build-intel/
-/build-debug/
 __pycache__/
-/build-2d-intel/
-/build-2d-native/
-/build-1d-regression/
-
-# Experiment data are valuable: keep CSV, logs, device/environment information,
-# command/provenance JSON, source hashes, patches and completion/exit markers.
-# Exclude build directories and duplicate source snapshots from Git only.
-# Keep snapshots on disk; their identity and patch remain eligible for Git.
-/accuracy_test/**/results/**/source/
-/speed_test/**/results/**/source/
-/code_test/**/results/**/source/
-/accuracy_test/**/results/**/build/
-/speed_test/**/results/**/build/
-/code_test/**/results/**/build/
+*.pyc
+*.o
+*.obj
+*.a
+*.so
+*.so.*
+*.exe
+# CMake compiler identification/probe executables are internal build products.
+**/CMakeFiles/**/a.out
+**/CMakeFiles/**/*.bin
+# Temporary immutable sources: remove on disk only after scheduler/dependency checks.
 /accuracy_test/running/**/source/
-/accuracy_test/running/**/build/
 /speed_test/running/**/source/
-/speed_test/running/**/build/
+/code_test/running/**/source/
+/accuracy_test/results/**/source/
+/speed_test/results/**/source/
+/code_test/results/**/source/
+# CSV, out/err, environment/command logs, patches, CMake caches, build logs,
+# resource statistics and provenance remain eligible for Git in every run tree.
 
-# Baseline executable copies for independent timing campaigns.
-/speed_test/running/**/bin/
-/speed_test/results/**/bin/
+# Frozen submission-control script copies are snapshots too; retain driver.sha256.
+/accuracy_test/running/**/control/
+/speed_test/running/**/control/
+/code_test/running/**/control/
+/accuracy_test/results/**/control/
+/speed_test/results/**/control/
+/code_test/results/**/control/
+
+# CMake regeneration products are not experiment evidence. Keep diagnostics and
+# compiler identity, even when CMake stores them inside CMakeFiles/.
+**/CMakeFiles/**
+!**/CMakeFiles/**/
+!**/CMakeFiles/**/CMakeConfigureLog.yaml
+!**/CMakeFiles/**/CMakeConfigureLog.yml
+!**/CMakeFiles/**/*.log
+!**/CMakeFiles/**/CMakeCXXCompiler.cmake
+!**/CMakeFiles/**/CMakeSystem.cmake
+**/build*/**/Makefile
+**/build*/**/cmake_install.cmake
+**/build*/**/CTestTestfile.cmake
+**/build*/**/DartConfiguration.tcl
+**/build*/**/build.ninja
+**/build*/**/rules.ninja
+**/build*/**/.ninja_deps
+**/build*/**/.ninja_log
+# Legacy compiler products predate the .exe convention. Preserve disk files.
+**/build*/**/dg_hdg
+**/build*/**/dg_hdg_2d
+**/build*/**/check_1d
+**/build*/**/check_2d
+**/build*/**/benchmark_dg
+**/bin/solver

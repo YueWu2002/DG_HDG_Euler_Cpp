@@ -12,7 +12,7 @@ DG/HDG 各分量积分 L2 差、联合 L2 差和最大节点差。
 节点解文件默认在扫描中关闭，误差积分和比较仍完整执行。
 
 ```sh
-python3 accuracy_test/2d/convergence.py --exe build-2d-intel/dg_hdg_2d/dg_hdg_2d \
+python3 accuracy_test/2d/convergence.py --exe build-2d-intel/bin/dg_hdg_2d.exe \
   --output accuracy_test/running/local_unique
 ```
 

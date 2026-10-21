@@ -1,4 +1,10 @@
 include_guard(GLOBAL)
+# Keep every configuration self-contained, including Debug checks.
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(CMAKE_EXECUTABLE_SUFFIX ".exe")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
+set(CMAKE_STATIC_LIBRARY_SUFFIX ".a")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "Build project libraries as static archives" FORCE)
 find_package(Eigen3 3.4 QUIET NO_MODULE)
 if(NOT Eigen3_FOUND)
     find_path(DGH_EIGEN_INCLUDE_DIR Eigen/Core

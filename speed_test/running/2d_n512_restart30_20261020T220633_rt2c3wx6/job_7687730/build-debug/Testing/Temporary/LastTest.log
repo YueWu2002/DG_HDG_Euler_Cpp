@@ -1,0 +1,29 @@
+Start testing: Oct 20 22:11 EDT
+----------------------------------------------------------
+1/1 Testing: dg_hdg_2d_checks
+1/1 Test: dg_hdg_2d_checks
+Command: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T220633_rt2c3wx6/job_7687730/build-debug/bin/check_2d.exe"
+Directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T220633_rt2c3wx6/job_7687730/build-debug/dg_hdg_2d
+"dg_hdg_2d_checks" start time: Oct 20 22:11 EDT
+Output:
+----------------------------------------------------------
+degree=0 overintegration=0 operators passed
+degree=0 overintegration=1 operators passed
+degree=1 overintegration=0 operators passed
+degree=1 overintegration=1 operators passed
+degree=2 overintegration=0 operators passed
+degree=2 overintegration=1 operators passed
+degree=4 overintegration=0 operators passed
+degree=4 overintegration=1 operators passed
+degree=8 overintegration=0 operators passed
+degree=8 overintegration=1 operators passed
+All 2D checks passed
+<end of output>
+Test time =  10.74 sec
+----------------------------------------------------------
+Test Passed.
+"dg_hdg_2d_checks" end time: Oct 20 22:11 EDT
+"dg_hdg_2d_checks" time elapsed: 00:00:10
+----------------------------------------------------------
+
+End testing: Oct 20 22:11 EDT

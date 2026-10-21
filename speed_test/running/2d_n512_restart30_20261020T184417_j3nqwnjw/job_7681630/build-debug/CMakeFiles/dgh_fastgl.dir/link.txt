@@ -1,2 +1,0 @@
-/usr/bin/ar qc libdgh_fastgl.a CMakeFiles/dgh_fastgl.dir/vendor/fastgl/fastgl.cpp.o
-/usr/bin/ranlib libdgh_fastgl.a

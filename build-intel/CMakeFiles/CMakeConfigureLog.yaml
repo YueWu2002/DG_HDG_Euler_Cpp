@@ -1,0 +1,451 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineSystem.cmake:205 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The system is: Linux - 5.14.0-570.62.1.0.1.el9_6.x86_64 - x86_64
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCXXCompiler.cmake:126 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx 
+      Build flags: 
+      Id flags:  
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "a.out"
+      
+      The CXX compiler identification is IntelLLVM, found in:
+        /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/3.31.8/CompilerIdCXX/a.out
+      
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:74 (try_compile)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc"
+      binary: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -Rno-debug-disables-optimization"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc'
+        
+        Run Build Command(s): /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E env VERBOSE=1 /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake -f Makefile cmTC_a8a37/fast
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/cmTC_a8a37.dir/build.make CMakeFiles/cmTC_a8a37.dir/build
+        gmake[1]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc'
+        Building CXX object CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx   -v -MD -MT CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -MF CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o.d -o CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -c /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeCXXCompilerABI.cpp
+        Intel(R) oneAPI DPC++/C++ Compiler 2025.2.0 (2025.2.0.20250605)
+        Target: x86_64-unknown-linux-gnu
+        Thread model: posix
+        InstalledDir: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler
+        Configuration file: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../icpx.cfg
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11
+        Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11
+        Candidate multilib: .;@m64
+        Candidate multilib: 32;@m32
+        Selected multilib: .;@m64
+         (in-process)
+         "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/clang" -cc1 -triple x86_64-unknown-linux-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model static -fveclib=SVML -faltmathlib=SVMLAltMathLibrary -mframe-pointer=none -fapprox-func -funsafe-math-optimizations -fno-signed-zeros -mreassociate -freciprocal-math -fdenormal-fp-math=preserve-sign,preserve-sign -ffp-contract=fast-honor-pragmas -fno-rounding-math -complex-range=promoted -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -mllvm -x86-enable-unaligned-vector-move=true -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc -v -fcoverage-compilation-dir=/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc -fclang-abi-compat=17 -resource-dir /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21 -dependency-file CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o.d -MT CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -I/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include -I/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include -I/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include -I/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include -I/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include -I/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include -I/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include -I/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include -I/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -I/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include -I/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -I/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include -I/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include -c-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -c-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include -cxx-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -cxx-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include -internal-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/include -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11 -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/x86_64-redhat-linux -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/backward -internal-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -O2 -fdeprecated-macro -ferror-limit 19 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcxx-exceptions -fexceptions -vectorize-loops -vectorize-slp -mllvm -disable-hir-generate-mkl-call -mllvm -loopopt=1 -floopopt-pipeline=light -mllvm -intel-abi-compatible=true -D__GCC_HAVE_DWARF2_CFI_ASM=1 -fintel-compatibility -fintel-libirc-allowed -fintel-libimf-allowed -o CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -x c++ /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeCXXCompilerABI.cpp
+        clang -cc1 version 21.0.0git based upon LLVM 21.0.0git default target x86_64-unknown-linux-gnu
+        ignoring nonexistent directory "/usr/lib/gcc/x86_64-redhat-linux/11/../../../../x86_64-redhat-linux/include"
+        ignoring nonexistent directory "/include"
+        ignoring duplicate directory "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include"
+          as it is a non-system directory that duplicates a system directory
+        ignoring duplicate directory "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include"
+          as it is a non-system directory that duplicates a system directory
+        #include "..." search starts here:
+        #include <...> search starts here:
+         /oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3
+         /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include
+         /oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include
+         /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include
+         /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include
+         /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/include
+         /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11
+         /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/x86_64-redhat-linux
+         /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/backward
+         /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include
+         /usr/local/include
+         /usr/include
+        End of search list.
+        Linking CXX executable cmTC_a8a37
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a8a37.dir/link.txt --verbose=1
+        Intel(R) oneAPI DPC++/C++ Compiler 2025.2.0 (2025.2.0.20250605)
+        Target: x86_64-unknown-linux-gnu
+        Thread model: posix
+        InstalledDir: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler
+        Configuration file: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../icpx.cfg
+        Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11
+        Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11
+        Candidate multilib: .;@m64
+        Candidate multilib: 32;@m32
+        Selected multilib: .;@m64
+         "/usr/bin/ld" --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_a8a37 /usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crt1.o /usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/11/crtbegin.o -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/usr/lib/gcc/x86_64-redhat-linux/11 -L/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64 -L/lib/../lib64 -L/usr/lib64 -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/lib -L/lib -L/usr/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64 -L/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64 -L/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib -rpath /oscar/rt/9.6/25/spack/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lsvml -Bdynamic -Bstatic -lirng -Bdynamic -lstdc++ -Bstatic -limf -Bdynamic -lm -lgcc_s -lgcc -Bstatic -lirc -Bdynamic -ldl -lgcc_s -lgcc -lc -lgcc_s -lgcc -Bstatic -lirc_s -Bdynamic /usr/lib/gcc/x86_64-redhat-linux/11/crtend.o /usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crtn.o
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx  -v CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -o cmTC_a8a37
+        gmake[1]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc'
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:182 (message)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit include dir info: rv=done
+        found start of include info
+        found start of implicit include info
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include]
+          add: [/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include]
+          add: [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include]
+          add: [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include]
+          add: [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/include]
+          add: [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11]
+          add: [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/x86_64-redhat-linux]
+          add: [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/backward]
+          add: [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include]
+          add: [/usr/local/include]
+          add: [/usr/include]
+        end of search list found
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include]
+        collapse include dir [/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include]
+        collapse include dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include]
+        collapse include dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include]
+        collapse include dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/include] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/opt/compiler/include]
+        collapse include dir [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11] ==> [/usr/include/c++/11]
+        collapse include dir [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/x86_64-redhat-linux] ==> [/usr/include/c++/11/x86_64-redhat-linux]
+        collapse include dir [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/backward] ==> [/usr/include/c++/11/backward]
+        collapse include dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include]
+        collapse include dir [/usr/local/include] ==> [/usr/local/include]
+        collapse include dir [/usr/include] ==> [/usr/include]
+        implicit include dirs: [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include;/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include;/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include;/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include;/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include;/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include;/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include;/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include;/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3;/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include;/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/opt/compiler/include;/usr/include/c++/11;/usr/include/c++/11/x86_64-redhat-linux;/usr/include/c++/11/backward;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include;/usr/local/include;/usr/include]
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:218 (message)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(\\.[a-z]+)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|")?[ 	]*(([^"]*[/\\])?(ld[0-9]*(\\.[a-z]+)?))("|,| |$)]
+        ignore line: [Change Dir: '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc']
+        ignore line: []
+        ignore line: [Run Build Command(s): /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E env VERBOSE=1 /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake -f Makefile cmTC_a8a37/fast]
+        ignore line: [/oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/cmTC_a8a37.dir/build.make CMakeFiles/cmTC_a8a37.dir/build]
+        ignore line: [gmake[1]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc']
+        ignore line: [Building CXX object CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o]
+        ignore line: [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx   -v -MD -MT CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -MF CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o.d -o CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -c /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [Intel(R) oneAPI DPC++/C++ Compiler 2025.2.0 (2025.2.0.20250605)]
+        ignore line: [Target: x86_64-unknown-linux-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler]
+        ignore line: [Configuration file: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../icpx.cfg]
+        ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11]
+        ignore line: [Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11]
+        ignore line: [Candidate multilib: .]
+        ignore line: [@m64]
+        ignore line: [Candidate multilib: 32]
+        ignore line: [@m32]
+        ignore line: [Selected multilib: .]
+        ignore line: [@m64]
+        ignore line: [ (in-process)]
+        ignore line: [ "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/clang" -cc1 -triple x86_64-unknown-linux-gnu -emit-obj -disable-free -clear-ast-before-backend -disable-llvm-verifier -discard-value-names -main-file-name CMakeCXXCompilerABI.cpp -mrelocation-model static -fveclib=SVML -faltmathlib=SVMLAltMathLibrary -mframe-pointer=none -fapprox-func -funsafe-math-optimizations -fno-signed-zeros -mreassociate -freciprocal-math -fdenormal-fp-math=preserve-sign preserve-sign -ffp-contract=fast-honor-pragmas -fno-rounding-math -complex-range=promoted -mconstructor-aliases -funwind-tables=2 -target-cpu x86-64 -mllvm -x86-enable-unaligned-vector-move=true -tune-cpu generic -debugger-tuning=gdb -fdebug-compilation-dir=/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc -v -fcoverage-compilation-dir=/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-vbuSsc -fclang-abi-compat=17 -resource-dir /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21 -dependency-file CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o.d -MT CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -sys-header-deps -I/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include -I/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include -I/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include -I/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include -I/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include -I/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include -I/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include -I/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include -I/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -I/oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include -I/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -I/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include -I/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include -c-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -c-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include -cxx-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -cxx-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include -internal-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/include -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11 -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/x86_64-redhat-linux -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/backward -internal-isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include -internal-isystem /usr/local/include -internal-isystem /usr/lib/gcc/x86_64-redhat-linux/11/../../../../x86_64-redhat-linux/include -internal-externc-isystem /include -internal-externc-isystem /usr/include -O2 -fdeprecated-macro -ferror-limit 19 -fgnuc-version=4.2.1 -fskip-odr-check-in-gmf -fcxx-exceptions -fexceptions -vectorize-loops -vectorize-slp -mllvm -disable-hir-generate-mkl-call -mllvm -loopopt=1 -floopopt-pipeline=light -mllvm -intel-abi-compatible=true -D__GCC_HAVE_DWARF2_CFI_ASM=1 -fintel-compatibility -fintel-libirc-allowed -fintel-libimf-allowed -o CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -x c++ /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeCXXCompilerABI.cpp]
+        ignore line: [clang -cc1 version 21.0.0git based upon LLVM 21.0.0git default target x86_64-unknown-linux-gnu]
+        ignore line: [ignoring nonexistent directory "/usr/lib/gcc/x86_64-redhat-linux/11/../../../../x86_64-redhat-linux/include"]
+        ignore line: [ignoring nonexistent directory "/include"]
+        ignore line: [ignoring duplicate directory "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [ignoring duplicate directory "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include"]
+        ignore line: [  as it is a non-system directory that duplicates a system directory]
+        ignore line: [#include "..." search starts here:]
+        ignore line: [#include <...> search starts here:]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include]
+        ignore line: [ /oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/include]
+        ignore line: [ /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include]
+        ignore line: [ /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/include]
+        ignore line: [ /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/include]
+        ignore line: [ /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11]
+        ignore line: [ /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/x86_64-redhat-linux]
+        ignore line: [ /usr/lib/gcc/x86_64-redhat-linux/11/../../../../include/c++/11/backward]
+        ignore line: [ /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/include]
+        ignore line: [ /usr/local/include]
+        ignore line: [ /usr/include]
+        ignore line: [End of search list.]
+        ignore line: [Linking CXX executable cmTC_a8a37]
+        ignore line: [/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_link_script CMakeFiles/cmTC_a8a37.dir/link.txt --verbose=1]
+        ignore line: [Intel(R) oneAPI DPC++/C++ Compiler 2025.2.0 (2025.2.0.20250605)]
+        ignore line: [Target: x86_64-unknown-linux-gnu]
+        ignore line: [Thread model: posix]
+        ignore line: [InstalledDir: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler]
+        ignore line: [Configuration file: /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../icpx.cfg]
+        ignore line: [Found candidate GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11]
+        ignore line: [Selected GCC installation: /usr/lib/gcc/x86_64-redhat-linux/11]
+        ignore line: [Candidate multilib: .]
+        ignore line: [@m64]
+        ignore line: [Candidate multilib: 32]
+        ignore line: [@m32]
+        ignore line: [Selected multilib: .]
+        ignore line: [@m64]
+        link line: [ "/usr/bin/ld" --hash-style=gnu --eh-frame-hdr -m elf_x86_64 -dynamic-linker /lib64/ld-linux-x86-64.so.2 -o cmTC_a8a37 /usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crt1.o /usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crti.o /usr/lib/gcc/x86_64-redhat-linux/11/crtbegin.o -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/usr/lib/gcc/x86_64-redhat-linux/11 -L/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64 -L/lib/../lib64 -L/usr/lib64 -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/lib -L/lib -L/usr/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64 -L/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib -L/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64 -L/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib -L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib -rpath /oscar/rt/9.6/25/spack/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o -Bstatic -lsvml -Bdynamic -Bstatic -lirng -Bdynamic -lstdc++ -Bstatic -limf -Bdynamic -lm -lgcc_s -lgcc -Bstatic -lirc -Bdynamic -ldl -lgcc_s -lgcc -lc -lgcc_s -lgcc -Bstatic -lirc_s -Bdynamic /usr/lib/gcc/x86_64-redhat-linux/11/crtend.o /usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crtn.o]
+          arg [/usr/bin/ld] ==> ignore
+          arg [--hash-style=gnu] ==> ignore
+          arg [--eh-frame-hdr] ==> ignore
+          arg [-m] ==> ignore
+          arg [elf_x86_64] ==> ignore
+          arg [-dynamic-linker] ==> ignore
+          arg [/lib64/ld-linux-x86-64.so.2] ==> ignore
+          arg [-o] ==> ignore
+          arg [cmTC_a8a37] ==> ignore
+          arg [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crt1.o] ==> obj [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crt1.o]
+          arg [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crti.o] ==> obj [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crti.o]
+          arg [/usr/lib/gcc/x86_64-redhat-linux/11/crtbegin.o] ==> obj [/usr/lib/gcc/x86_64-redhat-linux/11/crtbegin.o]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib]
+          arg [-L/usr/lib/gcc/x86_64-redhat-linux/11] ==> dir [/usr/lib/gcc/x86_64-redhat-linux/11]
+          arg [-L/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64] ==> dir [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64]
+          arg [-L/lib/../lib64] ==> dir [/lib/../lib64]
+          arg [-L/usr/lib64] ==> dir [/usr/lib64]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/lib]
+          arg [-L/lib] ==> dir [/lib]
+          arg [-L/usr/lib] ==> dir [/usr/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64]
+          arg [-L/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib] ==> dir [/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib]
+          arg [-L/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib] ==> dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib]
+          arg [-rpath] ==> ignore
+          arg [/oscar/rt/9.6/25/spack/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib] ==> ignore
+          arg [CMakeFiles/cmTC_a8a37.dir/CMakeCXXCompilerABI.cpp.o] ==> ignore
+          arg [-Bstatic] ==> search static
+          arg [-lsvml] ==> lib [svml]
+          arg [-Bdynamic] ==> search dynamic
+          arg [-Bstatic] ==> search static
+          arg [-lirng] ==> lib [irng]
+          arg [-Bdynamic] ==> search dynamic
+          arg [-lstdc++] ==> lib [stdc++]
+          arg [-Bstatic] ==> search static
+          arg [-limf] ==> lib [imf]
+          arg [-Bdynamic] ==> search dynamic
+          arg [-lm] ==> lib [m]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-Bstatic] ==> search static
+          arg [-lirc] ==> lib [irc]
+          arg [-Bdynamic] ==> search dynamic
+          arg [-ldl] ==> lib [dl]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-lc] ==> lib [c]
+          arg [-lgcc_s] ==> lib [gcc_s]
+          arg [-lgcc] ==> lib [gcc]
+          arg [-Bstatic] ==> search static
+          arg [-lirc_s] ==> lib [irc_s]
+          arg [-Bdynamic] ==> search dynamic
+          arg [/usr/lib/gcc/x86_64-redhat-linux/11/crtend.o] ==> obj [/usr/lib/gcc/x86_64-redhat-linux/11/crtend.o]
+          arg [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crtn.o] ==> obj [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crtn.o]
+        linker tool for 'CXX': /usr/bin/ld
+        collapse obj [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crt1.o] ==> [/usr/lib64/crt1.o]
+        collapse obj [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crti.o] ==> [/usr/lib64/crti.o]
+        collapse obj [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64/crtn.o] ==> [/usr/lib64/crtn.o]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib]
+        collapse library dir [/usr/lib/gcc/x86_64-redhat-linux/11] ==> [/usr/lib/gcc/x86_64-redhat-linux/11]
+        collapse library dir [/usr/lib/gcc/x86_64-redhat-linux/11/../../../../lib64] ==> [/usr/lib64]
+        collapse library dir [/lib/../lib64] ==> [/lib64]
+        collapse library dir [/usr/lib64] ==> [/usr/lib64]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/../../opt/compiler/lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/opt/compiler/lib]
+        collapse library dir [/lib] ==> [/lib]
+        collapse library dir [/usr/lib] ==> [/usr/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64]
+        collapse library dir [/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib] ==> [/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib]
+        collapse library dir [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib] ==> [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib]
+        implicit libs: [svml;irng;stdc++;imf;m;gcc_s;gcc;irc;dl;gcc_s;gcc;c;gcc_s;gcc;irc_s]
+        implicit objs: [/usr/lib64/crt1.o;/usr/lib64/crti.o;/usr/lib/gcc/x86_64-redhat-linux/11/crtbegin.o;/usr/lib/gcc/x86_64-redhat-linux/11/crtend.o;/usr/lib64/crtn.o]
+        implicit dirs: [/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/lib/clang/21/lib/x86_64-unknown-linux-gnu;/usr/lib/gcc/x86_64-redhat-linux/11;/usr/lib64;/lib64;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/opt/compiler/lib;/lib;/usr/lib;/oscar/rt/9.6/25/spack/x86_64_v3/ncurses-6.5-a5exz35j3ap6t6c7kn7jltjv4gh35top/lib;/oscar/rt/9.6/25/spack/x86_64_v3/curl-8.11.1-vtxpwbnb723v62lt7q4utmpbvdszjsmo/lib;/oscar/rt/9.6/25/spack/x86_64_v3/openssl-3.6.1-3bkkpopzwzn23gaey5xsmh7kjcposipt/lib64;/oscar/rt/9.6/25/spack/x86_64_v3/zlib-1.3.1-xo4xa4kigvfmt65w3zrb7y24bdbau24d/lib;/oscar/rt/9.6/25/spack/x86_64_v3/libidn2-2.3.7-xkvgsqclhvihzbfzx3lbg6kbuxf2jcal/lib;/oscar/rt/9.6/25/spack/x86_64_v3/libunistring-1.2-pf4tbp6nb4oqh5eri3c5nn3d3e6cl6vv/lib;/oscar/rt/9.6/25/spack/x86_64_v3/libiconv-1.18-ifc5abub2utg4iaqlvmeze7cfpxtn7b2/lib;/oscar/rt/9.6/25/spack/x86_64_v3/nghttp2-1.65.0-67iob6y4wowf6hv6kadrkrkrwd4asydm/lib;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib;/oscar/rt/9.6/25/spack/x86_64_v3/intel-tbb-2022.0.0-u6g2qghiueclhpjnfilm7cyszebwsrma/lib64;/oscar/rt/9.6/25/spack/x86_64_v3/gcc-runtime-11.5.0-7cblrirwefodiga2ifcwk4lxbioyfui2/lib;/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/umf/0.11/lib]
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/Internal/CMakeDetermineLinkerId.cmake:40 (message)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeDetermineCompilerABI.cmake:255 (cmake_determine_linker_id)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Running the CXX compiler's linker: "/usr/bin/ld" "-v"
+      GNU ld version 2.35.2-63.0.1.el9
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/Internal/CheckSourceCompiles.cmake:108 (try_compile)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CheckCXXSourceCompiles.cmake:58 (cmake_check_source_compiles)"
+      - "cmake/DghLapack.cmake:24 (check_cxx_source_compiles)"
+      - "cmake/DghLapack.cmake:58 (dgh_probe_eigen_lapack)"
+      - "cmake/DghBuild.cmake:50 (include)"
+      - "CMakeLists.txt:9 (include)"
+    checks:
+      - "Performing Test DGH_MKL_LAPACKE_LINKS"
+    directories:
+      source: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-WTdnoq"
+      binary: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-WTdnoq"
+    cmakeVariables:
+      CMAKE_CXX_FLAGS: ""
+      CMAKE_CXX_FLAGS_DEBUG: "-g -Rno-debug-disables-optimization"
+      CMAKE_EXE_LINKER_FLAGS: ""
+    buildResult:
+      variable: "DGH_MKL_LAPACKE_LINKS"
+      cached: true
+      stdout: |
+        Change Dir: '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-WTdnoq'
+        
+        Run Build Command(s): /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E env VERBOSE=1 /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake -f Makefile cmTC_2fe44/fast
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/cmTC_2fe44.dir/build.make CMakeFiles/cmTC_2fe44.dir/build
+        gmake[1]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-WTdnoq'
+        Building CXX object CMakeFiles/cmTC_2fe44.dir/src.cxx.o
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_MKL_LAPACKE_LINKS -DEIGEN_USE_LAPACKE -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include  -MD -MT CMakeFiles/cmTC_2fe44.dir/src.cxx.o -MF CMakeFiles/cmTC_2fe44.dir/src.cxx.o.d -o CMakeFiles/cmTC_2fe44.dir/src.cxx.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-WTdnoq/src.cxx
+        Linking CXX executable cmTC_2fe44
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_link_script CMakeFiles/cmTC_2fe44.dir/link.txt --verbose=1
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx CMakeFiles/cmTC_2fe44.dir/src.cxx.o -o cmTC_2fe44  -Wl,-rpath=/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib/libmkl_intel_lp64.so /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib/libmkl_sequential.so /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/lib/libmkl_core.so -lm -ldl -lpthread
+        gmake[1]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/CMakeScratch/TryCompile-WTdnoq'
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CheckIPOSupported.cmake:138 (try_compile)"
+      - "/oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/share/cmake-3.31/Modules/CheckIPOSupported.cmake:261 (_ipo_run_language_check)"
+      - "cmake/DghBuild.cmake:77 (check_ipo_supported)"
+      - "CMakeLists.txt:9 (include)"
+    directories:
+      source: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src"
+      binary: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin"
+    buildResult:
+      variable: "_IPO_LANGUAGE_CHECK_RESULT"
+      cached: true
+      stdout: |
+        Change Dir: '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        
+        Run Build Command(s): /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E env VERBOSE=1 /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake -f Makefile
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -S/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src -B/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin --check-build-system CMakeFiles/Makefile.cmake 0
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_progress_start /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin//CMakeFiles/progress.marks
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/Makefile2 all
+        gmake[1]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/foo.dir/build.make CMakeFiles/foo.dir/depend
+        gmake[2]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        cd /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin && /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_depends "Unix Makefiles" /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/foo.dir/DependInfo.cmake
+        gmake[2]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/foo.dir/build.make CMakeFiles/foo.dir/build
+        gmake[2]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        [ 25%] Building CXX object CMakeFiles/foo.dir/foo.cpp.o
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx   -ipo -MD -MT CMakeFiles/foo.dir/foo.cpp.o -MF CMakeFiles/foo.dir/foo.cpp.o.d -o CMakeFiles/foo.dir/foo.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src/foo.cpp
+        [ 50%] Linking CXX static library libfoo.a
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -P CMakeFiles/foo.dir/cmake_clean_target.cmake
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_link_script CMakeFiles/foo.dir/link.txt --verbose=1
+        "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/llvm-ar" qc libfoo.a CMakeFiles/foo.dir/foo.cpp.o
+        "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/compiler/llvm-ranlib" libfoo.a
+        gmake[2]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        [ 50%] Built target foo
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/boo.dir/build.make CMakeFiles/boo.dir/depend
+        gmake[2]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        cd /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin && /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_depends "Unix Makefiles" /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles/boo.dir/DependInfo.cmake
+        gmake[2]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        /oscar/rt/9.6/25/spack/x86_64_v3/gmake-4.4.1-pxn3sxlhddhpug4sj4w4gid2rjmgk7jk/bin/gmake  -f CMakeFiles/boo.dir/build.make CMakeFiles/boo.dir/build
+        gmake[2]: Entering directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        [ 75%] Building CXX object CMakeFiles/boo.dir/main.cpp.o
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx   -ipo -MD -MT CMakeFiles/boo.dir/main.cpp.o -MF CMakeFiles/boo.dir/main.cpp.o.d -o CMakeFiles/boo.dir/main.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/src/main.cpp
+        [100%] Linking CXX executable boo
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_link_script CMakeFiles/boo.dir/link.txt --verbose=1
+        /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -ipo -ipo CMakeFiles/boo.dir/main.cpp.o -o boo  libfoo.a
+        gmake[2]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        [100%] Built target boo
+        gmake[1]: Leaving directory '/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin'
+        /oscar/rt/9.6/25/x86_64_v3/cmake-3.31.8-tm7rw7tattxad6qltj77pf67jhitg4ii/bin/cmake -E cmake_progress_start /oscar/home/ywu355/DG_HDG_Euler_Cpp/build-intel/CMakeFiles/_CMakeLTOTest-CXX/bin/CMakeFiles 0
+        
+      exitCode: 0
+...

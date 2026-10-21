@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import prepare_experiment,rows,run,write_csv
+from experiment import run_main, prepare_experiment,rows,run,write_csv
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -42,4 +42,4 @@ def main():
             updates=4,warmup=1,measured_updates=3,dg_mean_s=pair['dg'],hdg_mean_s=pair['hdg'],dg_over_hdg=pair['dg']/pair['hdg']))
         write_csv(output/'speedup.csv',ratios)
     (output/'SUCCESS').write_text('All requested sequential 2D timing pairs completed.\n')
-if __name__=='__main__':main()
+if __name__=='__main__':run_main(main)

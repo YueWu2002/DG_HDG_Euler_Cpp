@@ -29,7 +29,7 @@ GMRES 为自实现的重启右预条件求解器，内积采用逆质量权重�
 
 ## 构建与验证
 
-用 `intel-build.sh`，显式设置独立 BUILD_DIR、BUILD_1D、BUILD_2D 和 BUILD_JOBS；目录名含 debug 不代表调试编译。保持 BLAS/OpenMP 单线程，先运行相关 CTest，再运行对应 `code_test/<维数>/test_solver.py --exe <本次二进制> --output <独立检查目录>`。
+用 `intel-build.sh`，显式设置独立 BUILD_DIR、BUILD_1D、BUILD_2D 和 BUILD_JOBS；目录名含 debug 不代表调试编译。保持 BLAS/OpenMP 单线程，先运行相关 CTest，再运行对应 `code_test/<维数>/test_solver.py --exe <本次二进制> --output code_test/running/<独立检查目录>`。
 
 - 1D 常规验证：DIRK smoke 与完全收敛的单步 BE，使用 `--check-update` 对照 DG/HDG 更新及最终解。
 - 2D 常规验证：沿用现有驱动的 dirk3、be、entropy 三项（旋转角由算例内部固定，不提供命令行角度输入），并检查解差与守恒；不直接照搬 MFEM 的文件字段或两项测试假设。
@@ -45,3 +45,7 @@ GMRES 为自实现的重启右预条件求解器，内积采用逆质量权重�
 Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Eigen堆分配的断言；项目`require(...)`物理/残差检查继续生效。Debug保留尺寸、索引和分配检查，不能据此保证未覆盖输入的正确性。
 `intel-build.sh`支持`BUILD_TYPE=Debug|Release`（默认Release）；默认仅Debug开启BUILD_TESTING。code_test驱动要求可追溯到CMakeCache.txt的Debug二进制，拒绝Release或无法核实的构建。
 共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。
+
+新构建的求解器与检查程序位于各自构建目录的 `bin/*.exe`，静态库位于构建目录内且后缀为 `.a`。共享 Debug 检查入口使用此布局；历史命令不回写。
+
+本地code_test默认在 `code_test/running/` 创建唯一目录，显式输出也限于此处；Slurm内嵌检查由 `DGH_CHECK_ROOT` 固定到所属任务 `checks/`，不拆成第二份档案。本地驱动保留 `exit_code.txt`，使用 `scripts/archive_finished.py --run-root <目录>` 在确认进程结束后归档到 `code_test/results/`。脚本布局说明见 [scripts/README.md](../../scripts/README.md)。

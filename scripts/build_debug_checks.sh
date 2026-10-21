@@ -12,5 +12,5 @@ bash "$project_root/intel-build.sh" > "$run_root/build-debug.log" 2>&1
 module purge
 module load intel-oneapi-compilers intel-oneapi-mkl eigen cmake
 ctest --test-dir "$BUILD_DIR" --output-on-failure > "$run_root/ctest.log" 2>&1
-python3 "$project_root/code_test/$dimension/test_solver.py" --exe "$BUILD_DIR/dg_hdg_$dimension/$solver" \
+DGH_CHECK_ROOT="$run_root" python3 "$project_root/code_test/$dimension/test_solver.py" --exe "$BUILD_DIR/bin/$solver.exe" \
   --output "$run_root/checks" > "$run_root/code_test.log" 2>&1

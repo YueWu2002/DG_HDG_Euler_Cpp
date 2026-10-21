@@ -13,7 +13,7 @@ Newton 记录、节点解、DG/HDG 积分 L2 差和最大节点差、convergence
 也可以显式指定可执行文件本地运行：
 
 ```sh
-python3 accuracy_test/1d/convergence.py --exe build/dg_hdg_1d/dg_hdg \
+python3 accuracy_test/1d/convergence.py --exe build/bin/dg_hdg.exe \
   --output accuracy_test/running/local_unique
 ```
 

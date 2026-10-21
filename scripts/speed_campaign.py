@@ -65,6 +65,7 @@ def read_manifest(root):
 
 
 def baseline(dim, project):
+    # Read-only historical paths: do not rename archived evidence. New copies use bin/solver.exe.
     if dim == '1d':
         root = project/'speed_test/results/1d_slurm_7622721'
         return dict(node='node1837', binary=project/'build-intel/dg_hdg_1d/dg_hdg',
@@ -88,7 +89,7 @@ def prepare(dim, restart, minimum, cells=512, node=None):
     root = Path(tempfile.mkdtemp(prefix=f'{dim}_restart{restart}_{datetime.now():%Y%m%dT%H%M%S}_', dir=running))
     for name in ['bin', 'control', 'baseline']:
         (root/name).mkdir()
-    shutil.copy2(b['binary'], root/'bin/solver')
+    shutil.copy2(b['binary'], root/'bin/solver.exe')
     shutil.copy2(b['timings'], root/'baseline/timings.csv')
     for name in ['speed_campaign.py', 'experiment.py', 'provenance.py']:
         shutil.copy2(project/'scripts'/name, root/'control'/name)
@@ -214,17 +215,23 @@ def build(root):
     env=dict(os.environ,BUILD_DIR=str(folder/'build'),BUILD_JOBS='1',BUILD_TESTING='OFF',BUILD_TYPE='Release',BUILD_1D='OFF',BUILD_2D='ON')
     status=1
     try:
+        info = runtime()
+        manifest = read_manifest(root)
+        ensure(info['host'].split('.')[0] == manifest['expected_node'], 'Build node mismatch')
+        if manifest.get('required_cpu'):
+            ensure(info['cpu_model'] == manifest['required_cpu'], 'Build CPU model mismatch')
         subprocess.run(['bash',str(root/'source/scripts/build_debug_checks.sh'),'2d',str(folder)],env=env,check=True)
         with (folder/'build.log').open('w') as stream:
             subprocess.run(['bash',str(root/'source/intel-build.sh')],env=env,stdout=stream,stderr=subprocess.STDOUT,check=True)
-        exe=folder/'build/dg_hdg_2d/dg_hdg_2d'
-        shutil.copy2(exe,root/'bin/solver')
+        exe=folder/'build/bin/dg_hdg_2d.exe'
+        ensure(runtime(exe)['cpu_model'] == read_manifest(root).get('required_cpu', runtime(exe)['cpu_model']), 'Build CPU model mismatch')
+        shutil.copy2(exe,root/'bin/solver.exe')
         info=runtime(exe)
         ensure(info['host'].split('.')[0]==read_manifest(root)['expected_node'],'Build node mismatch')
         save(folder/'binary_provenance.json',info)
         with (folder/'environment.txt').open('a') as stream:
             subprocess.run(['bash','-c','icpx --version; cmake --version; module list'],stdout=stream,stderr=subprocess.STDOUT)
-        save(root/'build_identity.json',dict(executable_sha256=sha(exe),expected_cpu=info['cpu_model'],build_job_id=os.environ['SLURM_JOB_ID']))
+        save(root/'build_identity.json',dict(executable_sha256=sha(exe),expected_cpu=info['cpu_model'],build_job_id=os.environ['SLURM_JOB_ID'],build_directory=str((folder/'build').relative_to(root))))
         status=0
     finally:
         (folder/'exit_code.txt').write_text(str(status)+'\n')
@@ -239,14 +246,14 @@ def case(root, key):
     folder = root/f'job_{job}'; folder.mkdir()
     save(folder/'case.json', spec)
     try:
-        env = runtime(root/'bin/solver')
+        env = runtime(root/'bin/solver.exe')
         save(folder/'provenance.json', env)
         (folder/'environment.txt').write_text(subprocess.check_output(['lscpu'], text=True))
         (folder/'slurm_allocation.txt').write_text(subprocess.check_output(['scontrol','show','job',job], text=True))
         ensure(env['cpu_model'] == manifest['expected_cpu'], 'Unexpected CPU model')
         ensure(env['host'].split('.')[0] == manifest['expected_node'], 'Unexpected execution node')
-        ensure(sha(root/'bin/solver') == manifest['executable_sha256'], 'Binary hash mismatch')
-        output, exe = prepare_data(folder/'data', root/'bin/solver')
+        ensure(sha(root/'bin/solver.exe') == manifest['executable_sha256'], 'Binary hash mismatch')
+        output, exe = prepare_data(folder/'data', root/'bin/solver.exe')
         prefix = output/key
         command = [exe, '--cells',manifest.get('cells',512)] if manifest['dimension']=='1d' else [exe,'--nx',manifest.get('cells',256),'--ny',manifest.get('cells',256)]
         command += ['--k',spec['k'],'--method',spec['method'],'--integrator','be','--steps',1,
@@ -410,7 +417,7 @@ def main():
     elif args.mode=='case':case(root,args.case)
     elif args.mode in ['collect','archive']:
         from provenance import runtime
-        metadata=runtime(root/'bin/solver' if (root/'bin/solver').exists() else None)
+        metadata=runtime(root/'bin/solver.exe' if (root/'bin/solver.exe').exists() else None)
         save(root/f'{args.mode}_environment.json',metadata)
         if args.mode=='collect':collect(root)
         else:archive(root)

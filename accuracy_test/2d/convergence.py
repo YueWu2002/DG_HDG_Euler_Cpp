@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import prepare_experiment,rows,run,write_csv
+from experiment import run_main, prepare_experiment,rows,run,write_csv
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
@@ -45,4 +45,4 @@ def main():
         write_csv(output/'convergence.csv',records)
         print(f'N={n} completed',flush=True)
     (output/'SUCCESS').write_text('All requested paired 2D grids completed.\n')
-if __name__=='__main__':main()
+if __name__=='__main__':run_main(main)

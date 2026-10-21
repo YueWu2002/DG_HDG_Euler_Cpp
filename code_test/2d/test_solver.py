@@ -4,12 +4,12 @@ import argparse
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import require_debug_build,prepare,rows,run
+from experiment import run_main, prepare_checks,rows,run
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--exe',required=True);parser.add_argument('--output',required=True)
-    args=parser.parse_args();output,exe=prepare(args.output,require_debug_build(args.exe))
+    parser.add_argument('--exe',required=True);parser.add_argument('--output',help='Directory inside code_test/running; default: unique local run')
+    args=parser.parse_args();output,exe=prepare_checks(args.output,args.exe,'2d')
     for name,extra in [('dirk3',['--T',.02]),('be',['--integrator','be','--T',.02]),
                         ('entropy',['--testcase','wave','--T',.02])]:
         prefix=output/name
@@ -21,4 +21,4 @@ def main():
             if float(summary['max_conservation_drift'])>1e-10:raise RuntimeError(f'{name}: conservation')
         print(f'{name} passed',flush=True)
     (output/'SUCCESS').write_text('All production-path 2D checks passed.\n')
-if __name__=='__main__':main()
+if __name__=='__main__':run_main(main)

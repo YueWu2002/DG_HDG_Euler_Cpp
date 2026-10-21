@@ -4,15 +4,15 @@ import argparse
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import require_debug_build,prepare, rows, run
+from experiment import run_main, prepare_checks, rows, run
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--exe', required=True)
-    parser.add_argument('--output', required=True)
+    parser.add_argument('--output', help='Directory inside code_test/running; default: unique local run')
     args = parser.parse_args()
-    output, exe = prepare(args.output, require_debug_build(args.exe))
+    output, exe = prepare_checks(args.output, args.exe, '1d')
     for name, options in (
         ('dirk_smoke', ['--cells', 16, '--k', 2, '--integrator', 'ssp-dirk3', '--T', .02]),
         ('be_update', ['--cells', 32, '--k', 3, '--integrator', 'be', '--steps', 1])):
@@ -30,4 +30,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_main(main)

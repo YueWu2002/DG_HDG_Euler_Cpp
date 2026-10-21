@@ -17,7 +17,7 @@ SUCCESS 仅说明实验执行完毕，不代表达到 8 倍，也不代表四步
 仅运行指定次数：
 
 ```sh
-python3 speed_test/1d/benchmark.py --exe build/dg_hdg_1d/dg_hdg \
+python3 speed_test/1d/benchmark.py --exe build/bin/dg_hdg.exe \
   --degrees 8 --output speed_test/running/local_unique
 ```
 

@@ -5,7 +5,7 @@ import math
 from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]/'scripts'))
-from experiment import prepare_experiment, rows, run, write_csv
+from experiment import run_main, prepare_experiment, rows, run, write_csv
 
 
 def main():
@@ -49,4 +49,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    run_main(main)

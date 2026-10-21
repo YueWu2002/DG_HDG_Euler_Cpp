@@ -19,8 +19,8 @@ C++17、CMake >=3.22、Eigen >=3.4。构建和配置不会运行测试。
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug -DDGH_NATIVE_ARCH=ON
 cmake --build build -j 4
 ctest --test-dir build --output-on-failure
-python3 code_test/1d/test_solver.py --exe build/dg_hdg_1d/dg_hdg \
-  --output code_test/1d/results/local_unique
+python3 code_test/1d/test_solver.py --exe build/bin/dg_hdg.exe \
+  --output code_test/running/1d_local_unique
 ```
 
 OSCAR 使用 `bash intel-build.sh`（默认构建 1D），加载 Intel 编译器、MKL、Eigen 和 CMake，
@@ -33,14 +33,10 @@ Release关闭Eigen断言（`NDEBUG`/`EIGEN_NO_DEBUG`），保留项目`require(.
 ## 1D 运行
 
 ```sh
-build/dg_hdg_1d/dg_hdg --cells 32 --k 2 --integrator ssp-dirk3 \
-  --cfl 2 --T 0.2 --method both --precond block-jacobi \
-  --ntol 1e-12 --ltol 1e-12 --prefix output/dirk3
-
-# 受控速度工作负载；仅最后三次 Newton 更新进入均值
-build/dg_hdg_1d/dg_hdg --cells 512 --k 8 --integrator be \
-  --steps 1 --newton-steps 4 --warmup-updates 1 --cfl 5 \
-  --precond block-jacobi --timing-only --method both --prefix output/speed
+# 测试驱动自动创建 running/ 下的独立目录并记录命令、设备及版本。
+BUILD_TYPE=Release BUILD_DIR=build-release bash intel-build.sh
+python3 accuracy_test/1d/convergence.py --exe build-release/bin/dg_hdg.exe
+python3 speed_test/1d/benchmark.py --exe build-release/bin/dg_hdg.exe --degrees 8
 ```
 
 默认 DIRK3、block-Jacobi、自然块顺序；`--integrator be` 保留后向 Euler。
@@ -66,11 +62,10 @@ bash speed_test/1d/submit.sh
 ```sh
 BUILD_TYPE=Debug BUILD_1D=OFF BUILD_2D=ON BUILD_DIR=build-2d-debug bash intel-build.sh
 ctest --test-dir build-2d-debug --output-on-failure
-python3 code_test/2d/test_solver.py --exe build-2d-debug/dg_hdg_2d/dg_hdg_2d \
-  --output code_test/2d/results/local_unique
-build-2d-intel/dg_hdg_2d/dg_hdg_2d --nx 32 --ny 32 --k 2 \
-  --integrator ssp-dirk3 --cfl 2 --T 0.2 --method both --no-save-solution \
-  --prefix output/2d_q2
+python3 code_test/2d/test_solver.py --exe build-2d-debug/bin/dg_hdg_2d.exe \
+  --output code_test/running/2d_local_unique
+BUILD_TYPE=Release BUILD_1D=OFF BUILD_2D=ON BUILD_DIR=build-2d-intel bash intel-build.sh
+python3 accuracy_test/2d/convergence.py --exe build-2d-intel/bin/dg_hdg_2d.exe
 ```
 
 2D 采用旋转周期简单波和参考项目相同的中心矩形计算域，算例内部固定 alpha=45°、gamma=3，不提供旋转角命令行输入。
@@ -92,3 +87,7 @@ bash speed_test/2d/submit.sh
 实验代码版本、参数与 CPU 的追溯规则见 [AGENTS.md](AGENTS.md)。
 
 最新已完成2D实验：Q2收敛至N=256，密度阶2.8993；256²/k=8测得DG/HDG为5.3598倍，峰值RSS为58.19/38.06 GiB。实际残差验收口径及完整数据见 [RESULTS.md](RESULTS.md#2d)。
+
+新构建产物统一为 `<构建目录>/bin/*.exe` 和 `<构建目录>/*.a`；Debug、Release分别保存。速度批次运行副本为 `<批次>/bin/solver.exe`，历史运行路径保持原始记录。
+
+脚本与目录约定见 [scripts/README.md](scripts/README.md)。本地 code_test 省略 `--output` 自动创建 `code_test/running/` 下的独立目录；结束后用 `python3 scripts/archive_finished.py --run-root <目录>` 显式归档。

@@ -1,0 +1,95 @@
+Start testing: Oct 19 16:52 EDT
+----------------------------------------------------------
+1/1 Testing: dg_hdg_1d_checks
+1/1 Test: dg_hdg_1d_checks
+Command: "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build/dg_hdg_1d/check_1d"
+Directory: /oscar/home/ywu355/DG_HDG_Euler_Cpp/build/dg_hdg_1d
+"dg_hdg_1d_checks" start time: Oct 19 16:52 EDT
+Output:
+----------------------------------------------------------
+tensor layout and reference element passed
+pivoted local LU passed
+block ILU(0), block COLAMD, GMRES, direct reference passed
+DG derivatives, HDG condensation, augmented trace equations passed
+allocation-free first refresh, coefficient reuse, snapshot invalidation passed
+time case: cells=3 k=0 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=3 k=0 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=3 k=0 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=3 k=0 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=3 k=0 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=3 k=0 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=3 k=0 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=3 k=0 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=3 k=0 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=3 k=0 linear=gmres precond=jacobi colamd=1 method=hdg
+time case: cells=8 k=0 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=8 k=0 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=8 k=0 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=8 k=0 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=8 k=0 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=8 k=0 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=8 k=0 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=8 k=0 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=8 k=0 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=8 k=0 linear=gmres precond=jacobi colamd=1 method=hdg
+time case: cells=12 k=0 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=12 k=0 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=12 k=0 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=12 k=0 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=12 k=0 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=12 k=0 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=12 k=0 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=12 k=0 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=12 k=0 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=12 k=0 linear=gmres precond=jacobi colamd=1 method=hdg
+time case: cells=8 k=1 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=8 k=1 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=8 k=1 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=8 k=1 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=8 k=1 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=8 k=1 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=8 k=1 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=8 k=1 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=8 k=1 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=8 k=1 linear=gmres precond=jacobi colamd=1 method=hdg
+time case: cells=12 k=1 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=12 k=1 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=12 k=1 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=12 k=1 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=12 k=1 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=12 k=1 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=12 k=1 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=12 k=1 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=12 k=1 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=12 k=1 linear=gmres precond=jacobi colamd=1 method=hdg
+time case: cells=8 k=3 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=8 k=3 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=8 k=3 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=8 k=3 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=8 k=3 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=8 k=3 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=8 k=3 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=8 k=3 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=8 k=3 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=8 k=3 linear=gmres precond=jacobi colamd=1 method=hdg
+time case: cells=12 k=3 linear=direct precond=ilu0 colamd=0 method=dg
+time case: cells=12 k=3 linear=direct precond=ilu0 colamd=0 method=hdg
+time case: cells=12 k=3 linear=gmres precond=ilu0 colamd=0 method=dg
+time case: cells=12 k=3 linear=gmres precond=ilu0 colamd=0 method=hdg
+time case: cells=12 k=3 linear=gmres precond=ilu0 colamd=1 method=dg
+time case: cells=12 k=3 linear=gmres precond=ilu0 colamd=1 method=hdg
+time case: cells=12 k=3 linear=gmres precond=jacobi colamd=0 method=dg
+time case: cells=12 k=3 linear=gmres precond=jacobi colamd=0 method=hdg
+time case: cells=12 k=3 linear=gmres precond=jacobi colamd=1 method=dg
+time case: cells=12 k=3 linear=gmres precond=jacobi colamd=1 method=hdg
+allocation-free time loops, conservation, solver agreement, temporal refinement passed
+All 1D checks passed
+<end of output>
+Test time =   0.23 sec
+----------------------------------------------------------
+Test Passed.
+"dg_hdg_1d_checks" end time: Oct 19 16:52 EDT
+"dg_hdg_1d_checks" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 19 16:52 EDT

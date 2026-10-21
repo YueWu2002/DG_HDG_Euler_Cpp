@@ -36,7 +36,9 @@ def source_identity(root):
         path = root / name
         files.extend([path] if path.is_file() else path.rglob('*') if path.exists() else [])
     h = hashlib.sha256()
-    for path in sorted(p for p in files if p.is_file() and '__pycache__' not in p.parts):
+    for path in sorted(p for p in files if p.is_file()
+                       and not any(x in {'__pycache__', 'bin', 'build', 'running', 'results', 'CMakeFiles'} or x.startswith('build-') for x in p.relative_to(root).parts)
+                       and p.suffix not in {'.exe', '.a', '.o', '.obj', '.pyc', '.so'} and '.so.' not in p.name):
         h.update(str(path.relative_to(root)).encode() + b'\0' + digest(path).encode() + b'\n')
     commit = subprocess.run(['git', '-C', str(root), 'rev-parse', 'HEAD'], capture_output=True, text=True)
     sha = h.hexdigest()
@@ -63,6 +65,13 @@ def runtime(exe=None):
         result.update(executable=str(exe), executable_sha256=digest(exe))
         for parent in exe.parents:
             cache = parent / 'CMakeCache.txt'
+            identity = parent / 'build_identity.json'
+            if not cache.exists() and identity.is_file():
+                build_directory = json.loads(identity.read_text()).get('build_directory')
+                if build_directory:
+                    cache = parent / build_directory / 'CMakeCache.txt'
+            if not cache.exists():
+                cache = parent / 'baseline' / 'CMakeCache.txt'
             if cache.exists():
                 result['cmake_cache'] = cache.read_text()
                 break

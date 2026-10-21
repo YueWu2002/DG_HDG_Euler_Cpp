@@ -9,7 +9,7 @@
 LU、加权 GMRES 真残差及首次调用 Eigen 禁分配检查。
 新增 DIRK3 配对推进检查和相同 CFL 下的时空同步加密；BE 检查显式指定积分器。
 HDG 每次更新以恢复后的 DG 真残差验收，独立 Jv 诊断验证残差恢复公式。
-日常生产路径检查入口为 `python3 code_test/1d/test_solver.py --exe <明确路径> --output <独立目录>`，
+日常生产路径检查入口为 `python3 code_test/1d/test_solver.py --exe <明确路径> --output code_test/running/<独立目录>`，
 包含 DIRK3 smoke 和单步完全收敛 BE 的 DG/HDG 比较，并独立验证恢复残差恒等式。
 默认生产构建只编译，不自动执行测试。
 
@@ -56,3 +56,5 @@ Slurm 精度与速度独立提交，不自动设置相互依赖。后续收敛�
 Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Eigen堆分配的断言；项目`require(...)`物理/残差检查继续生效。Debug保留尺寸、索引和分配检查，不能据此保证未覆盖输入的正确性。
 `intel-build.sh`支持`BUILD_TYPE=Debug|Release`（默认Release）；默认仅Debug开启BUILD_TESTING。code_test驱动要求可追溯到CMakeCache.txt的Debug二进制，拒绝Release或无法核实的构建。
 共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。
+
+本地code_test默认在 `code_test/running/` 创建唯一目录，显式输出也限于此处；Slurm内嵌检查由 `DGH_CHECK_ROOT` 固定到所属任务 `checks/`，不拆成第二份档案。本地驱动保留 `exit_code.txt`，使用 `scripts/archive_finished.py --run-root <目录>` 在确认进程结束后归档到 `code_test/results/`。脚本布局说明见 [scripts/README.md](scripts/README.md)。

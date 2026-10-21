@@ -1,0 +1,116 @@
+[
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx  -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -O3 -DNDEBUG -o CMakeFiles/dgh_fastgl.dir/vendor/fastgl/fastgl.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/vendor/fastgl/fastgl.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/vendor/fastgl/fastgl.cpp",
+  "output": "CMakeFiles/dgh_fastgl.dir/vendor/fastgl/fastgl.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/config.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/config.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/config.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/config.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/dg_operator.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/dg_operator.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/dg_operator.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/dg_operator.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/discretization.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/discretization.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/discretization.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/discretization.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/hybrid.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/hybrid.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/hybrid.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/hybrid.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/physics.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/physics.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/physics.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/physics.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/simple_wave.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/simple_wave.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/simple_wave.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/simple_wave.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/time_integrator.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/time_integrator.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/time_integrator.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/time_integrator.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/src/volume_jacobian.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/volume_jacobian.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/volume_jacobian.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/src/volume_jacobian.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/__/common/src/linalg/block_graph.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/common/src/linalg/block_graph.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/common/src/linalg/block_graph.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/__/common/src/linalg/block_graph.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/__/common/src/linalg/block_ilu.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/common/src/linalg/block_ilu.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/common/src/linalg/block_ilu.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/__/common/src/linalg/block_ilu.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/euler_1d.dir/__/common/src/linalg/gmres.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/common/src/linalg/gmres.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/common/src/linalg/gmres.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/euler_1d.dir/__/common/src/linalg/gmres.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/dg_hdg.dir/src/main.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/main.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/src/main.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/dg_hdg.dir/src/main.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/check_1d.dir/check/main.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/main.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/main.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/check_1d.dir/check/main.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/check_1d.dir/check/check_1d.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/check_1d.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/check_1d.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/check_1d.dir/check/check_1d.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/check_1d.dir/check/linearization.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/linearization.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/linearization.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/check_1d.dir/check/linearization.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/check_1d.dir/check/dg_reference.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/dg_reference.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/dg_reference.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/check_1d.dir/check/dg_reference.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/benchmark_dg.dir/check/benchmark_dg.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/benchmark_dg.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/benchmark_dg.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/benchmark_dg.dir/check/benchmark_dg.cpp.o"
+},
+{
+  "directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/build-1d-regression/dg_hdg_1d",
+  "command": "/oscar/rt/9.6/25/x86_64_v3/intel-oneapi-compilers-2025.2.0-bmbguiqhsd7bxftuhlotcjp63xj342zd/compiler/2025.2/bin/icpx -DDGH_DENSE_LAPACK_BACKEND=\\\"MKL\\\" -DDGH_EIGEN_BACKEND=\\\"MKL\\\" -DEIGEN_DONT_PARALLELIZE -DEIGEN_RUNTIME_NO_MALLOC -DEIGEN_STACK_ALLOCATION_LIMIT=524288 -DEIGEN_USE_BLAS -DEIGEN_USE_LAPACKE -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../common/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/include -I/oscar/home/ywu355/DG_HDG_Euler_Cpp/cmake/../vendor/fastgl -isystem /oscar/rt/9.6/25/spack/x86_64_v3/eigen-3.4.0-hggg55mjnfzsw2w7lt3cvf7zu4aap27i/include/eigen3 -isystem /oscar/rt/9.6/25/x86_64_v3/intel-oneapi-mkl-2025.2.0-zewc2sjxfgfl7r6qrgn2boc2l4nzoidg/mkl/2025.2/include -O3 -DNDEBUG -ipo -march=native -Wall -Wextra -Wpedantic -UNDEBUG -qopenmp-simd -o CMakeFiles/benchmark_dg.dir/check/dg_reference.cpp.o -c /oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/dg_reference.cpp",
+  "file": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/dg_hdg_1d/check/dg_reference.cpp",
+  "output": "dg_hdg_1d/CMakeFiles/benchmark_dg.dir/check/dg_reference.cpp.o"
+}
+]

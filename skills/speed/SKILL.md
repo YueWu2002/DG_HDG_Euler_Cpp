@@ -15,6 +15,10 @@ description: 运行或分析本项目 Eigen DG/HDG 1D/2D 速度与内存实验�
 
 ## 提交前资源预估（必须执行）
 
+- 计算时限必须先根据匹配历史数据和实际规模预估，再充分增大。Krylov迭代次数、restart、谱性质、网格加密及节点争用会改变成本，不能准确预测总耗时；不得只按单元数线性缩放或只加很小余量。根据不确定性明确选择充分的时间倍率，记录原始估计、放大依据、最终时限；用户指定双倍时限时，逐项对上一轮申请时限翻倍。超时数据只能作为耗时下界，不能作为成功运行需求。
+- 新构建可执行文件统一位于各构建目录的 `bin/*.exe`，静态库为构建目录内的 `*.a`；批次运行副本位于该批次 `bin/solver.exe`。Debug与Release各自保留配置、日志及二进制身份。历史命令与旧路径不回写。
+
+
 - 优先读取根目录 [MEMORY_ESTIMATE.md](../../MEMORY_ESTIMATE.md) 的匹配实测表与估算说明，作为资源预估依据；其中已记录规模、协议、实际RSS/wall和来源，覆盖充分时不必翻找或重新遍历历史数据，以减少重复读取和token开销。仅在缺少对应规模/配置、版本不匹配、需要更高精度或数据存疑时，沿该文档来源链接定向核查必要文件。新增有效测量后及时更新该参考表，未知信息仍明确标注。
 - 提交任何新 Slurm 测试前，必须先预估该任务的峰值内存和总运行时长，再据此确定 `--mem`、`--time`；不得先提交统一的大额资源申请、事后才估算，也不得将最大算例申请机械套用到所有任务。
 - 优先查找已完成且可比的历史运行，核对维数、单元总数、阶数、DG/HDG、积分器、步数或终止时间、容差、GMRES restart、预条件器、代码/二进制版本、CPU和线程。以实际 `peak_rss_kib`、进程 `wall_s` 及对应 Slurm accounting 为依据；申请量不作为实测值，失败/OOM或超时数据不能当作成功运行的完整需求。
@@ -94,8 +98,8 @@ collect与archive任务不限制node、CPU型号或Intel特性，可在任意可
 
 ## 新源码二维速度独立作业入口
 
-`python3 scripts/prepare_snapshot_speed.py --node <探测节点> --cells <每方向单元数> --restart <GMRES重启长度> --factor <资源倍率>`，随后对生成目录执行 `python3 scripts/speed_campaign.py submit --run-root <目录>`。
-入口优先用MEMORY_ESTIMATE.md的二维256²/GMRES(20)实测行估算，保存引用片段和文档哈希；内存先按单元数缩放，再加`8*全局线性自由度*(restart-20)`的新增基存储，最后加余量；时间按历史完整进程wall乘倍率，restart变化的迭代/正交化成本另标为不确定。倍率需覆盖单元数比例，不能当作任意新协议的通用时长保证。
+`python3 scripts/prepare_snapshot_speed.py --node <探测节点> --cells <每方向单元数> --restart <GMRES重启长度> --factor <资源倍率> --time-multiplier <时间放大倍率>`，随后对生成目录执行 `python3 scripts/speed_campaign.py submit --run-root <目录>`。
+入口优先用MEMORY_ESTIMATE.md的二维256²/GMRES(20)实测行估算，保存引用片段和文档哈希；内存先按单元数缩放，再加`8*全局线性自由度*(restart-20)`的新增基存储，最后加余量；时间先按历史完整进程wall乘资源倍率并向上取整，再乘独立的 `--time-multiplier`（默认2），为Krylov迭代变化充分放大；实际倍率与最终时限写入提交元数据。restart变化的迭代/正交化成本仍标为不确定。倍率需覆盖单元数比例，不能当作任意新协议的通用时长保证。
 所有(k,method)独立提交到同一指定节点，共享构建成功后各自调度；共享构建保留必要依赖，汇总/归档亦保留依赖。源码快照在该计算节点编译并检查，记录实际CPU及二进制身份；结束后保留全部档案并移除临时source/。可选节点探测作业记录在同批任务清单中。
 
 
@@ -106,3 +110,7 @@ Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Ei
 共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。
 
 新快照入口支持`--build-time HH:MM:SS`，用于共享Debug验证加Release构建作业，单独记录预算；与每个算例的求解时限分开。当前初始构建/验证预算2小时、16GiB，Debug实际耗时尚无完成基线，后续按实测调整。
+
+共享脚本的目录约定见 [scripts/README.md](../../scripts/README.md)。本地驱动写入进程身份与退出状态；显式使用 `scripts/archive_finished.py --run-root <目录>` 归档已停止的本地运行。源码快照不打包bin、构建目录及二进制；Git只忽略产物，保留配置、日志和完整来源。
+
+指定CPU型号时，新快照入口使用 `--required-cpu "<精确CPU型号>"`；构建开始后先核验实际CPU与节点，再执行Debug和Release构建。`build_identity.json`保存Release构建相对目录，使`bin/solver.exe`运行副本在归档前后均可追溯CMake配置。
