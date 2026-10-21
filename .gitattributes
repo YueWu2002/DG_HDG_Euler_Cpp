@@ -3,3 +3,6 @@
 accuracy_test/results/** -text -whitespace
 speed_test/results/** -text -whitespace
 code_test/results/** -text -whitespace
+
+# Preserve generated CMake configuration without whitespace normalization.
+**/CMakeCache.txt -text -whitespace

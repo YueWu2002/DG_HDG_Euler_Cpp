@@ -1,0 +1,9 @@
+{
+  "checked_utc": "2026-10-21T19:29:51.466227+00:00",
+  "scope": "Recheck existing report input/output hashes; no solver rerun; original evidence unchanged",
+  "manifest": "inputs.json",
+  "manifest_sha256": "1d254cdecdb5c548c3a862a7507e3496227eb35f1f29181c030992d96dcf2e33",
+  "matched": 83,
+  "mismatches": [],
+  "detail": "Per-file paths and expected hashes remain in inputs.json; all entries matched."
+}

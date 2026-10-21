@@ -38,6 +38,8 @@ __pycache__/
 !**/CMakeFiles/**/*.log
 !**/CMakeFiles/**/CMakeCXXCompiler.cmake
 !**/CMakeFiles/**/CMakeSystem.cmake
+!**/CMakeFiles/**/CMakeCache.txt
+!**/CMakeFiles/**/compile_commands.json
 **/build*/**/Makefile
 **/build*/**/cmake_install.cmake
 **/build*/**/CTestTestfile.cmake
