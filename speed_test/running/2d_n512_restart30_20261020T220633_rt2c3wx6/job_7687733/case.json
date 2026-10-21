@@ -1,0 +1,15 @@
+{
+  "key": "k7_dg",
+  "k": 7,
+  "method": "dg",
+  "historical_wall_s": 4366.0226,
+  "historical_peak_rss_kib": 39326108.8768,
+  "resource_multiplier": 4.4,
+  "extra_gmres_basis_gib": 5.0,
+  "estimated_peak_memory_gib": 155.0172,
+  "estimated_wall_s": 17464.0904,
+  "requested_memory_gib": 171,
+  "previous_requested_time_minutes": 321,
+  "time_multiplier": 2.0,
+  "requested_time": "10:42:00"
+}

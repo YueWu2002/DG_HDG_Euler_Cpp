@@ -1,6 +1,6 @@
 case,job_id,memory_gib,node,role
 build,7687730,16,node2347,build
-k8_dg,7687731,263,node2347,compute
+k8_dg,7687731,263,node2347,superseded_compute
 k8_hdg,7687732,170,node2347,compute
 k7_dg,7687733,171,node2347,compute
 k7_hdg,7687734,126,node2347,compute
@@ -18,5 +18,8 @@ k1_dg,7687745,16,node2347,compute
 k1_hdg,7687746,16,node2347,compute
 k0_dg,7687747,16,node2347,compute
 k0_hdg,7687748,16,node2347,compute
-collect,7687749,16,,collect
-archive,7687750,16,,archive
+collect,7687749,16,,superseded_collect
+archive,7687750,16,,superseded_archive
+k8_dg,7718103,263,any:48core&intel&cascade&edr,compute
+collect,7718104,16,,collect
+archive,7718105,16,,archive

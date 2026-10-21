@@ -1,0 +1,15 @@
+{
+  "key": "k2_dg",
+  "k": 2,
+  "method": "dg",
+  "historical_wall_s": 165.1104,
+  "historical_peak_rss_kib": 1537631.8464,
+  "resource_multiplier": 4.4,
+  "extra_gmres_basis_gib": 0.703125,
+  "estimated_peak_memory_gib": 6.568725,
+  "estimated_wall_s": 660.4416,
+  "requested_memory_gib": 16,
+  "previous_requested_time_minutes": 13,
+  "time_multiplier": 2.0,
+  "requested_time": "00:26:00"
+}

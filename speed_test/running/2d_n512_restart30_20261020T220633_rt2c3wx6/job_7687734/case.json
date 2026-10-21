@@ -1,0 +1,15 @@
+{
+  "key": "k7_hdg",
+  "k": 7,
+  "method": "hdg",
+  "historical_wall_s": 1227.318,
+  "historical_peak_rss_kib": 29580014.3872,
+  "resource_multiplier": 4.4,
+  "extra_gmres_basis_gib": 1.25,
+  "estimated_peak_memory_gib": 114.0888,
+  "estimated_wall_s": 4909.272,
+  "requested_memory_gib": 126,
+  "previous_requested_time_minutes": 91,
+  "time_multiplier": 2.0,
+  "requested_time": "03:02:00"
+}

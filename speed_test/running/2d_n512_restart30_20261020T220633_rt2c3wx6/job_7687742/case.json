@@ -1,0 +1,15 @@
+{
+  "key": "k3_hdg",
+  "k": 3,
+  "method": "hdg",
+  "historical_wall_s": 215.2902,
+  "historical_peak_rss_kib": 5632321.1264,
+  "resource_multiplier": 4.4,
+  "extra_gmres_basis_gib": 0.625,
+  "estimated_peak_memory_gib": 22.1106,
+  "estimated_wall_s": 861.1608,
+  "requested_memory_gib": 25,
+  "previous_requested_time_minutes": 16,
+  "time_multiplier": 2.0,
+  "requested_time": "00:32:00"
+}
