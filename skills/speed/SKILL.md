@@ -109,8 +109,10 @@ Release以`NDEBUG`及`EIGEN_NO_DEBUG`关闭Eigen运行时断言，包括禁止Ei
 `intel-build.sh`支持`BUILD_TYPE=Debug|Release`（默认Release）；默认仅Debug开启BUILD_TESTING。code_test驱动要求可追溯到CMakeCache.txt的Debug二进制，拒绝Release或无法核实的构建。
 共享`scripts/build_debug_checks.sh <1d|2d> <运行目录>`在`build-debug/`构建Debug，运行CTest及生产路径code_test；实验入口随后在独立`build/`构建Release，供accuracy/speed使用。保留Debug构建日志、CTest、code_test及provenance，也保留Release配置/二进制身份，不将两套二进制混称为同一验证对象。新增构建成本需计入提交前资源预估，不改写在途快照。
 
-新快照入口支持`--build-time HH:MM:SS`，用于共享Debug验证加Release构建作业，单独记录预算；与每个算例的求解时限分开。当前初始构建/验证预算2小时、16GiB，Debug实际耗时尚无完成基线，后续按实测调整。
+新快照入口支持`--build-time HH:MM:SS`，用于共享Debug验证加Release构建作业，单独记录预算；与每个算例的求解时限分开。构建/验证时限与各算例时限分别记录；512²/GMRES(30)批次已有共享Debug检查加Release构建实测，见MEMORY_ESTIMATE.md。该数据不代表单独Debug峰值，后续预算保留编译与负载余量。
 
 共享脚本的目录约定见 [scripts/README.md](../../scripts/README.md)。本地驱动写入进程身份与退出状态；显式使用 `scripts/archive_finished.py --run-root <目录>` 归档已停止的本地运行。源码快照不打包bin、构建目录及二进制；Git只忽略产物，保留配置、日志和完整来源。
 
 指定CPU型号时，新快照入口使用 `--required-cpu "<精确CPU型号>"`；构建开始后先核验实际CPU与节点，再执行Debug和Release构建。`build_identity.json`保存Release构建相对目录，使`bin/solver.exe`运行副本在归档前后均可追溯CMake配置。
+
+已完成512²/GMRES(30)批次的18项RSS/wall和共享构建成本已加入[资源参考](../../MEMORY_ESTIMATE.md)。后续匹配规模优先查该表；k=8 DG/HDG跨节点，速度比保留节点与并发负载限制。批次结束后将STATUS.md收敛为正式报告索引，并更新RESULTS.md、README.md和资源参考，避免保留过期running路径。

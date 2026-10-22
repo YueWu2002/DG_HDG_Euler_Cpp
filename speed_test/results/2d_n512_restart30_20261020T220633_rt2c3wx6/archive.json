@@ -1,0 +1,100 @@
+{
+  "original_directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T220633_rt2c3wx6",
+  "archived_directory": "/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/results/2d_n512_restart30_20261020T220633_rt2c3wx6",
+  "states": {
+    "7687730": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687731": [
+      "CANCELLED by 140593960",
+      "0:0"
+    ],
+    "7687732": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687733": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687734": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687735": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687736": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687737": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687738": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687739": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687740": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687741": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687742": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687743": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687744": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687745": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687746": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687747": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687748": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7687749": [
+      "CANCELLED by 140593960",
+      "0:0"
+    ],
+    "7687750": [
+      "CANCELLED by 140593960",
+      "0:0"
+    ],
+    "7718103": [
+      "COMPLETED",
+      "0:0"
+    ],
+    "7718104": [
+      "COMPLETED",
+      "0:0"
+    ]
+  },
+  "archive_job_id": "7718105",
+  "archived_utc": "2026-10-22T05:57:35.793901+00:00"
+}

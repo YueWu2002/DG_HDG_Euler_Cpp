@@ -1,0 +1,10 @@
+## SLURM PROLOG ###############################################################
+##    Job ID : 7718104
+##  Job Name : eigen-2d-r30-collect
+##  Nodelist : node2307
+##      CPUs : 1
+##  Mem/Node : 16384 MB
+## Directory : /oscar/home/ywu355/DG_HDG_Euler_Cpp
+##   Job Started : Thu Oct 22 01:57:00 EDT 2026
+###############################################################################
+/oscar/home/ywu355/DG_HDG_Euler_Cpp/speed_test/running/2d_n512_restart30_20261020T220633_rt2c3wx6/report_archived/REPORT.md

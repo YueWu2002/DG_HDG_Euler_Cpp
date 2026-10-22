@@ -1,0 +1,40 @@
+{
+  "checked_utc": "2026-10-22T16:08:16.272103+00:00",
+  "manifest_entries_matched": 616,
+  "validated_cases": 18,
+  "validated_updates": 72,
+  "validated_pairs": 9,
+  "source_sha256": "fc044fefaca984cbe489da8f0be56afc5ebd191791a35464565b724e6fc85b37",
+  "executable_sha256": "5429a2f3a7556476bfb88ebd9241bc0b1abe70315af34d26f7a1f03f42715e79",
+  "accounting": [
+    "7687730|COMPLETED|0:0|00:04:14|node2347",
+    "7687732|COMPLETED|0:0|02:34:02|node2347",
+    "7687733|COMPLETED|0:0|06:47:13|node2347",
+    "7687734|COMPLETED|0:0|02:08:05|node2347",
+    "7687735|COMPLETED|0:0|05:10:39|node2347",
+    "7687736|COMPLETED|0:0|01:14:40|node2347",
+    "7687737|COMPLETED|0:0|03:15:03|node2347",
+    "7687738|COMPLETED|0:0|00:59:22|node2347",
+    "7687739|COMPLETED|0:0|01:31:22|node2347",
+    "7687740|COMPLETED|0:0|00:28:59|node2347",
+    "7687741|COMPLETED|0:0|00:32:40|node2347",
+    "7687742|COMPLETED|0:0|00:26:47|node2347",
+    "7687743|COMPLETED|0:0|00:15:52|node2347",
+    "7687744|COMPLETED|0:0|00:16:28|node2347",
+    "7687745|COMPLETED|0:0|00:05:07|node2347",
+    "7687746|COMPLETED|0:0|00:05:56|node2347",
+    "7687747|COMPLETED|0:0|00:01:45|node2347",
+    "7687748|COMPLETED|0:0|00:02:12|node2347",
+    "7718103|COMPLETED|0:0|12:44:42|node2318",
+    "7718104|COMPLETED|0:0|00:00:02|node2307",
+    "7718105|COMPLETED|0:0|00:00:03|node2307"
+  ],
+  "checks": [
+    "SUCCESS and exit codes",
+    "raw timing warmup and mean",
+    "mesh, protocol, command, CPU and binary identity",
+    "pair ratios",
+    "report input/output hashes"
+  ],
+  "solver_rerun": false
+}
